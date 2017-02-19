@@ -1,5 +1,45 @@
-<body>
-<script src="/socket.io/socket.io.js"></script>
-<script src="static/js/jsgames.js"></script>
-</body>
+<!doctype html>
+<html>
+	<head>
+		<title>JSGames by Michael Wu</title>
+	</head>
+	<style>
+	/*@TODO: MOVE ME TO BROWSERIFY;*/
+	@font-face{
+		font-family: "adobe clean";
+		src: url("static/fonts/AdobeClean-Regular.otf") format("opentype");
+	}
 
+	html, body{
+		width:100%;
+		height:100%;
+		font-family: "adobe clean";
+	}
+	.welcome{
+		width:100%;
+		height:100%;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		flex-direction: column;
+		font-size: 20px;
+		text-align: center;
+		color: #afafb7;
+	}
+	.welcome .logo{
+		font-size: 80px;
+		color: #5cffd6;
+		-webkit-text-stroke: 1px #afafb7;
+	}
+	.welcome .loading{
+		background:url(static/images/ripple.svg) no-repeat center center;
+		line-height:200px;
+		min-width: 200px;
+		min-height: 200px;
+	}
+	</style>
+<body>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="static/js/jsgames.js"></script>
+</body>
+</html>

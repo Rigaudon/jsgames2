@@ -1,4 +1,7 @@
 "use strict"
-var socket = io();
 var RootView = require("./views/rootView");
-(new RootView()).render();
+var User = require("./models/user");
+(new RootView({
+	model: new User()
+	})
+).render();
