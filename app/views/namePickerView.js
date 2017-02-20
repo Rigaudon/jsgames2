@@ -21,6 +21,7 @@ var NamePickerView = Marionette.View.extend({
 		this.$(this.ui.nameInput).keypress(function(e){
 			var keycode = (e.keyCode ? e.keyCode : e.which);
 		    if(keycode == '13'){
+		    	self.$(self.ui.nameInput).prop("disabled", true);
 		        self.requestName(self.$(self.ui.nameInput).val());
 		    }
 		});
@@ -46,6 +47,7 @@ var NamePickerView = Marionette.View.extend({
 			.css("display", "block")
 			.text(this.model.get("error"))
 			.css("opacity", 1);
+		this.$(this.ui.nameInput).prop("disabled", false);
 	}
 });
 

@@ -47,7 +47,6 @@ function removePlayer(mem, socket){
 
 var socketEvents = function(io, mem){
 	io.on("connection", function(socket){
-		console.log(mem);
 		//Give out an ID
 		socket.emit("myId", socket.id);
 
