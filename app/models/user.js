@@ -10,9 +10,10 @@ var User = Backbone.Model.extend({
 	},
 
 	setUpSocket: function(){
-		this.socket = io();
-		this.socket.on("myId", function(value){
-			this.pid = value;
+		var self = this;
+		self.set("socket", io());
+		self.get("socket").on("myId", function(value){
+			self.set("pid", value);
 		});
 	}
 });

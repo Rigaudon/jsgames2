@@ -4,8 +4,9 @@
   "description": "A more object oriented iteration of JSGames",
   "main": "app.js",
   "scripts": {
-    "start": "node entry.js",
-    "watch": "gulp bundle"
+    "start": "concurrently --kill-others \"gulp bundle\" \"node entry.js\" \"node-sass --output-style compact -w app/sass/main.scss static/css/main.css\"",
+    "bundle-js": "gulp bundle",
+    "server": "node entry.js"
   },
   "repository": {
     "type": "git",
@@ -20,23 +21,27 @@
   "dependencies": {
     "backbone": "^1.3.3",
     "backbone.marionette": "^3.1.0",
-    "brfs": "^1.4.3",
-    "browserify": "^14.1.0",
     "bufferutil": "^2.0.1",
     "engine.io": "^2.0.2",
     "express": "^4.14.1",
-    "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^2.4.1",
-    "gulp-uglify": "^2.0.1",
-    "gulp-util": "^3.0.8",
     "jquery": "^3.1.1",
     "lodash": "^4.17.4",
     "socket.io": "^1.7.3",
     "underscore": "^1.8.3",
     "utf-8-validate": "^3.0.1",
+    "ws": "^2.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.3.0",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-uglify": "^2.0.1",
+    "gulp-util": "^3.0.8",
+    "brfs": "^1.4.3",
+    "browserify": "^14.1.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.9.0",
-    "ws": "^2.1.0"
+    "node-sass": "^4.5.0"
   }
 }
