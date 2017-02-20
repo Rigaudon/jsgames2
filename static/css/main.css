@@ -1,9 +1,19 @@
 @font-face { font-family: "adobe clean"; src: url("../fonts/AdobeClean-Regular.otf") format("opentype"); }
 
-html, body { width: 100%; height: 100%; font-family: "adobe clean"; }
+html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margin: 0; padding: 0; }
 
 .welcome { width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: center; flex-direction: column; font-size: 20px; text-align: center; color: #afafb7; }
 
-.welcome .logo { font-size: 80px; color: #5cffd6; -webkit-text-stroke: 1px #afafb7; }
+.welcome .logo, .welcome .content { width: 100%; display: flex; justify-content: center; align-items: center; }
 
-.welcome .loading { background: url(../images/ripple.svg) no-repeat center center; line-height: 200px; min-width: 200px; min-height: 200px; }
+.welcome .logo { position: absolute; top: 0; font-size: 90px; color: #5cffd6; -webkit-text-stroke: 1px #afafb7; height: 25%; -webkit-transition: 1s; transition: 1s; }
+
+.welcome .content { height: 100%; transition: 1s; }
+
+.welcome .content .loading { background: url(../images/ripple.svg) no-repeat center center; line-height: 200px; min-width: 200px; min-height: 200px; }
+
+.namePicker { font-size: 70px; }
+
+.namePicker .nameInput { border: 0px solid #afafb7; border-bottom-width: 2px; color: #afafb7; font-family: inherit; font-size: 45px; background: transparent; text-align: center; text-decoration: none; outline: none; }
+
+.namePicker .alert { font-size: 20px; margin: 0; opacity: 0; -webkit-transition: 1s; transition: 1s; }

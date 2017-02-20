@@ -1,0 +1,25 @@
+@import "variables";
+
+.namePicker{
+	font-size: 70px;
+	
+	.nameInput{
+		border: 0px solid $primary-color;
+		border-bottom-width: 2px;
+		color: $primary-color;
+		font-family: inherit;
+		font-size: 45px;
+		background: transparent;
+		text-align: center;
+		text-decoration: none;
+		outline: none;
+	}
+
+	.alert{
+		font-size: 20px;
+		margin: 0;
+		opacity: 0;
+		-webkit-transition: 1s;
+		transition: 1s;
+	}
+}
