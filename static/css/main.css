@@ -20,13 +20,15 @@ html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margi
 
 .namePicker .alert { font-size: 20px; margin: 0; opacity: 0; -webkit-transition: 1s; transition: 1s; }
 
-.gameRoomsView { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; }
+.gameRoomsView { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; transition: 1s; }
 
-.chatView { width: 340px; height: 100%; background-color: #efeef1; }
+.chatView { width: 340px; min-width: 340px; height: 100%; background-color: #efeef1; }
 
 .chatView .chatViewContainer { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; flex-direction: column; }
 
-.chatView .chatViewContainer .messageList { height: 100%; overflow-x: hidden; overflow-y: scroll; }
+.chatView .chatViewContainer .chatHeader { height: 50px; width: 100%; box-shadow: inset 0 -1px 0 0 #dad8de; padding-top: 10px; padding-bottom: 10px; font-family: "Helvetica"; font-size: 18px; }
+
+.chatView .chatViewContainer .messageList { height: 100%; overflow-x: hidden; overflow-y: auto; }
 
 .chatView .chatViewContainer .inputMessage { align-self: flex-end; width: 100%; }
 
@@ -49,3 +51,5 @@ html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margi
 .chatView .chatViewContainer li .chatName::after { content: ":"; }
 
 .chatView .chatViewContainer li .chatMessage { font-size: 14px; word-wrap: break-word; }
+
+.gameRooms { width: 100%; }

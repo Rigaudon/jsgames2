@@ -63,6 +63,8 @@ function validateMessage(message){
 			message.message.length < 200;
 }
 
+var nextMsgId = 0;
+
 var socketEvents = function(io, mem){
 	io.on("connection", function(socket){
 		//Give out an ID
@@ -87,6 +89,7 @@ var socketEvents = function(io, mem){
 		socket.on("chatMessage", function(message){
 			if(validateMessage(message)){
 				io.emit("chatMessage", {
+					id: ++nextMsgId,
 					message: message.message,
 					name: mem.players[socket.id].name,
 					time: dateFormat(new Date(), "h:MM"),
