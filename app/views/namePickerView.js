@@ -1,6 +1,7 @@
 var _ = require("lodash");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
+var common = require("../common");
 
 var NamePickerView = Marionette.View.extend({
 	className: "namePicker",
@@ -32,18 +33,22 @@ var NamePickerView = Marionette.View.extend({
 	},
 
 	nameSet: function(){
-		this.$(this.ui.nameMessage)
-			.removeClass("alert-danger")
-			.addClass("alert-success")
-			.css("display", "block")
-			.text("Welcome!")
-			.css("opacity", 1);
+		var self = this;
+		this.$el.css("opacity", 0);
+
+		self.$el.bind(common.finishTransition, function(){
+			if(self.$el.css("opacity") == 0){
+				self.remove();	
+				self.model.set("ready", true);
+			}
+		});
+			
 	},
 
 	showError: function(){
 		this.$(this.ui.nameMessage)
-			.removeClass("alert-success")
-			.addClass("alert-danger")
+			.removeClass("alert-info")
+			.addClass("alert-warning")
 			.css("display", "block")
 			.text(this.model.get("error"))
 			.css("opacity", 1);

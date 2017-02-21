@@ -1,6 +1,13 @@
+@import "variables"; 
+
 @font-face{
 	font-family: "adobe clean";
 	src: url("../fonts/AdobeClean-Regular.otf") format("opentype");
+}
+
+@font-face{
+	font-family: "Helvetica Neue";
+	src: url("../fonts/HelveticaNeue.ttf") format("truetype");
 }
 
 html, body, .root{
@@ -9,4 +16,6 @@ html, body, .root{
 	font-family: "adobe clean";
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
+	background-color: $bg-color;
 }

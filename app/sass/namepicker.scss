@@ -2,11 +2,14 @@
 
 .namePicker{
 	font-size: 70px;
-	
+	position: absolute;
+	-webkit-transition: 1.5s;
+	transition: 1.5s;
+
 	.nameInput{
-		border: 0px solid $fourth-color;
+		border: 0px solid $primary-color;
 		border-bottom-width: 2px;
-		color: $fourth-color;
+		color: $primary-color;
 		font-family: inherit;
 		font-size: 45px;
 		background: transparent;
@@ -19,7 +22,7 @@
 		font-size: 20px;
 		margin: 0;
 		opacity: 0;
-		-webkit-transition: 1s;
-		transition: 1s;
+		-webkit-transition: $transition-fast;
+		transition: $transition-fast;
 	}
 }

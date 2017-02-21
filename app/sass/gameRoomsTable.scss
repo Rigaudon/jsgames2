@@ -1,0 +1,32 @@
+@import "variables";
+
+.gameRooms{
+	width: 100%;
+	min-height: 800px;
+	.gameRoomsTable{
+		min-height: inherit;
+		width:100%;
+		max-width: 1300px;
+		margin-left: auto;
+		margin-right: auto;
+		background: repeating-linear-gradient( 135deg, $bg-color, $bg-color 50px, $passive-color 50px, $passive-color 100px );
+		border-bottom: 2px solid $primary-color;
+		border-top: 2px solid $primary-color;
+		border-collapse: separate;
+
+		thead tr{
+			height: 45px;
+		}
+
+		thead th{
+			color: $primary-color;
+			background-color: $bg-color;
+			text-align: center;
+			border-bottom: 2px solid $primary-color;
+		}
+
+		.roomList{
+
+		}
+	}
+}

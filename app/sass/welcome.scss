@@ -10,6 +10,7 @@
 	font-size: 20px;
 	text-align: center;
 	color: $primary-color;
+	background-color: $bg-color;
 
 	.logo, .content{
 		width: 100%;
@@ -22,16 +23,20 @@
 		position: absolute;
 		top: 0;
 		font-size: 90px;
-		color: $secondary-color;
-		-webkit-text-stroke: 1px $primary-color;
+		color: $primary-color;
+		-webkit-text-stroke: 1px $secondary-color;
 		height: 25%;
-		-webkit-transition: 1.5s;
-		transition: 1.5s;
+		-webkit-transition: $transition-speed;
+		transition: $transition-speed;
+		background: -webkit-linear-gradient(top, rgba(0,0,0,0), $secondary-color); /* For Safari 5.1 to 6.0 */
+	    background: -o-linear-gradient(top, rgba(0,0,0,0), $secondary-color); /* For Opera 11.1 to 12.0 */
+	    background: -moz-linear-gradient(top, rgba(0,0,0,0), $secondary-color); /* For Firefox 3.6 to 15 */
+	    background: linear-gradient(to top, rgba(0,0,0,0), $secondary-color); /* Standard syntax (must be last) */
 	}
 
 	.content{
 		height: 100%;
-		transition: 1.5s;
+		transition: $transition-speed;
 		.loading{
 			background:url(../images/ripple.svg) no-repeat center center;
 			line-height:200px;

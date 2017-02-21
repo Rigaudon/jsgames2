@@ -1,14 +1,18 @@
 var _ = require("lodash");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
+var common = require("../common");
 var NamePickerView = require("./namePickerView");
+var GameRoomsView = require("./gameRoomsView");
 
 var RootView = Marionette.View.extend({
 	className: "root",
 	template: _.template(fs.readFileSync("./app/templates/rootView.html", "utf8")),
 
 	modelEvents: {
-		"change:pid" : "onPidChange"
+		"change:pid" 	: "onPidChange",
+		"change:ready"	: "loadGameRooms",
+		"change:name"	: "onNameChange"
 	},
 
 	regions: {
@@ -27,7 +31,7 @@ var RootView = Marionette.View.extend({
 		var renderedNamePicker = false;
 
 		//When the loading message fades,
-		cSelector.one("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
+		cSelector.one(common.finishTransition, function(){
 			if(renderedNamePicker){
 				return;
 			}
@@ -41,14 +45,22 @@ var RootView = Marionette.View.extend({
 		});
 
 		//When the logo moves off the screen,
-		logoSelector.one("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
+		logoSelector.one(common.finishTransition, function(){
 			//Remove the logo
 			logoSelector.remove();
 		});
 
 		//Fade out the loading message
 		cSelector.css("opacity", 0);
-		
+	},
+
+	loadGameRooms: function(){
+		this.showChildView("contentRegion", new GameRoomsView({model: this.model}));
+		this.$(this.regions.contentRegion).css("opacity", 1);
+	},
+
+	onNameChange: function(){
+		this.$(this.regions.contentRegion).css("opacity", 0);
 	}
 });
 
