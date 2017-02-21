@@ -2,13 +2,13 @@
 
 @font-face { font-family: "Helvetica Neue"; src: url("../fonts/HelveticaNeue.ttf") format("truetype"); }
 
-html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margin: 0; padding: 0; overflow: hidden; }
+html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margin: 0; padding: 0; overflow: hidden; background-color: #ffffff; }
 
-.welcome { width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: center; flex-direction: column; font-size: 20px; text-align: center; color: #31708f; background-color: #ffffff; }
+.welcome { width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: center; flex-direction: column; font-size: 20px; text-align: center; color: #003366; background-color: #ffffff; }
 
 .welcome .logo, .welcome .content { width: 100%; display: flex; justify-content: center; align-items: center; }
 
-.welcome .logo { position: absolute; top: 0; font-size: 90px; color: #31708f; -webkit-text-stroke: 1px #bce8f1; height: 25%; -webkit-transition: 1.5s; transition: 1.5s; background: -webkit-linear-gradient(top, transparent, #bce8f1); /* For Safari 5.1 to 6.0 */ background: -o-linear-gradient(top, transparent, #bce8f1); /* For Opera 11.1 to 12.0 */ background: -moz-linear-gradient(top, transparent, #bce8f1); /* For Firefox 3.6 to 15 */ background: linear-gradient(to top, transparent, #bce8f1); /* Standard syntax (must be last) */ }
+.welcome .logo { position: absolute; top: 0; font-size: 90px; color: #003366; -webkit-text-stroke: 1px #bce8f1; height: 25%; -webkit-transition: 1.5s; transition: 1.5s; background: -webkit-linear-gradient(top, transparent, #bce8f1); /* For Safari 5.1 to 6.0 */ background: -o-linear-gradient(top, transparent, #bce8f1); /* For Opera 11.1 to 12.0 */ background: -moz-linear-gradient(top, transparent, #bce8f1); /* For Firefox 3.6 to 15 */ background: linear-gradient(to top, transparent, #bce8f1); /* Standard syntax (must be last) */ }
 
 .welcome .content { height: 100%; transition: 1.5s; }
 
@@ -16,17 +16,31 @@ html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margi
 
 .namePicker { font-size: 70px; position: absolute; -webkit-transition: 1.5s; transition: 1.5s; }
 
-.namePicker .nameInput { border: 0px solid #31708f; border-bottom-width: 2px; color: #31708f; font-family: inherit; font-size: 45px; background: transparent; text-align: center; text-decoration: none; outline: none; }
+.namePicker .nameInput { border: 0px solid #003366; border-bottom-width: 2px; color: #003366; font-family: inherit; font-size: 45px; background: transparent; text-align: center; text-decoration: none; outline: none; }
 
 .namePicker .alert { font-size: 20px; margin: 0; opacity: 0; -webkit-transition: 1s; transition: 1s; }
 
 .gameRoomsView { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; transition: 1s; }
 
+.gameRoomsView .mainView { width: 100%; height: 100%; display: flex; flex-direction: column; flex-wrap: nowrap; justify-content: space-around; }
+
+.gameRoomsView .mainView .topView { font-size: 50px; }
+
+.gameRoomsView .mainView .bottomView .btn-big { vertical-align: top; background-color: #efeef1; background-image: linear-gradient(167deg, rgba(255, 255, 255, 0.1) 50%, transparent 55%), linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent); border-radius: 6px; box-shadow: 0 0 0 1px #003366 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #003366, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5); color: #003366; display: inline-block; font-family: "adobe clean"; font-size: 22px; height: 61px; line-height: 61px; margin: 30px 0 10px; position: relative; text-align: center; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); text-decoration: none !important; top: 0; width: 186px; -moz-transition: 0.15s; -o-transition: 0.15s; -webkit-transition: 0.15s; transition: 0.15s; }
+
+.gameRoomsView .mainView .bottomView .btn-big:hover, .gameRoomsView .mainView .bottomView .btn-big:focus { background-color: #ffffff; box-shadow: 0 0 0 1px #003366 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 10px 0 0 #003366, 0 10px 0 1px rgba(0, 0, 0, 0.4), 0 10px 8px 1px rgba(0, 0, 0, 0.6); top: -2px; }
+
+.gameRoomsView .mainView .bottomView .btn-big:active { box-shadow: 0 0 0 1px #bce8f1 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 0 0 1px rgba(0, 0, 0, 0.4); moz-transform: translateY(10px); -ms-transform: translateY(10px); -webkit-transform: translateY(10px); transform: translateY(10px); }
+
+.gameRoomsView .mainView .bottomView a.disabled, .gameRoomsView .mainView .bottomView a.disabled:hover, .gameRoomsView .mainView .bottomView a.disabled:focus, .gameRoomsView .mainView .bottomView a.disabled:active { background-color: #404040; box-shadow: 0 0 0 1px #404040 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #313131, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5); }
+
+.gameRoomsView .mainView .bottomView a.disabled:active { -moz-transform: translateY(0px); -ms-transform: translateY(0px); -webkit-transform: translateY(0px); transform: translateY(0px); }
+
 .chatView { width: 340px; min-width: 340px; height: 100%; background-color: #efeef1; }
 
 .chatView .chatViewContainer { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; flex-direction: column; }
 
-.chatView .chatViewContainer .chatHeader { height: 50px; width: 100%; box-shadow: inset 0 -1px 0 0 #dad8de; padding-top: 10px; padding-bottom: 10px; font-family: "Helvetica"; font-size: 18px; }
+.chatView .chatViewContainer .chatHeader { height: 50px; width: 100%; box-shadow: inset 0 -1px 0 0 #dad8de; padding-top: 10px; padding-bottom: 10px; font-family: "Helvetica"; font-size: 15px; }
 
 .chatView .chatViewContainer .messageList { height: 100%; overflow-x: hidden; overflow-y: auto; }
 
@@ -52,4 +66,10 @@ html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margi
 
 .chatView .chatViewContainer li .chatMessage { font-size: 14px; word-wrap: break-word; }
 
-.gameRooms { width: 100%; }
+.gameRooms { width: 100%; min-height: 800px; }
+
+.gameRooms .gameRoomsTable { min-height: inherit; width: 100%; max-width: 1300px; margin-left: auto; margin-right: auto; background: repeating-linear-gradient(135deg, #ffffff, #ffffff 50px, #efeef1 50px, #efeef1 100px); border-bottom: 2px solid #003366; border-top: 2px solid #003366; border-collapse: separate; }
+
+.gameRooms .gameRoomsTable thead tr { height: 45px; }
+
+.gameRooms .gameRoomsTable thead th { color: #003366; background-color: #ffffff; text-align: center; border-bottom: 2px solid #003366; }
