@@ -1,4 +1,6 @@
 //Handling of SERVER-SIDE io events
+var dateFormat = require("dateformat");
+
 function validateName(name, mem, socket){
 	var returnObj = {
 		success: false
@@ -34,8 +36,17 @@ function validateName(name, mem, socket){
 function addPlayer(name, mem, socket){
 	mem.playerNames.add(name);
 	mem.players[socket.id] = {
-		name: name
+		name: name,
+		color: randomColor()
 	};
+}
+
+function randomColor(){
+	color = Math.round(Math.random() * 16777215).toString(16);
+	while(color.length != 6){
+		color = Math.round(Math.random() * 16777215).toString(16);
+	}
+	return "#" + color;
 }
 
 function removePlayer(mem, socket){
@@ -43,6 +54,13 @@ function removePlayer(mem, socket){
 		mem.playerNames.delete(mem.players[socket.id].name);
 		delete mem.players[socket.id];
 	}
+}
+
+function validateMessage(message){
+	return 	message && 
+			message.message &&
+			message.message.length > 0 && 
+			message.message.length < 200;
 }
 
 var socketEvents = function(io, mem){
@@ -63,6 +81,18 @@ var socketEvents = function(io, mem){
 		//User disconnected
 		socket.on("disconnect", function(){
 			removePlayer(mem, socket);
+		});
+
+		//Chat message
+		socket.on("chatMessage", function(message){
+			if(validateMessage(message)){
+				io.emit("chatMessage", {
+					message: message.message,
+					name: mem.players[socket.id].name,
+					time: dateFormat(new Date(), "h:MM"),
+					color: mem.players[socket.id].color
+				})
+			}
 		});
 	});
 }

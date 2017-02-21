@@ -1,19 +1,51 @@
 @font-face { font-family: "adobe clean"; src: url("../fonts/AdobeClean-Regular.otf") format("opentype"); }
 
-html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margin: 0; padding: 0; }
+@font-face { font-family: "Helvetica Neue"; src: url("../fonts/HelveticaNeue.ttf") format("truetype"); }
 
-.welcome { width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: center; flex-direction: column; font-size: 20px; text-align: center; color: #afafb7; }
+html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margin: 0; padding: 0; overflow: hidden; }
+
+.welcome { width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: center; flex-direction: column; font-size: 20px; text-align: center; color: #31708f; background-color: #ffffff; }
 
 .welcome .logo, .welcome .content { width: 100%; display: flex; justify-content: center; align-items: center; }
 
-.welcome .logo { position: absolute; top: 0; font-size: 90px; color: #9dffe6; -webkit-text-stroke: 1px #afafb7; height: 25%; -webkit-transition: 1.5s; transition: 1.5s; }
+.welcome .logo { position: absolute; top: 0; font-size: 90px; color: #31708f; -webkit-text-stroke: 1px #bce8f1; height: 25%; -webkit-transition: 1.5s; transition: 1.5s; background: -webkit-linear-gradient(top, transparent, #bce8f1); /* For Safari 5.1 to 6.0 */ background: -o-linear-gradient(top, transparent, #bce8f1); /* For Opera 11.1 to 12.0 */ background: -moz-linear-gradient(top, transparent, #bce8f1); /* For Firefox 3.6 to 15 */ background: linear-gradient(to top, transparent, #bce8f1); /* Standard syntax (must be last) */ }
 
 .welcome .content { height: 100%; transition: 1.5s; }
 
 .welcome .content .loading { background: url(../images/ripple.svg) no-repeat center center; line-height: 200px; min-width: 200px; min-height: 200px; }
 
-.namePicker { font-size: 70px; }
+.namePicker { font-size: 70px; position: absolute; -webkit-transition: 1.5s; transition: 1.5s; }
 
-.namePicker .nameInput { border: 0px solid #bb171a; border-bottom-width: 2px; color: #bb171a; font-family: inherit; font-size: 45px; background: transparent; text-align: center; text-decoration: none; outline: none; }
+.namePicker .nameInput { border: 0px solid #31708f; border-bottom-width: 2px; color: #31708f; font-family: inherit; font-size: 45px; background: transparent; text-align: center; text-decoration: none; outline: none; }
 
 .namePicker .alert { font-size: 20px; margin: 0; opacity: 0; -webkit-transition: 1s; transition: 1s; }
+
+.gameRoomsView { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; }
+
+.chatView { width: 340px; height: 100%; background-color: #efeef1; }
+
+.chatView .chatViewContainer { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; flex-direction: column; }
+
+.chatView .chatViewContainer .messageList { height: 100%; overflow-x: hidden; overflow-y: scroll; }
+
+.chatView .chatViewContainer .inputMessage { align-self: flex-end; width: 100%; }
+
+.chatView .chatViewContainer .inputMessage textarea { resize: none; font-size: 14px; width: 90%; padding: 10px; }
+
+.chatView .chatViewContainer ::-webkit-scrollbar { width: 6px; }
+
+.chatView .chatViewContainer ::-webkit-scrollbar-track { -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); -webkit-border-radius: 10px; border-radius: 10px; }
+
+.chatView .chatViewContainer ::-webkit-scrollbar-thumb { -webkit-border-radius: 20px; border-radius: 20px; background: rgba(0, 0, 0, 0.5); }
+
+.chatView .chatViewContainer ul { list-style-type: none; margin: 0; padding: 10px; }
+
+.chatView .chatViewContainer li { text-align: left; word-wrap: break-word; width: 100%; color: #433f4a; margin-top: 5px; font-family: "Helvetica"; }
+
+.chatView .chatViewContainer li .chatTime { color: gray; font-size: 12px; }
+
+.chatView .chatViewContainer li .chatName { font-size: 15px; font-weight: bold; }
+
+.chatView .chatViewContainer li .chatName::after { content: ":"; }
+
+.chatView .chatViewContainer li .chatMessage { font-size: 14px; word-wrap: break-word; }
