@@ -9,17 +9,23 @@ var ChatView = Marionette.View.extend({
 	className: "chatViewContainer",
 	template: _.template(fs.readFileSync("./app/templates/chatView.html", "utf8")),
 	regions: {
-		messageList: ".messageList"
+		main: ".chatMain",
+		messageList: ".messageList",
 	},
 
 	modelEvents:{
-		"add:message" : "messageAdded"
+		"add:message" : "messageAdded",
 	},
 
 	ui: {
-		inputMessage: ".inputMessage textarea"
+		inputMessage: ".inputMessage textarea",
+		collapse: ".collapseChat",
 	},
 
+	events: {
+		"click @ui.collapse" : "collapseChat",
+	},
+ 
 	onRender: function(){
 		var self = this;
 		this.showChildView("messageList", new ChatCollectionView({collection: self.model.messageCollection}));
@@ -45,6 +51,16 @@ var ChatView = Marionette.View.extend({
 		if(Math.abs(scrollDiv[0].scrollHeight-scrollDiv.scrollTop() - scrollDiv.outerHeight()) < 50){
 			scrollDiv.scrollTop(scrollDiv[0].scrollHeight);
 		}
+	},
+
+	collapseChat: function(){
+		this.$(this.regions.main)
+			.toggleClass("open")
+			.toggleClass("closed");
+
+		this.$(this.ui.collapse).find("span")
+			.toggleClass("glyphicon-chevron-right")
+			.toggleClass("glyphicon-chevron-left");
 	}
 
 });
