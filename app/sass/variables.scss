@@ -1,6 +1,15 @@
+/*
+primary-color: text color
+secondary-color: differing shade of primary (gradient in welcome)
+tertiary-color: contrasts well against primary
+bg-color: background color
+passive-color: background for chat; close to bg-color
+inset-color: border color for chat, etc
+*/
+
 $primary-color: #003366;
 $secondary-color: #bce8f1;
-$tertiary-color: #3c302e;
+$tertiary-color: #FFCC66;
 $fourth-color: #bb171a;
 $bg-color: #ffffff;
 $passive-color: #efeef1;
@@ -8,3 +17,10 @@ $inset-color: #dad8de;
 
 $transition-fast: 1s;
 $transition-speed: 1.5s;
+
+/*
+$bg-color: #222222;
+$primary-color: white;
+$secondary-color: #282828;
+$passive-color: #282828;
+*/

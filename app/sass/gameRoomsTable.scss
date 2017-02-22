@@ -2,11 +2,10 @@
 
 .gameRooms{
 	width: 100%;
-	min-height: 800px;
+	height: 80%;
 	.gameRoomsTable{
-		min-height: inherit;
+		height: 100%;
 		width:100%;
-		max-width: 1300px;
 		margin-left: auto;
 		margin-right: auto;
 		background: repeating-linear-gradient( 135deg, $bg-color, $bg-color 50px, $passive-color 50px, $passive-color 100px );

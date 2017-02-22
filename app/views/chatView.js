@@ -24,21 +24,22 @@ var ChatView = Marionette.View.extend({
 
 	events: {
 		"click @ui.collapse" : "collapseChat",
+		"keypress @ui.inputMessage": "onChatInput",
 	},
  
 	onRender: function(){
 		var self = this;
 		this.showChildView("messageList", new ChatCollectionView({collection: self.model.messageCollection}));
-		var inputSelector = this.$(this.ui.inputMessage);
-		inputSelector.keypress(function(e){
-			var keycode = (e.keyCode ? e.keyCode : e.which);
-		    if(keycode == '13'){
-		        self.sendChatMessage(inputSelector.val().trim());
-		        inputSelector.val("");
-		        e.preventDefault();
-		        return false;
-		    }
-		});
+	},
+
+	onChatInput: function(e){
+		var keycode = (e.keyCode ? e.keyCode : e.which);
+	    if(keycode == '13'){
+	        this.sendChatMessage($(e.target).val().trim());
+	        this.$(e.target).val("");
+	        e.preventDefault();
+	        return false;
+	    }
 	},
 
 	sendChatMessage: function(message){

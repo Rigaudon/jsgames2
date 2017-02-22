@@ -17,15 +17,16 @@ var NamePickerView = Marionette.View.extend({
 		"nameMessage": ".namePickerMsg"
 	},
 
-	onRender: function(){
-		var self = this;
-		this.$(this.ui.nameInput).keypress(function(e){
-			var keycode = (e.keyCode ? e.keyCode : e.which);
-		    if(keycode == '13'){
-		    	self.$(self.ui.nameInput).prop("disabled", true);
-		        self.requestName(self.$(self.ui.nameInput).val());
-		    }
-		});
+	events: {
+		"keypress @ui.nameInput": "onNameInput",
+	},
+
+	onNameInput: function(e){
+		var keycode = (e.keyCode ? e.keyCode : e.which);
+	    if(keycode == '13'){
+	    	this.$(e.target).prop("disabled", true);
+	        this.requestName($(e.target).val().trim());
+	    }
 	},
 
 	requestName: function(name){
