@@ -1,0 +1,62 @@
+@import "variables";
+
+/*these don't work if placed inside their context*/
+
+.modalTitle{
+	font-size: 40px;
+}
+
+.modal-body.gameSelect{
+	padding: 0;
+}
+
+.gameSelect{
+	padding-left: 0;
+	padding-right: 0;
+
+	ul{
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+
+		li{
+			height: 150px;
+			cursor: pointer;
+		}
+
+		li:hover{
+			background-color: $primary-color;
+			color: $bg-color;
+		}
+	}
+}
+
+
+.gameImageContainer{
+	float: left;
+	width: 150px;
+	height: 100%;
+}
+
+.gameInfoContainer{
+	height: 150px;
+	width: auto;
+	padding: 5px;
+
+	.gameInfoName{
+		font-size: 30px;
+		text-align:center;
+		padding: 5px;
+	}
+
+	.gameInfoDescription{
+		font-size: 20px;
+		text-align: justify;
+		padding: 1px;
+	}
+
+	.gameInfoPlayers{
+		text-align: center;
+		font-size: 16px;
+	}
+}

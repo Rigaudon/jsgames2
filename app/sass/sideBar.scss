@@ -1,7 +1,7 @@
 @import "variables";
 
 .sideBar{
-	background-color: $primary-color;
+	background-color: $menu-color;
 	color: $bg-color;
 	height: 100%;
 	position: relative;
@@ -13,7 +13,7 @@
 		height: 30px;
 		line-height: 38px;
 		width: 25px;
-		background-color: $primary-color;
+		background-color: $menu-color;
 		color: $passive-color;
 		border-radius: 0px 5px 5px 0px;
 		cursor: pointer;
@@ -30,6 +30,7 @@
 		flex-direction: column;
 		height: 100%;
 		width: auto;
+		font-size: 30px;
 
 		.sideBarItem{
 			padding-top: 10px;

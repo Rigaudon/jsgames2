@@ -5,6 +5,8 @@ var common = require("../common");
 var ChatView = require("./chatView");
 var GameRoomsTableView = require("./gameRoomsTableView");
 var SideBarView = require("./sideBarview");
+var CreateRoomView = require("./createRoomView");
+var GameRoom = require("../models/gameRoom");
 
 var GameRoomsView = Marionette.View.extend({
 	className: "gameRoomsView",
@@ -13,6 +15,15 @@ var GameRoomsView = Marionette.View.extend({
 		sideBar: ".sideBar",
 		gameRooms: ".gameRooms",
 		chat: ".chatView",
+		createRoomView: ".createRoomView",
+	},
+
+	ui: {
+		createRoom: ".createRoom",
+	},
+
+	events: {
+		"click @ui.createRoom": "showCreateRoomView",
 	},
 
 	initialize: function(){
@@ -26,6 +37,9 @@ var GameRoomsView = Marionette.View.extend({
 		this.showChildView("sideBar", new SideBarView({model: self.model}));
 	},
 
+	showCreateRoomView: function(){
+		this.showChildView("createRoomView", new CreateRoomView({model: new GameRoom()}));
+	},
 });
 
 module.exports = GameRoomsView;

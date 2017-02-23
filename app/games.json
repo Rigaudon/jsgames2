@@ -1,0 +1,17 @@
+[
+	{
+		"name": "Connect Four",
+		"minPlayers": 2,
+		"maxPlayers": 2,
+		"description": "Take turns dropping discs into the grid. When you get 4 discs in a row, you win.",
+		"image": "connect-four.png"
+	},
+
+	{
+		"name": "Uno",
+		"minPlayers": 2,
+		"maxPlayers": 8,
+		"description": "Win by getting rid of all the cards in your hand before your opponents do.",
+		"image": "uno.png"
+	}
+]
