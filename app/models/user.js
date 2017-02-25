@@ -22,7 +22,12 @@ var User = Backbone.Model.extend({
 		self.set("socket", io());
 		//Getting unique socket id 
 		self.getSocket().on("myId", function(value){
-			self.set("pid", value);
+			if(self.get("ready")){
+				//Connection was reset; refresh the page.
+				location.reload();
+			}else{
+				self.set("pid", value);
+			}
 		});
 		//Getting response about name request
 		self.getSocket().on("nameRequest", function(response){
