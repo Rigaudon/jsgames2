@@ -3,7 +3,8 @@ var Backbone = require("backbone");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
 var common = require("../common");
-var GameCollectionView = require("./gameCollectionView");
+var GameSelectionView = require("./gameSelectionView");
+var games = require("../games.json");
 
 var CreateRoomView = Marionette.View.extend({
 	className: "modal-dialog",
@@ -13,25 +14,9 @@ var CreateRoomView = Marionette.View.extend({
 		"gameList": ".gameSelect"
 	},
 
-	modelEvents: {
-		"change:game": "onGameSelected",
-	},
-
 	onRender: function(){
-		/*
-		var self = this;
-		this.showChildView("gameList", new GameCollectionView({ 
-			collection: new Backbone.Collection(games),
-			roomModel: self.model
-		}));
-		*/
-		this.showChildView("gameList", this.model.showGameCollection());
+		this.showChildView("gameList", new GameSelectionView({ collection: new Backbone.Collection(games) }));
 	},
-
-	onGameSelected: function(){
-		console.log("Game set to " + this.model.get("game"));
-		//Render new view
-	}
 
 });
 

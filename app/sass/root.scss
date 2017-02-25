@@ -1,0 +1,79 @@
+@import "variables";
+
+.root{
+	width:100%;
+	height:100%;
+	display: flex; 
+	justify-content: space-around;
+	align-items: center;
+	flex-direction: column;
+	font-size: 20px;
+	text-align: center;
+	color: $primary-color;
+	background-color: $primary-color; /*this is reset in code for transition*/
+
+	.logo, .content{
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.logo{
+		-webkit-text-stroke: 1px $secondary-color;
+		-webkit-transition: $transition-fast;
+		transition: $transition-fast;
+	    width: 200%;
+		height: 200%;
+		position: absolute;
+		font-size: 90px;
+		background-color: $bg-color;
+		border-radius: 0 0 100% 100%;
+		top: -170%;
+		left: -50%;
+		display: flex;
+		justify-content: center;
+		align-items: flex-end;
+		span{
+			height: 15%;
+			display: flex;
+			align-items: center;
+		}
+	}
+
+	.logo.expanded{
+		top: -60%;
+		font-size: 1px;
+		width: 130%;
+		left: -15%;
+	}
+
+	.content{
+		height: 100%;
+		color: $primary-color;
+		transition: $transition-speed;
+
+		.loading{
+			transition: $transition-speed;
+			background:url(../images/ripple.svg) no-repeat center center;
+			background-size: cover;
+			line-height:200px;
+			min-width: 200px;
+			min-height: 200px;
+			color: $bg-color;
+			font-size: 35px;
+			width: 400px;
+			height: 400px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	}
+}
+
+.root.noInvert{
+	background-color: $bg-color;
+}
+
+
+@import "namepicker";

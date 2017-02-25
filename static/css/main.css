@@ -2686,6 +2686,7 @@ menu-color: the color of the settings menu
 /*
 $bg-color: #222222;
 $primary-color: white;
+$menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
@@ -2711,18 +2712,25 @@ menu-color: the color of the settings menu
 /*
 $bg-color: #222222;
 $primary-color: white;
+$menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
-.welcome { width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: center; flex-direction: column; font-size: 20px; text-align: center; color: #003366; background-color: #ffffff; }
+.root { width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: center; flex-direction: column; font-size: 20px; text-align: center; color: #003366; background-color: #003366; /*this is reset in code for transition*/ }
 
-.welcome .logo, .welcome .content { width: 100%; display: flex; justify-content: center; align-items: center; }
+.root .logo, .root .content { width: 100%; display: flex; justify-content: center; align-items: center; }
 
-.welcome .logo { position: absolute; top: 0; font-size: 90px; color: #003366; -webkit-text-stroke: 1px #bce8f1; height: 25%; -webkit-transition: 1.5s; transition: 1.5s; background: -webkit-linear-gradient(top, transparent, #bce8f1); /* For Safari 5.1 to 6.0 */ background: -o-linear-gradient(top, transparent, #bce8f1); /* For Opera 11.1 to 12.0 */ background: -moz-linear-gradient(top, transparent, #bce8f1); /* For Firefox 3.6 to 15 */ background: linear-gradient(to top, transparent, #bce8f1); /* Standard syntax (must be last) */ }
+.root .logo { -webkit-text-stroke: 1px #bce8f1; -webkit-transition: 1s; transition: 1s; width: 200%; height: 200%; position: absolute; font-size: 90px; background-color: #ffffff; border-radius: 0 0 100% 100%; top: -170%; left: -50%; display: flex; justify-content: center; align-items: flex-end; }
 
-.welcome .content { height: 100%; transition: 1.5s; }
+.root .logo span { height: 15%; display: flex; align-items: center; }
 
-.welcome .content .loading { background: url(../images/ripple.svg) no-repeat center center; line-height: 200px; min-width: 200px; min-height: 200px; }
+.root .logo.expanded { top: -60%; font-size: 1px; width: 130%; left: -15%; }
+
+.root .content { height: 100%; color: #003366; transition: 1.5s; }
+
+.root .content .loading { transition: 1.5s; background: url(../images/ripple.svg) no-repeat center center; background-size: cover; line-height: 200px; min-width: 200px; min-height: 200px; color: #ffffff; font-size: 35px; width: 400px; height: 400px; display: flex; justify-content: center; align-items: center; }
+
+.root.noInvert { background-color: #ffffff; }
 
 /*
 primary-color: text color
@@ -2736,6 +2744,7 @@ menu-color: the color of the settings menu
 /*
 $bg-color: #222222;
 $primary-color: white;
+$menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
@@ -2757,10 +2766,11 @@ menu-color: the color of the settings menu
 /*
 $bg-color: #222222;
 $primary-color: white;
+$menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
-.gameRoomsView { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; transition: 1s; }
+.gameRoomsView { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; transition: 1s; text-align: center; font-size: 20px; transition: 1.5s; }
 
 /*
 primary-color: text color
@@ -2774,14 +2784,15 @@ menu-color: the color of the settings menu
 /*
 $bg-color: #222222;
 $primary-color: white;
+$menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
-.mainView { width: 100%; height: 100%; max-width: 1300px; min-width: 600px; display: flex; flex-direction: column; flex-wrap: nowrap; justify-content: space-around; }
+.mainView { width: 100%; height: 100%; max-width: 1300px; min-width: 700px; display: flex; flex-direction: column; flex-wrap: nowrap; justify-content: center; }
 
-.mainView .topView { font-size: 50px; }
+.mainView .topView { font-size: 50px; border-radius: 80px 80px 0 0; overflow: hidden; margin-left: auto; margin-right: auto; background-color: #003366; color: #ffffff; width: 50%; border: 2px solid #003366; border-bottom: none; }
 
-.mainView .btn-big { vertical-align: top; border: 0; background-color: #efeef1; background-image: linear-gradient(167deg, rgba(255, 255, 255, 0.1) 50%, transparent 55%), linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent); border-radius: 6px; box-shadow: 0 0 0 1px #003366 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #003366, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5); color: #003366; display: inline-block; font-family: "adobe clean"; font-size: 22px; height: 61px; line-height: 61px; margin: 30px 0 10px; position: relative; text-align: center; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); text-decoration: none !important; top: 0; width: 186px; -moz-transition: 0.15s; -o-transition: 0.15s; -webkit-transition: 0.15s; transition: 0.15s; }
+.mainView .btn-big { vertical-align: top; cursor: pointer; border: 0; background-color: #efeef1; background-image: linear-gradient(167deg, rgba(255, 255, 255, 0.1) 50%, transparent 55%), linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent); border-radius: 6px; box-shadow: 0 0 0 1px #003366 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #003366, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5); color: #003366; display: inline-block; font-family: "adobe clean"; font-size: 22px; height: 61px; line-height: 61px; margin: 10px 0 10px; position: relative; text-align: center; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); text-decoration: none !important; top: 0; width: 186px; -moz-transition: 0.15s; -o-transition: 0.15s; -webkit-transition: 0.15s; transition: 0.15s; }
 
 .mainView .btn-big:hover, .mainView .btn-big:focus { background-color: #ffffff; box-shadow: 0 0 0 1px #003366 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 10px 0 0 #003366, 0 10px 0 1px rgba(0, 0, 0, 0.4), 0 10px 8px 1px rgba(0, 0, 0, 0.6); top: -2px; }
 
@@ -2803,6 +2814,7 @@ menu-color: the color of the settings menu
 /*
 $bg-color: #222222;
 $primary-color: white;
+$menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
@@ -2826,6 +2838,7 @@ menu-color: the color of the settings menu
 /*
 $bg-color: #222222;
 $primary-color: white;
+$menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
@@ -2881,20 +2894,23 @@ menu-color: the color of the settings menu
 /*
 $bg-color: #222222;
 $primary-color: white;
+$menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
 .sideBar { background-color: #003366; color: #ffffff; height: 100%; position: relative; }
 
-.sideBar .collapseSideBar { position: absolute; right: -25px; top: 0; height: 30px; line-height: 38px; width: 25px; background-color: #003366; color: #efeef1; border-radius: 0px 5px 5px 0px; cursor: pointer; }
+.sideBar .collapseSideBar { position: absolute; right: -25px; top: 0; height: 30px; line-height: 38px; width: 25px; background-color: #003366; color: #efeef1; border-radius: 0px 5px 5px 0px; cursor: pointer; padding-right: 2px; }
 
 .sideBar .collapseSideBar:hover { background-color: #bb171a; }
 
-.sideBar .sideBarItems { display: flex; flex-wrap: nowrap; justify-content: flex-start; flex-direction: column; height: 100%; width: auto; font-size: 30px; }
+.sideBar .sideBarItems { display: flex; flex-wrap: nowrap; justify-content: flex-start; flex-direction: column; height: 100%; width: auto; }
 
 .sideBar .sideBarItems .sideBarItem { padding-top: 10px; }
 
-.sideBar .sideBarItems .last { order: 999; position: absolute; bottom: 0; width: 100%; font-size: 16px; background-color: #FFCC66; color: #003366; }
+.sideBar .sideBarItems .sideBarItem:first-child { color: #003366; background-color: #efeef1; font-size: 25px; border-radius: 0px 0px 30px 30px; }
+
+.sideBar .sideBarItems .sideBarItem:last-child { position: absolute; bottom: 0; left: 0; width: 100%; font-size: 16px; color: #003366; background-color: #efeef1; border-radius: 40px 40px 0px 0px; }
 
 .sideBar .sideBarItems.closed { position: relative; width: 0; overflow: hidden; }
 
@@ -2912,6 +2928,7 @@ menu-color: the color of the settings menu
 /*
 $bg-color: #222222;
 $primary-color: white;
+$menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
@@ -2922,18 +2939,34 @@ $passive-color: #282828;
 
 .gameSelect { padding-left: 0; padding-right: 0; }
 
-.gameSelect ul { list-style-type: none; margin: 0; padding: 0; }
+.gameSelect ul.gameSelection { list-style-type: none; margin: 0; padding: 0; background: repeating-linear-gradient(90deg, #efeef1, #efeef1 50px, #ffffff 50px, #ffffff 100px); }
 
-.gameSelect ul li { height: 150px; cursor: pointer; }
+.gameSelect ul.gameSelection li.gameItem { min-height: 150px; border-top: 2px solid #003366; }
 
-.gameSelect ul li:hover { background-color: #003366; color: #ffffff; }
+.gameSelect ul.gameSelection li.gameItem:not(.selected):hover { background: none; cursor: pointer; background-color: #003366; color: #ffffff; }
+
+.gameSelect ul.gameSelection li.gameItem:not(.selected):hover .gameInfoPlayers { color: #003366; background-color: #ffffff; }
 
 .gameImageContainer { float: left; width: 150px; height: 100%; }
 
-.gameInfoContainer { height: 150px; width: auto; padding: 5px; }
+.gameImageContainer img { width: 130px; height: 130px; margin: 10px; padding: 0; }
+
+.gameInfoContainer { width: auto; padding: 5px; position: relative; }
 
 .gameInfoContainer .gameInfoName { font-size: 30px; text-align: center; padding: 5px; }
 
 .gameInfoContainer .gameInfoDescription { font-size: 20px; text-align: justify; padding: 1px; }
 
-.gameInfoContainer .gameInfoPlayers { text-align: center; font-size: 16px; }
+.gameInfoContainer .gameInfoPlayers { text-align: center; font-size: 14px; position: absolute; right: 0; top: 0; padding: 3px 8px 3px 8px; background-color: #003366; color: #ffffff; margin: 5px; border-radius: 10px; }
+
+.gameOptionsContainer { margin-top: 50px; padding-bottom: 15px; }
+
+.gameOptionsContainer .roomName { width: 50%; margin: 5px; margin-left: auto; margin-right: auto; }
+
+.gameOptionsContainer .roomPassword { width: 50%; margin: 5px; margin-left: auto; margin-right: auto; }
+
+.gameOptionsContainer .alertInfo { width: 70%; border-radius: 5px; margin-top: 20px; margin-left: auto; margin-right: auto; }
+
+.gameOptionsContainer .alertInfo ul { list-style-type: none; padding: 0; }
+
+.gameOptionsContainer .alertInfo:empty { margin: 0; padding: 0; }

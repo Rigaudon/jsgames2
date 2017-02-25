@@ -17,6 +17,7 @@
 		color: $passive-color;
 		border-radius: 0px 5px 5px 0px;
 		cursor: pointer;
+		padding-right: 2px;
 	}
 
 	.collapseSideBar:hover{
@@ -30,20 +31,27 @@
 		flex-direction: column;
 		height: 100%;
 		width: auto;
-		font-size: 30px;
 
 		.sideBarItem{
 			padding-top: 10px;
 		}
 
-		.last{
-			order: 999;
+		.sideBarItem:first-child{
+			color: $primary-color;
+			background-color: $passive-color;
+			font-size: 25px;
+			border-radius: 0px 0px 30px 30px;
+		}
+
+		.sideBarItem:last-child{
 			position: absolute;
 			bottom: 0;
+			left: 0;
 			width: 100%;
 			font-size: 16px;
-			background-color: $tertiary-color;
 			color: $primary-color;
+			background-color: $passive-color;
+			border-radius: 40px 40px 0px 0px;
 		}
 	}
 

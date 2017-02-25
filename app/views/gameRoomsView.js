@@ -6,7 +6,6 @@ var ChatView = require("./chatView");
 var GameRoomsTableView = require("./gameRoomsTableView");
 var SideBarView = require("./sideBarview");
 var CreateRoomView = require("./createRoomView");
-var GameRoom = require("../models/gameRoom");
 
 var GameRoomsView = Marionette.View.extend({
 	className: "gameRoomsView",
@@ -38,8 +37,10 @@ var GameRoomsView = Marionette.View.extend({
 	},
 
 	showCreateRoomView: function(){
-		this.showChildView("createRoomView", new CreateRoomView({model: new GameRoom()}));
+		this.showChildView("createRoomView", new CreateRoomView());
 	},
+
 });
+
 
 module.exports = GameRoomsView;

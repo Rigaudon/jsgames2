@@ -32,6 +32,15 @@ var RootView = Marionette.View.extend({
 
 		//When the loading message fades,
 		cSelector.one(common.finishTransition, function(){
+			//Move logo out of screen
+			logoSelector.addClass("expanded");
+		});
+
+		//When the logo moves off the screen,
+		logoSelector.one(common.finishTransition, function(){
+			//Remove the logo
+			logoSelector.remove();
+			self.$el.addClass("noInvert");
 			if(renderedNamePicker){
 				return;
 			}
@@ -40,14 +49,6 @@ var RootView = Marionette.View.extend({
 			//Show name picker
 			self.showChildView("contentRegion", new NamePickerView({model: self.model}));
 			cSelector.css("opacity", 1);
-			//Move logo out of screen
-			logoSelector.css("top", "-50%");
-		});
-
-		//When the logo moves off the screen,
-		logoSelector.one(common.finishTransition, function(){
-			//Remove the logo
-			logoSelector.remove();
 		});
 
 		//Fade out the loading message

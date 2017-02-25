@@ -14,19 +14,27 @@
 	padding-left: 0;
 	padding-right: 0;
 
-	ul{
+	ul.gameSelection{ 
 		list-style-type: none;
 		margin: 0;
 		padding: 0;
+		background: repeating-linear-gradient( 90deg, $passive-color, $passive-color 50px, $bg-color 50px, $bg-color 100px );
 
-		li{
-			height: 150px;
-			cursor: pointer;
+		li.gameItem{
+			min-height: 150px;
+			border-top: 2px solid $primary-color;
 		}
 
-		li:hover{
+		li.gameItem:not(.selected):hover{
+			background: none;
+			cursor: pointer;
 			background-color: $primary-color;
 			color: $bg-color;
+
+			.gameInfoPlayers{
+				color: $primary-color;
+				background-color: $bg-color;
+			}
 		}
 	}
 }
@@ -36,12 +44,19 @@
 	float: left;
 	width: 150px;
 	height: 100%;
+
+	img{
+		width:130px;
+		height:130px;
+		margin: 10px;
+		padding: 0;
+	}
 }
 
 .gameInfoContainer{
-	height: 150px;
 	width: auto;
 	padding: 5px;
+	position: relative;
 
 	.gameInfoName{
 		font-size: 30px;
@@ -57,6 +72,51 @@
 
 	.gameInfoPlayers{
 		text-align: center;
-		font-size: 16px;
+		font-size: 14px;
+		position: absolute;
+		right: 0;
+		top: 0;
+		padding: 3px 8px 3px 8px;
+		background-color: $primary-color;
+		color: $bg-color;
+		margin: 5px;
+		border-radius: 10px;
+	}
+}
+
+.gameOptionsContainer{
+	margin-top: 50px;
+	padding-bottom: 15px;
+	
+	.roomName{
+		width: 50%;
+		margin: 5px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.roomPassword{
+		width: 50%;
+		margin: 5px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.alertInfo{
+		width: 70%;
+		border-radius: 5px;
+		margin-top: 20px;
+		margin-left: auto;
+		margin-right: auto;
+
+		ul{
+			list-style-type: none;
+			padding: 0;
+		}
+	}
+
+	.alertInfo:empty{
+		margin: 0;
+		padding: 0;
 	}
 }
