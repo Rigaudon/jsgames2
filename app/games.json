@@ -1,5 +1,6 @@
 [
 	{
+		"id": 1,
 		"name": "Connect Four",
 		"minPlayers": 2,
 		"maxPlayers": 2,
@@ -13,6 +14,7 @@
 	},
 
 	{
+		"id": 2,
 		"name": "Uno",
 		"minPlayers": 2,
 		"maxPlayers": 8,

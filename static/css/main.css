@@ -2935,38 +2935,34 @@ $passive-color: #282828;
 /*these don't work if placed inside their context*/
 .modalTitle { font-size: 40px; }
 
-.modal-body.gameSelect { padding: 0; }
+.modal-body.createGameBody { padding: 0; display: flex; }
 
-.gameSelect { padding-left: 0; padding-right: 0; }
+.modal-body.createGameBody .gameSelection { min-width: 120px; min-height: 400px; background-color: #bce8f1; }
 
-.gameSelect ul.gameSelection { list-style-type: none; margin: 0; padding: 0; background: repeating-linear-gradient(90deg, #efeef1, #efeef1 50px, #ffffff 50px, #ffffff 100px); }
+.modal-body.createGameBody .gameSelection .gameSelectionList { padding: 0; list-style-type: none; }
 
-.gameSelect ul.gameSelection li.gameItem { min-height: 150px; border-top: 2px solid #003366; }
+.modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem { cursor: pointer; }
 
-.gameSelect ul.gameSelection li.gameItem:not(.selected):hover { background: none; cursor: pointer; background-color: #003366; color: #ffffff; }
+.modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem img { width: 100px; padding: 10px; }
 
-.gameSelect ul.gameSelection li.gameItem:not(.selected):hover .gameInfoPlayers { color: #003366; background-color: #ffffff; }
+.modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem:not(selected):hover { background-color: #ffffff; }
 
-.gameImageContainer { float: left; width: 150px; height: 100%; }
+.modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem.selected { background-color: #ffffff; }
 
-.gameImageContainer img { width: 130px; height: 130px; margin: 10px; padding: 0; }
+.modal-body.createGameBody .gameOptions { flex-grow: 1; background-color: #ffffff; }
 
-.gameInfoContainer { width: auto; padding: 5px; position: relative; }
+.modal-body.createGameBody .gameOptions .gameOptionsView { padding: 10px; height: 100%; display: flex; flex-direction: column; justify-content: space-around; }
 
-.gameInfoContainer .gameInfoName { font-size: 30px; text-align: center; padding: 5px; }
+.modal-body.createGameBody .gameOptions .gameNumPlayers { text-align: center; font-size: 14px; position: absolute; right: 0; top: 0; padding: 3px 8px 3px 8px; background-color: #003366; color: #ffffff; margin: 5px; border-radius: 10px; }
 
-.gameInfoContainer .gameInfoDescription { font-size: 20px; text-align: justify; padding: 1px; }
+.modal-body.createGameBody .gameOptions .gameSelectedName { font-size: 40px; }
 
-.gameInfoContainer .gameInfoPlayers { text-align: center; font-size: 14px; position: absolute; right: 0; top: 0; padding: 3px 8px 3px 8px; background-color: #003366; color: #ffffff; margin: 5px; border-radius: 10px; }
+.modal-body.createGameBody .gameOptions .roomName { width: 50%; margin: 5px; margin-left: auto; margin-right: auto; }
 
-.gameOptionsContainer { margin-top: 50px; padding-bottom: 15px; }
+.modal-body.createGameBody .gameOptions .roomPassword { width: 50%; margin: 5px; margin-left: auto; margin-right: auto; }
 
-.gameOptionsContainer .roomName { width: 50%; margin: 5px; margin-left: auto; margin-right: auto; }
+.modal-body.createGameBody .gameOptions .alertInfo { width: 70%; border-radius: 5px; margin-top: 20px; margin-left: auto; margin-right: auto; }
 
-.gameOptionsContainer .roomPassword { width: 50%; margin: 5px; margin-left: auto; margin-right: auto; }
+.modal-body.createGameBody .gameOptions .alertInfo ul { list-style-type: none; padding: 0; }
 
-.gameOptionsContainer .alertInfo { width: 70%; border-radius: 5px; margin-top: 20px; margin-left: auto; margin-right: auto; }
-
-.gameOptionsContainer .alertInfo ul { list-style-type: none; padding: 0; }
-
-.gameOptionsContainer .alertInfo:empty { margin: 0; padding: 0; }
+.modal-body.createGameBody .gameOptions .alertInfo:empty { margin: 0; padding: 0; }

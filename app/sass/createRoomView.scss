@@ -6,117 +6,96 @@
 	font-size: 40px;
 }
 
-.modal-body.gameSelect{
+.modal-body.createGameBody{
 	padding: 0;
-}
+	display: flex;
 
-.gameSelect{
-	padding-left: 0;
-	padding-right: 0;
+	.gameSelection{
+		min-width: 120px;
+		min-height: 400px;
+		background-color: $secondary-color;
+		
+		.gameSelectionList{
+			padding: 0;
+			list-style-type: none;
+			.gameSelectionItem{
+				cursor: pointer;
+				img{
+					width: 100px;
+					padding: 10px;
+				}
+			}
 
-	ul.gameSelection{ 
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-		background: repeating-linear-gradient( 90deg, $passive-color, $passive-color 50px, $bg-color 50px, $bg-color 100px );
-
-		li.gameItem{
-			min-height: 150px;
-			border-top: 2px solid $primary-color;
-		}
-
-		li.gameItem:not(.selected):hover{
-			background: none;
-			cursor: pointer;
-			background-color: $primary-color;
-			color: $bg-color;
-
-			.gameInfoPlayers{
-				color: $primary-color;
+			.gameSelectionItem:not(selected):hover{
 				background-color: $bg-color;
+			}
+
+			.gameSelectionItem.selected{
+				background-color: $bg-color;			
 			}
 		}
 	}
-}
 
+	.gameOptions{
+		flex-grow: 1;
+		background-color: $bg-color;
+		
+		.gameOptionsView{
+			padding: 10px;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+		}
 
-.gameImageContainer{
-	float: left;
-	width: 150px;
-	height: 100%;
+		.gameNumPlayers{
+			text-align: center;
+			font-size: 14px;
+			position: absolute;
+			right: 0;
+			top: 0;
+			padding: 3px 8px 3px 8px;
+			background-color: $primary-color;
+			color: $bg-color;
+			margin: 5px;
+			border-radius: 10px;
+		}
 
-	img{
-		width:130px;
-		height:130px;
-		margin: 10px;
-		padding: 0;
-	}
-}
+		.gameSelectedName{
+			font-size: 40px;
+		}
 
-.gameInfoContainer{
-	width: auto;
-	padding: 5px;
-	position: relative;
+		.roomName{
+			width: 50%;
+			margin: 5px;
+			margin-left: auto;
+			margin-right: auto;
+		}
 
-	.gameInfoName{
-		font-size: 30px;
-		text-align:center;
-		padding: 5px;
-	}
+		.roomPassword{
+			width: 50%;
+			margin: 5px;
+			margin-left: auto;
+			margin-right: auto;
+		}
 
-	.gameInfoDescription{
-		font-size: 20px;
-		text-align: justify;
-		padding: 1px;
-	}
+		.alertInfo{
+			width: 70%;
+			border-radius: 5px;
+			margin-top: 20px;
+			margin-left: auto;
+			margin-right: auto;
 
-	.gameInfoPlayers{
-		text-align: center;
-		font-size: 14px;
-		position: absolute;
-		right: 0;
-		top: 0;
-		padding: 3px 8px 3px 8px;
-		background-color: $primary-color;
-		color: $bg-color;
-		margin: 5px;
-		border-radius: 10px;
-	}
-}
+			ul{
+				list-style-type: none;
+				padding: 0;
+			}
+		}
 
-.gameOptionsContainer{
-	margin-top: 50px;
-	padding-bottom: 15px;
-	
-	.roomName{
-		width: 50%;
-		margin: 5px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	.roomPassword{
-		width: 50%;
-		margin: 5px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	.alertInfo{
-		width: 70%;
-		border-radius: 5px;
-		margin-top: 20px;
-		margin-left: auto;
-		margin-right: auto;
-
-		ul{
-			list-style-type: none;
+		.alertInfo:empty{
+			margin: 0;
 			padding: 0;
 		}
 	}
-
-	.alertInfo:empty{
-		margin: 0;
-		padding: 0;
-	}
 }
+ 

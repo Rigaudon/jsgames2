@@ -1,14 +1,13 @@
-<div class="gameImageContainer">
-	<img src="static/images/<%= image%>">
+<div class="gameSelectedName">
+<%- name %>
 </div>
-<div class="gameInfoContainer">
-	<div class="gameInfoName"><%- name %></div>
-	<div class="gameInfoPlayers"><%- players %> <span class="glyphicon glyphicon-user"></span></div>
-	<div class="gameInfoDescription"><%- description %></div>	
+<div class="gameNumPlayers">
+	<%- players %> <span class="glyphicon glyphicon-user"></span>
 </div>
-<% if(selected){ %>
-<div class="gameOptionsContainer">
+<div class="gameDescription">
+	<%- description %>
+</div>
+<div class="gameOptionFields">
 	<%= options %>
 	<div class="alertInfo alert" role="alert"></div>
 </div>
-<% } %>

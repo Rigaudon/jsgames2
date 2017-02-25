@@ -10,23 +10,34 @@ var gameOptions = {
 	"roomPassword": fs.readFileSync("./app/templates/partials/gameOptions/roomPassword.html")
 };
 
-var GameItemView = Marionette.View.extend({
-	tagName: "li",
 
-	className: function(){
-		var myClass = "gameItem";
-		if(this.model.get("selected") === 1){
-			myClass += " selected";
-		}
-		return myClass;
+var GameItemView = Marionette.View.extend({
+
+	className: "gameOptionsView",
+
+	initialize: function(options){
+		this.gameModel = options.gameModel;
 	},
 
 	getTemplate: function(){
 		return _.template(fs.readFileSync("./app/templates/gameItem.html", "utf8"), this.templateContext());
 	},
 
-	triggers: {
-		"click": "select:item"
+	templateContext: function(){
+		var playerText;
+		if(this.gameModel.get("maxPlayers") == this.gameModel.get("minPlayers")){
+			playerText = this.gameModel.get("maxPlayers") + " players";
+		}else{
+			playerText = this.gameModel.get("minPlayers") + " to " + this.gameModel.get("maxPlayers") + " players";
+		}
+		return {
+			image: this.gameModel.get("image"),
+			name: this.gameModel.get("name"),
+			description: this.gameModel.get("description"),
+			players: playerText,
+			selected: this.gameModel.get("selected"),
+			options: this.generateOptions(this.gameModel.get("options"))
+		};
 	},
 
 	regions: {
@@ -43,21 +54,9 @@ var GameItemView = Marionette.View.extend({
 		"click @ui.start": "validateOptions"
 	},
 
-	templateContext: function(){
-		var playerText;
-		if(this.model.get("maxPlayers") == this.model.get("minPlayers")){
-			playerText = this.model.get("maxPlayers") + " players";
-		}else{
-			playerText = this.model.get("minPlayers") + " to " + this.model.get("maxPlayers") + " players";
-		}
-		return {
-			image: this.model.get("image"),
-			name: this.model.get("name"),
-			description: this.model.get("description"),
-			players: playerText,
-			selected: this.model.get("selected"),
-			options: this.generateOptions(this.model.get("options"))
-		};
+	modelEvents: {
+		"clear:errors": "clearErrors",
+		"show:errors": "showErrors"
 	},
 
 	generateOptions: function(options){
@@ -74,61 +73,8 @@ var GameItemView = Marionette.View.extend({
 		return gameOptions[option];
 	},
 
-	getOptionVals: function(){
-		var options = {};
-		var self = this;
-		_.forEach(this.model.get("options"), function(option){
-			options[option] = self.$(self.ui[option]).val();
-		});
-		return options;
-	},
-
-	validateOptions: function(){
-		var roomOptions = this.getOptionVals();
-		var self = this;
-		var validity;
-		var errors = [];
-		_.forEach(this.model.get("options"), function(option){
-			validity = self.validateOption(option, roomOptions[option]);
-			if(!validity.isValid){
-				errors.push(validity.message);
-			}
-		});
-		console.log(errors);
-		if(errors.length==0){
-			self.clearErrors();
-			return true;
-		}else{
-			self.showErrors(errors);
-			return false;
-		}
-	},
-
-	validateOption: function(option, value){
-		var returnVal = {
-			isValid: false,
-			message: ""
-		};
-		switch(option){
-			case "roomName":
-				if(value.length == 0 || value.length > 25){
-					returnVal.isValid = false;
-					returnVal.message = "Invalid room name.";
-					break;
-				}
-			case "roomPassword":
-				if(value.length > 25){
-					returnVal.isValid = false;
-					returnVal.message = "Password must be less than 25 characters.";
-					break;
-				}
-			default:
-				returnVal.isValid = true;
-		}
-		return returnVal;
-	},
-
-	showErrors: function(errors){
+	showErrors: function(){
+		var errors = this.model.get("errors");
 		this.clearErrors();
 		var errRegion = this.$(this.regions.info);
 		var regionText = "<ul>";
@@ -146,8 +92,21 @@ var GameItemView = Marionette.View.extend({
 		errRegion.removeClass("alert-danger");
 	},
 
-	startGame: function(options){
+	getOptionVals: function(){
+		var options = {};
+		var self = this;
+		_.forEach(this.gameModel.get("options"), function(option){
+			options[option] = self.$(self.ui[option]).val();
+		});
+		return options;
+	},
+
+	validateOptions: function(){
+		if(this.model.validateOptions(this.getOptionVals())){
+			//this.startGame();
+		}
 	}
+
 });
 
 module.exports = GameItemView;
