@@ -14,7 +14,7 @@ var RootView = Marionette.View.extend({
 		"change:pid" 	: "onPidChange",
 		"change:ready"	: "loadGameRooms",
 		"change:name"	: "onNameChange",
-		"change:disconnected": "onDisconnect"
+		"change:disconnected": "onDisconnect",
 	},
 
 	regions: {
@@ -68,7 +68,8 @@ var RootView = Marionette.View.extend({
 
 	onDisconnect: function(){
 		this.showChildView("contentRegion", new DisconnectedView());
-	}
+	},
+
 });
 
 module.exports = RootView;

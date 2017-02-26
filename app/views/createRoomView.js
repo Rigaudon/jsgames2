@@ -3,7 +3,7 @@ var Backbone = require("backbone");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
 var common = require("../common");
-var games = require("../games.json");
+var games = require("../../games.json");
 var GameItemView = require("./gameItemView");
 
 var GameSelectionItemView = Marionette.View.extend({

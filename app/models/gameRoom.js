@@ -1,6 +1,6 @@
 var _ = require("lodash");
 var Backbone = require("backbone");
-var games = require("../games.json");
+var games = require("../../games.json");
 var gamesCollection = new Backbone.Collection(games);
 
 var GameRoom = Backbone.Model.extend({

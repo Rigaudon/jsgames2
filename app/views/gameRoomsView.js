@@ -26,6 +26,10 @@ var GameRoomsView = Marionette.View.extend({
 		"click @ui.createRoom": "showCreateRoomView",
 	},
 
+	modelEvents: {
+		"change:roomId"	: "showGameRoom"
+	},
+
 	initialize: function(){
 		this.model.createChatClient();
 	},
@@ -41,6 +45,11 @@ var GameRoomsView = Marionette.View.extend({
 		var self = this;
 		this.showChildView("createRoomView", new CreateRoomView({model: new GameRoom({user: self.model})}));
 	},
+
+	showGameRoom: function(){
+		console.log("SHOW");
+		//check active games, then render based on the id of self.model.get("roomId")
+	}
 
 });
 

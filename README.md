@@ -5,6 +5,7 @@ A Marionette/Websocket based Nodejs game server.
 Run npm install, then node entry.js
 
 #To dos
+- Redo initialize.js so that game rooms have their own methods
 - Reorder files to have subdirs
 - More dynamic templates
 - Redo game selection screen (IP)

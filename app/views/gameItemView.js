@@ -20,7 +20,7 @@ var GameItemView = Marionette.View.extend({
 	},
 
 	getTemplate: function(){
-		return _.template(fs.readFileSync("./app/templates/gameItem.html", "utf8"), this.templateContext());
+		return _.template(fs.readFileSync("./app/templates/partials/gameRooms/gameItem.html", "utf8"), this.templateContext());
 	},
 
 	templateContext: function(){
