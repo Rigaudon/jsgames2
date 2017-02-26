@@ -4,6 +4,7 @@ var fs = require("fs");
 var common = require("../common");
 var NamePickerView = require("./namePickerView");
 var GameRoomsView = require("./gameRoomsView");
+var DisconnectedView = require("./disconnectedView");
 
 var RootView = Marionette.View.extend({
 	className: "root",
@@ -12,7 +13,8 @@ var RootView = Marionette.View.extend({
 	modelEvents: {
 		"change:pid" 	: "onPidChange",
 		"change:ready"	: "loadGameRooms",
-		"change:name"	: "onNameChange"
+		"change:name"	: "onNameChange",
+		"change:disconnected": "onDisconnect"
 	},
 
 	regions: {
@@ -62,6 +64,10 @@ var RootView = Marionette.View.extend({
 
 	onNameChange: function(){
 		this.$(this.regions.contentRegion).css("opacity", 0);
+	},
+
+	onDisconnect: function(){
+		this.showChildView("contentRegion", new DisconnectedView());
 	}
 });
 

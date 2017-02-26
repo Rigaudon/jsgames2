@@ -12,6 +12,7 @@ var User = Backbone.Model.extend({
 
 	//Players are "ready" when they set an acceptable name
 	ready: false,
+	activeRooms: [],
 
 	getSocket: function(){
 		return this.get("socket");
@@ -36,6 +37,14 @@ var User = Backbone.Model.extend({
 			}else{
 				self.set("error", response.error);
 			}
+		});
+		//Initialize/update active game rooms
+		self.getSocket().on("activeRooms", function(rooms){
+			self.set("activeRooms", rooms);
+		});
+		//Show disconnection message
+		self.getSocket().on("disconnect", function(){
+			self.set("disconnected", 1);
 		});
 	},
 

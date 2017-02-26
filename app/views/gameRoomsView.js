@@ -38,7 +38,8 @@ var GameRoomsView = Marionette.View.extend({
 	},
 
 	showCreateRoomView: function(){
-		this.showChildView("createRoomView", new CreateRoomView({model: new GameRoom()}));
+		var mySocket = this.model.getSocket();
+		this.showChildView("createRoomView", new CreateRoomView({model: new GameRoom({socket: mySocket})}));
 	},
 
 });

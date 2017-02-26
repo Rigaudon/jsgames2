@@ -2754,6 +2754,8 @@ $passive-color: #282828;
 
 .namePicker .alert { font-size: 20px; margin: 0; opacity: 0; -webkit-transition: 1s; transition: 1s; }
 
+.disconnected { display: flex; width: 100%; height: 100%; flex-direction: column; justify-content: space-around; font-size: 200%; font-weight: bold; }
+
 /*
 primary-color: text color
 secondary-color: differing shade of primary (gradient in welcome)
@@ -2818,13 +2820,19 @@ $menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
-.gameRooms { width: 100%; height: 80%; }
+.gameRooms { width: 100%; height: 80%; background: repeating-linear-gradient(135deg, #ffffff, #ffffff 50px, #efeef1 50px, #efeef1 100px); border-bottom: 2px solid #003366; border-radius: 0px 0px 30px 30px; min-height: 450px; overflow: auto; }
 
-.gameRooms .gameRoomsTable { height: 100%; width: 100%; margin-left: auto; margin-right: auto; background: repeating-linear-gradient(135deg, #ffffff, #ffffff 50px, #efeef1 50px, #efeef1 100px); border-bottom: 2px solid #003366; border-top: 2px solid #003366; border-collapse: separate; }
+.gameRooms .gameRoomsTable { width: 100%; margin-left: auto; margin-right: auto; border-top: 2px solid #003366; border-collapse: separate; }
 
 .gameRooms .gameRoomsTable thead tr { height: 45px; }
 
 .gameRooms .gameRoomsTable thead th { color: #003366; background-color: #ffffff; text-align: center; border-bottom: 2px solid #003366; }
+
+.gameRooms .gameRoomsTable .roomList tr { height: 40px; padding: 5px; background-color: rgba(255, 255, 255, 0.5); font-size: 20px; line-height: 40px; }
+
+.gameRooms .gameRoomsTable .roomList tr td { border-bottom: 1px solid #003366; }
+
+.gameRooms .gameRoomsTable .roomList tr:hover { background-color: #003366; color: #ffffff; }
 
 /*
 primary-color: text color
@@ -2932,12 +2940,13 @@ $menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
-/*these don't work if placed inside their context*/
+.modal-header { background-color: #ffffff; }
+
 .modalTitle { font-size: 40px; }
 
 .modal-body.createGameBody { padding: 0; display: flex; }
 
-.modal-body.createGameBody .gameSelection { min-width: 120px; min-height: 400px; background-color: #bce8f1; }
+.modal-body.createGameBody .gameSelection { min-width: 120px; min-height: 400px; background-color: #003366; }
 
 .modal-body.createGameBody .gameSelection .gameSelectionList { padding: 0; list-style-type: none; }
 
@@ -2945,13 +2954,13 @@ $passive-color: #282828;
 
 .modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem img { width: 100px; padding: 10px; }
 
-.modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem:not(selected):hover { background-color: #ffffff; }
+.modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem:not(selected):hover { background-color: #efeef1; }
 
 .modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem.selected { background-color: #ffffff; }
 
-.modal-body.createGameBody .gameOptions { flex-grow: 1; background-color: #ffffff; }
+.modal-body.createGameBody .gameOptions { flex-grow: 1; background-color: #ffffff; display: flex; justify-content: center; align-items: center; font-size: 35px; }
 
-.modal-body.createGameBody .gameOptions .gameOptionsView { padding: 10px; height: 100%; display: flex; flex-direction: column; justify-content: space-around; }
+.modal-body.createGameBody .gameOptions .gameOptionsView { padding: 10px; height: 100%; display: flex; flex-direction: column; justify-content: space-around; font-size: 20px; }
 
 .modal-body.createGameBody .gameOptions .gameNumPlayers { text-align: center; font-size: 14px; position: absolute; right: 0; top: 0; padding: 3px 8px 3px 8px; background-color: #003366; color: #ffffff; margin: 5px; border-radius: 10px; }
 

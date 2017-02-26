@@ -5,6 +5,10 @@ var gamesCollection = new Backbone.Collection(games);
 
 var GameRoom = Backbone.Model.extend({
 
+	initialize: function(options){
+		this.socket = options.socket;
+	},
+
 	getOptions: function(){
 		if(this.get("game")){
 			return gamesCollection.get(this.get("game")).get("options");
@@ -54,6 +58,18 @@ var GameRoom = Backbone.Model.extend({
 		}
 		return returnVal;
 	},
+
+	setOptions: function(options){
+		var self = this;
+		this.set("options", _.extend(options, {
+			gameId: gamesCollection.get(self.get("game")).get("id")
+		}));
+	},
+
+	begin: function(){
+		console.log(this.get("options"));
+		this.socket.emit("createRoom", this.get("options"));
+	}
 
 });
 

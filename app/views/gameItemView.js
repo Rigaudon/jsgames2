@@ -102,9 +102,15 @@ var GameItemView = Marionette.View.extend({
 	},
 
 	validateOptions: function(){
-		if(this.model.validateOptions(this.getOptionVals())){
-			//this.startGame();
+		var optionVals = this.getOptionVals();
+		if(this.model.validateOptions(optionVals)){
+			this.model.setOptions(optionVals);
+			this.startGame();
 		}
+	},
+
+	startGame: function(){
+		this.model.begin();
 	}
 
 });

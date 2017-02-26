@@ -1,7 +1,8 @@
 @import "variables";
 
-/*these don't work if placed inside their context*/
-
+.modal-header{
+	background-color: $bg-color;
+}
 .modalTitle{
 	font-size: 40px;
 }
@@ -13,7 +14,7 @@
 	.gameSelection{
 		min-width: 120px;
 		min-height: 400px;
-		background-color: $secondary-color;
+		background-color: $primary-color;
 		
 		.gameSelectionList{
 			padding: 0;
@@ -27,7 +28,7 @@
 			}
 
 			.gameSelectionItem:not(selected):hover{
-				background-color: $bg-color;
+				background-color: $passive-color;
 			}
 
 			.gameSelectionItem.selected{
@@ -39,13 +40,18 @@
 	.gameOptions{
 		flex-grow: 1;
 		background-color: $bg-color;
-		
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 35px;
+
 		.gameOptionsView{
 			padding: 10px;
 			height: 100%;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-around;
+			font-size: 20px;
 		}
 
 		.gameNumPlayers{

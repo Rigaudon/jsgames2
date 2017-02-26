@@ -4,7 +4,7 @@
 		"name": "Connect Four",
 		"minPlayers": 2,
 		"maxPlayers": 2,
-		"description": "Take turns dropping discs into the grid. When you get 4 discs in a row, you win.",
+		"description": "Take turns dropping discs into the grid. When you get 4 discs in a row in any direction, you win.",
 		"image": "connect-four.png",
 		"options": [
 			"roomName",
@@ -18,7 +18,7 @@
 		"name": "Uno",
 		"minPlayers": 2,
 		"maxPlayers": 8,
-		"description": "Win by getting rid of all the cards in your hand before your opponents do.",
+		"description": "Play a card of the same value or color as the last. Win by getting rid of all the cards in your hand before your opponents do. Be sure to yell UNO! when you only have one card left, or someone else might.",
 		"image": "uno.png",
 		"options": [
 			"roomName",

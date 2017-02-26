@@ -3,13 +3,16 @@
 .gameRooms{
 	width: 100%;
 	height: 80%;
+	background: repeating-linear-gradient( 135deg, $bg-color, $bg-color 50px, $passive-color 50px, $passive-color 100px );
+	border-bottom: 2px solid $primary-color;
+	border-radius: 0px 0px 30px 30px;
+	min-height: 450px;
+	overflow: auto;
+
 	.gameRoomsTable{
-		height: 100%;
 		width:100%;
 		margin-left: auto;
 		margin-right: auto;
-		background: repeating-linear-gradient( 135deg, $bg-color, $bg-color 50px, $passive-color 50px, $passive-color 100px );
-		border-bottom: 2px solid $primary-color;
 		border-top: 2px solid $primary-color;
 		border-collapse: separate;
 
@@ -24,5 +27,22 @@
 			border-bottom: 2px solid $primary-color;
 		}
 
+		.roomList{
+			tr{
+				height: 40px;
+				padding: 5px;
+				background-color: rgba(255,255,255,0.5);
+				font-size: 20px;
+				line-height: 40px;
+				td{
+					border-bottom: 1px solid $primary-color;
+				}
+			}
+
+			tr:hover{
+				background-color: $primary-color;
+				color: $bg-color;
+			}
+		}
 	}
 }
