@@ -113,11 +113,7 @@ var RoomsController = Backbone.Collection.extend({
 
 	playerJoin: function(playerId, roomId, playerModel){
 		var roomModel = this.get(roomId);
-		var roomPlayers = roomModel.get("players");
-		if(roomPlayers.length == 0){
-			roomModel.set("host", playerId);
-		}
-		roomPlayers.add(playerModel);
+		roomModel.playerJoin(playerModel);
 		playerModel.set("room", roomId);
 		this.playerMap[playerId] = roomModel;
 	},

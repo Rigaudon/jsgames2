@@ -21,9 +21,9 @@ function validateName(name, mem, socket){
 }
 
 function randomColor(){
-	color = Math.round(Math.random() * 16777215).toString(16);
+	color = Math.floor(Math.random() * 16777215).toString(16);
 	while(color.length != 6){
-		color = Math.round(Math.random() * 16777215).toString(16);
+		color = "0" + color;
 	}
 	return "#" + color;
 }
@@ -35,26 +35,8 @@ function validateMessage(message){
 			message.message.length < 200;
 }
 
-function addPlayer(name, mem, socket){
-	mem.players.add({
-		name: name,
-		color: randomColor(),
-		id: socket.id
-	});
-}
-
-function removePlayer(mem, socket){
-	var player = mem.players.get(socket.id);
-	if(player){
-		player.unset("room");
-	}
-	mem.players.remove(socket.id);
-}
-
 module.exports = {
-	addPlayer: addPlayer,
 	randomColor: randomColor,
-	removePlayer: removePlayer,
 	validateMessage: validateMessage,
 	validateName: validateName,
 };

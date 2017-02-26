@@ -16,7 +16,11 @@ var socketEvents = function(io, mem){
 			name = name.trim();
 			var response = util.validateName(name, mem, socket);
 			if(response.success){
-				util.addPlayer(name, mem, socket);
+				mem.players.addPlayer({
+					id: socket.id,
+					name: name,
+					color: util.randomColor()
+				});
 			}
 			socket.emit("nameRequest", response);
 		});
@@ -24,8 +28,7 @@ var socketEvents = function(io, mem){
 		//User disconnected
 		socket.on("disconnect", function(){
 			mem.rooms.playerLeave(io, socket.id);
-			//remove when added players controller
-			util.removePlayer(mem, socket);
+			mem.players.removePlayer(socket.id);
 		});
 
 		//Chat message
