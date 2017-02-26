@@ -8,7 +8,10 @@ Run npm install, then node entry.js
 - Reorder files to have subdirs
 - More dynamic templates
 - Redo game selection screen (IP)
-	- Add background
+	- Add background?
 	- Fix alert formatting
-	- Add selection styles?
-- Detect when connection error is thrown and alert user
+	- Add selection styles to tabs?
+- Add color selection to settings
+- Add theme selection to settings
+- Add who's online tab to chat
+- Implement games!!
