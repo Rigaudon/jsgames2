@@ -18,10 +18,18 @@ var GameRoomListItem = Marionette.View.extend({
 		return {
 			name: options.roomName,
 			game: gameName,
-			players: this.model.get("players").join(", "),
+			players: this.formatPlayers(this.model.get("players")),
 			status: this.model.get("status"),
 			actions: "actions"
 		};
+	},
+
+	formatPlayers: function(players){
+		var playersString = "";
+		_.forEach(players, function(player){
+			playersString += `<span style="color:${player.color}">${player.name}</span> `;
+		});
+		return playersString;
 	}
 	
 });

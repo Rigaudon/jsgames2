@@ -1,5 +1,4 @@
 var _ = require("lodash");
-var dateFormat = require("dateformat");
 var games = require("../../app/games.json");
 var Backbone = require("backbone");
 var gamesCollection = new Backbone.Collection(games);
@@ -106,6 +105,21 @@ function addPlayer(name, mem, socket){
 }
 
 function removePlayer(mem, socket){
+	var player = mem.players.get(socket.id);
+	if(player){
+		var inRoom = player.get("room");
+		if(inRoom){
+			//@TODO: change me to specific game logic remove
+			var roomModel = mem.rooms.get(inRoom);
+			if(roomModel){
+				roomModel.get("players").remove(socket.id);
+				if(roomModel.get("players").length==0){
+					mem.rooms.remove(roomModel);
+				}
+			}
+		}
+	}
+	
 	mem.players.remove(socket.id);
 }
 
@@ -121,12 +135,34 @@ function stripRoomPasswords(rooms){
 	return roomsClone;
 }
 
+function playerJoin(playerId, roomId, mem){
+	
+	var roomModel = mem.rooms.get(roomId);
+	var playerModel = mem.players.get(playerId);
+	var roomPlayers = roomModel.get("players");
+	if(roomPlayers.length==0){
+		//@TODO: add hosts logic
+		roomModel.set("host", playerId);
+	}
+	roomPlayers.add(playerModel);
+	playerModel.set("room", roomId);
+	
+}
+
+function validateJoinRoom(playerId, options, room, mem){
+	//Do we care if player is in another room?
+	//Probably not...
+	return room && room.get("options").roomPassword == options.password && !room.get("players").get(playerId);
+}
+
 module.exports = {
 	addPlayer: addPlayer,
 	createGameRoom: createGameRoom,
+	playerJoin: playerJoin,
 	randomColor: randomColor,
 	removePlayer: removePlayer,
 	stripRoomPasswords: stripRoomPasswords,
+	validateJoinRoom: validateJoinRoom,
 	validateMessage: validateMessage,
 	validateName: validateName,
 	validateRoomOptions: validateRoomOptions

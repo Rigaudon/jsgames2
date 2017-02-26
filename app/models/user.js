@@ -40,11 +40,19 @@ var User = Backbone.Model.extend({
 		});
 		//Initialize/update active game rooms
 		self.getSocket().on("activeRooms", function(rooms){
-			self.get("activeRooms").add(rooms, {merge: true});
+			self.set("activeRooms", new Backbone.Collection(rooms));
 		});
 		//Show disconnection message
 		self.getSocket().on("disconnect", function(){
 			self.set("disconnected", 1);
+		});
+		//Response for joining a room
+		self.getSocket().on("joinRoomResponse", function(response){
+			if(response.success){
+				self.set("roomId", response.roomId);
+			}else{
+				//@TODO: show error
+			}
 		});
 	},
 
@@ -61,7 +69,10 @@ var User = Backbone.Model.extend({
 	},
 
 	joinRoom: function(roomId, password){
-		
+		this.getSocket().emit("joinRoom", {
+			roomId: roomId,
+			password: password
+		});
 	}
 });
 

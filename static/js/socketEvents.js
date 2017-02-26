@@ -24,6 +24,8 @@ var socketEvents = function(io, mem){
 		//User disconnected
 		socket.on("disconnect", function(){
 			util.removePlayer(mem, socket);
+			//Is there a better way?
+			io.emit("activeRooms", util.stripRoomPasswords(mem.rooms));
 		});
 
 		//Chat message
@@ -54,6 +56,23 @@ var socketEvents = function(io, mem){
 				socket.emit("createRoomResponse", {
 					success: false,
 					message: valid.message
+				});
+			}
+		});
+
+		//Request joining a room
+		socket.on("joinRoom", function(options){
+			var room = mem.rooms.get(options.roomId);
+			if(util.validateJoinRoom(socket.id, options, room, mem)){
+				util.playerJoin(socket.id, options.roomId, mem);
+				socket.emit("joinRoomResponse", {
+					success: true,
+					roomId: options.roomId
+				});
+				io.emit("activeRooms", util.stripRoomPasswords(mem.rooms));
+			}else{
+				socket.emit("joinRoomResponse",{
+					success: false
 				});
 			}
 		});
