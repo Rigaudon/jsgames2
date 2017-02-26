@@ -1,5 +1,6 @@
+var Backbone = require("Backbone");
+
 module.exports = {
-	players: {},
-	playerNames: new Set(),
-	rooms: []
+	players: new Backbone.Collection(),
+	rooms: new Backbone.Collection()
 };

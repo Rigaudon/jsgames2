@@ -49,7 +49,8 @@ var CreateRoomView = Marionette.View.extend({
 	},
 
 	modelEvents:{
-		"change:game": "renderDetails"
+		"change:game": "renderDetails",
+		"close:modal": "closeModal",
 	},
 
 	initialize: function(){
@@ -71,6 +72,10 @@ var CreateRoomView = Marionette.View.extend({
 			model: self.model,
 			gameModel: gameModel
 		}));
+	},
+
+	closeModal: function(){
+		$(".modal").modal("hide");
 	}
 
 });

@@ -3,6 +3,7 @@ var Backbone = require("backbone");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
 var common = require("../common");
+var gamesCollection = new Backbone.Collection(require("../games.json"));
 
 var GameRoomListItem = Marionette.View.extend({
 	getTemplate: function(){
@@ -12,9 +13,11 @@ var GameRoomListItem = Marionette.View.extend({
 
 	tagName: "tr", 
 	templateContext: function(){
+		var options = this.model.get("options");
+		var gameName = gamesCollection.get(options.gameId).get("name");
 		return {
-			name: this.model.get("name"),
-			game: this.model.get("gameId"),
+			name: options.roomName,
+			game: gameName,
 			players: this.model.get("players").join(", "),
 			status: this.model.get("status"),
 			actions: "actions"
@@ -29,17 +32,11 @@ var EmptyGameRoomListItem = Marionette.View.extend({
 });
 
 var RoomCollectionView = Marionette.CollectionView.extend({
-	initialize: function(){
-		this.collection = new Backbone.Collection(this.model.get("activeRooms"));
-	},
 	tagName: "tbody",
 	className: "roomList",
-	modelEvents: {
-		"change:activeRooms": "render"
-	},
-
 	childView: GameRoomListItem,
-	emptyView: EmptyGameRoomListItem
+	emptyView: EmptyGameRoomListItem,
+
 });
 
 var GameRoomsTableView = Marionette.View.extend({
@@ -47,9 +44,15 @@ var GameRoomsTableView = Marionette.View.extend({
 	className: "gameRoomsTable",
 	template: _.template(fs.readFileSync("./app/templates/gameRoomsTableView.html", "utf8")),
 
+	modelEvents: {
+		"change:activeRooms": "render"
+	},
+
 	onRender: function(){
 		var self = this;
-		var roomColView = new RoomCollectionView({model: self.model});
+		var roomColView = new RoomCollectionView({
+			collection: self.model.get("activeRooms")
+		});
 		this.$el.append(roomColView.$el);
 		roomColView.render();
 	}

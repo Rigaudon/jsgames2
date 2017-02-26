@@ -6,7 +6,18 @@ var gamesCollection = new Backbone.Collection(games);
 var GameRoom = Backbone.Model.extend({
 
 	initialize: function(options){
-		this.socket = options.socket;
+		var self = this;
+		this.user = options.user;
+		this.socket = this.user.getSocket();
+		this.socket.on("createRoomResponse", function(response){
+			if(response.success){
+				self.user.joinRoom(response.id, response.password);
+				self.trigger("close:modal");
+			}else{
+				self.set("errors", [response.message]);
+				self.trigger("show:errors");
+			}
+		});
 	},
 
 	getOptions: function(){
@@ -67,7 +78,6 @@ var GameRoom = Backbone.Model.extend({
 	},
 
 	begin: function(){
-		console.log(this.get("options"));
 		this.socket.emit("createRoom", this.get("options"));
 	}
 

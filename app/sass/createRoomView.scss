@@ -27,12 +27,16 @@
 				}
 			}
 
-			.gameSelectionItem:not(selected):hover{
+			.gameSelectionItem:not(.selected):hover{
 				background-color: $passive-color;
 			}
 
 			.gameSelectionItem.selected{
 				background-color: $bg-color;			
+			}
+
+			.gameSelectionItem.selected:hover{
+				cursor: default;		
 			}
 		}
 	}

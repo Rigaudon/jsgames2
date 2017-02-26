@@ -3,6 +3,7 @@ var ChatClient = require("./chatClient.js");
 
 var User = Backbone.Model.extend({
 	initialize: function(){
+		this.set("activeRooms", new Backbone.Collection());
 		if(!io){
 			console.error("No socket.io detected!");
 			return;
@@ -12,7 +13,6 @@ var User = Backbone.Model.extend({
 
 	//Players are "ready" when they set an acceptable name
 	ready: false,
-	activeRooms: [],
 
 	getSocket: function(){
 		return this.get("socket");
@@ -40,7 +40,7 @@ var User = Backbone.Model.extend({
 		});
 		//Initialize/update active game rooms
 		self.getSocket().on("activeRooms", function(rooms){
-			self.set("activeRooms", rooms);
+			self.get("activeRooms").add(rooms, {merge: true});
 		});
 		//Show disconnection message
 		self.getSocket().on("disconnect", function(){
@@ -58,6 +58,10 @@ var User = Backbone.Model.extend({
 		}else{
 			this.chatClient = new ChatClient(this.getSocket());
 		}
+	},
+
+	joinRoom: function(roomId, password){
+		
 	}
 });
 

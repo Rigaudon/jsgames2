@@ -59,6 +59,12 @@ var GameItemView = Marionette.View.extend({
 		"show:errors": "showErrors"
 	},
 
+	onRender: function(){
+		var self = this;
+		console.log(self.model);
+		this.$(this.ui.roomName).val(self.model.user.get("name") + "'s room");
+	},
+
 	generateOptions: function(options){
 		var generated = "";
 		var self = this;

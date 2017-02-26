@@ -26,7 +26,7 @@ function bundle() {
   return b.bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
     .pipe(source('static/js/jsgames.js'))
-    .pipe(buffer())
-	.pipe(uglify())
+    //.pipe(buffer())
+	//.pipe(uglify())
     .pipe(gulp.dest('./'));
 }

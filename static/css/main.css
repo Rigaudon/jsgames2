@@ -2954,9 +2954,11 @@ $passive-color: #282828;
 
 .modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem img { width: 100px; padding: 10px; }
 
-.modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem:not(selected):hover { background-color: #efeef1; }
+.modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem:not(.selected):hover { background-color: #efeef1; }
 
 .modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem.selected { background-color: #ffffff; }
+
+.modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem.selected:hover { cursor: default; }
 
 .modal-body.createGameBody .gameOptions { flex-grow: 1; background-color: #ffffff; display: flex; justify-content: center; align-items: center; font-size: 35px; }
 
