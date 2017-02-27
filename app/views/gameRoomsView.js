@@ -12,6 +12,7 @@ var GameRoomsView = Marionette.View.extend({
 	className: "gameRoomsView",
 	template: _.template(fs.readFileSync("./app/templates/gameRoomsView.html", "utf8")),
 	regions: {
+		main: ".mainView",
 		sideBar: ".sideBar",
 		gameRooms: ".gameRooms",
 		chat: ".chatView",
@@ -49,6 +50,7 @@ var GameRoomsView = Marionette.View.extend({
 	showGameRoom: function(){
 		console.log("SHOW");
 		//check active games, then render based on the id of self.model.get("roomId")
+		var roomId = self.model.get("roomId");
 	}
 
 });

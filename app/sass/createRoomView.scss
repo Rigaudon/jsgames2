@@ -48,8 +48,11 @@
 		justify-content: center;
 		align-items: center;
 		font-size: 35px;
-		background: repeating-linear-gradient(135deg, transparent, transparent 15px, #fff 10px, #fff 30px), linear-gradient(to right, transparent, #003366);
+		background: repeating-linear-gradient(135deg, transparent, transparent 15px, $bg-color 10px, $bg-color 30px), linear-gradient(to right, transparent, $passive-color);
 		background: $create-room-bg-url;
+		background-repeat: no-repeat;
+		background-size: cover;
+
 		.gameOptionsView{
 			padding: 10px;
 			height: 100%;

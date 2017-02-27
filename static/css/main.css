@@ -96,7 +96,7 @@ $menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
-.gameRoomsView { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; transition: 1s; text-align: center; font-size: 20px; transition: 1.5s; background: url(../../static/images/bg-light.png); background-size: cover; background-position: center center; }
+.gameRoomsView { width: 100%; height: 100%; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; transition: 1s; text-align: center; font-size: 20px; transition: 1.5s; /*background: $bg-url;*/ background-size: cover; background-position: center center; background-repeat: no-repeat; }
 
 /*
 primary-color: text color
@@ -114,7 +114,7 @@ $menu-color: #cccccc;
 $secondary-color: #282828;
 $passive-color: #282828;
 */
-.mainView { width: 100%; height: 100%; max-width: 1300px; min-width: 700px; display: flex; flex-direction: column; flex-wrap: nowrap; justify-content: center; }
+.mainView { width: 100%; height: 100%; max-width: 1500px; min-width: 700px; display: flex; flex-direction: column; flex-wrap: nowrap; justify-content: center; }
 
 .mainView .topView { font-size: 50px; border-radius: 80px 80px 0 0; overflow: hidden; margin-left: auto; margin-right: auto; background-color: #003366; color: #ffffff; width: 50%; border: 2px solid #003366; border-bottom: none; }
 
@@ -288,7 +288,7 @@ $passive-color: #282828;
 
 .modal-body.createGameBody .gameSelection .gameSelectionList .gameSelectionItem.selected:hover { cursor: default; }
 
-.modal-body.createGameBody .gameOptions { flex-grow: 1; background-color: #ffffff; display: flex; justify-content: center; align-items: center; font-size: 35px; background: repeating-linear-gradient(135deg, transparent, transparent 15px, #fff 10px, #fff 30px), linear-gradient(to right, transparent, #003366); background: url(../../static/images/create-room-bg.png); }
+.modal-body.createGameBody .gameOptions { flex-grow: 1; background-color: #ffffff; display: flex; justify-content: center; align-items: center; font-size: 35px; background: repeating-linear-gradient(135deg, transparent, transparent 15px, #ffffff 10px, #ffffff 30px), linear-gradient(to right, transparent, #efeef1); background: url(../../static/images/create-room-bg.png); background-repeat: no-repeat; background-size: cover; }
 
 .modal-body.createGameBody .gameOptions .gameOptionsView { padding: 10px; height: 100%; display: flex; flex-direction: column; justify-content: space-around; font-size: 20px; width: 100%; }
 
