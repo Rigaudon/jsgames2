@@ -2,10 +2,12 @@ var Backbone = require("backbone");
 
 var Room = Backbone.Model.extend({
 	
-	defaults: {
-		players: new Backbone.Collection(),
-		status: "Waiting for players",
-		host: ""
+	initialize: function(options){
+		this.set("options", options.options);
+		this.set("status", "Waiting for Players");
+		this.set("players", new Backbone.Collection());
+		this.set("hasPassword", options.hasPassword);
+		this.set("maxPlayers", options.maxPlayers);
 	},
 
 	playerJoin: function(playerModel){

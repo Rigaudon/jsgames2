@@ -16,13 +16,14 @@ var GameRoomListItem = Marionette.View.extend({
 		var options = this.model.get("options");
 		var gameName = gamesCollection.get(options.gameId).get("name");
 		return {
+			password: this.model.get("hasPassword"),
 			name: options.roomName,
 			game: gameName,
-			players: this.formatPlayers(this.model.get("players")),
+			players: this.model.get("players").length,
 			status: this.model.get("status"),
-			actions: "actions"
+			actions: this.getActions()
 		};
-	},
+	}, 
 
 	formatPlayers: function(players){
 		var playersString = "";
@@ -30,6 +31,19 @@ var GameRoomListItem = Marionette.View.extend({
 			playersString += `<span style="color:${player.color}">${player.name}</span> `;
 		});
 		return playersString;
+	},
+
+	getActions: function(){
+		//Change me later, add spectate option
+		//Check if room full
+		var actions = "";
+		if(this.model.get("maxPlayers") > this.model.get("players").length){
+			actions += "<button class='joinRoomBtn'>Join Room</button>";
+		}
+		//if can spectate...
+		actions += "<button class='spectateBtn'>Spectate</button>";
+
+		return actions;
 	}
 	
 });

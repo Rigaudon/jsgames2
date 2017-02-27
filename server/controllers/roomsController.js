@@ -20,7 +20,7 @@ var RoomsController = Backbone.Collection.extend({
 	},
 
 	validateAndCreate: function(io, socket, options){
-		var valid = this.validateRoomOptions(options);
+		var valid = this.validateRoomOptions(options, socket.id);
 		if(valid.valid){
 			var roomInfo = this.createGameRoom(options);
 			socket.emit("createRoomResponse", {
@@ -36,7 +36,7 @@ var RoomsController = Backbone.Collection.extend({
 		}
 	},
 
-	validateRoomOptions: function(options){
+	validateRoomOptions: function(options, playerId){
 		var self = this;
 		var gameOptions = gamesCollection.get(options.gameId);
 		var returnVal = {
@@ -44,7 +44,7 @@ var RoomsController = Backbone.Collection.extend({
 			message: "A server error occured."
 		};
 
-		if(gameOptions){
+		if(gameOptions && !this.playerMap[playerId]){
 			_.forEach(gameOptions, function(gameOption){
 				if(!self.validateRoomOption(gameOption, options[gameOption])){
 					return returnVal;
@@ -74,10 +74,14 @@ var RoomsController = Backbone.Collection.extend({
 	},
 
 	createGameRoom: function(options){
-		this.add(new Room({
+		var game = gamesCollection.get(options.gameId);
+		var newRoom = new Room({
 			options: options,
-			id: ++nextGameRoomId
-		}));
+			id: ++nextGameRoomId,
+			hasPassword: (options.roomPassword != ""),
+			maxPlayers: game.get("maxPlayers"),
+		});
+		this.add(newRoom);
 		return {
 			id: nextGameRoomId,
 			password: options.roomPassword
@@ -108,7 +112,8 @@ var RoomsController = Backbone.Collection.extend({
 		return 	room && 
 				room.get("options").roomPassword == options.password && 
 				!room.get("players").get(playerId) && 
-				!this.playerMap[playerId];
+				!this.playerMap[playerId] &&
+				room.get("maxPlayers") > room.get("players").length;
 	},
 
 	playerJoin: function(playerId, roomId, playerModel){

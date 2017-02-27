@@ -8,6 +8,7 @@
 	border-radius: 0px 0px 30px 30px;
 	min-height: 450px;
 	overflow: auto;
+	opacity: 0.85;
 
 	.gameRoomsTable{
 		width:100%;
@@ -36,6 +37,22 @@
 				line-height: 40px;
 				td{
 					border-bottom: 1px solid $primary-color;
+
+					button{
+						border: 3px solid $primary-color;
+						background-color: $bg-color;
+						border-radius: 20px;
+						margin: 5px;
+						font-size: 15px;
+						line-height: 25px;
+						color: $primary-color;
+					}
+
+					button:hover{
+						border: 3px solid $bg-color;
+						background-color: $primary-color;
+						color: $bg-color;
+					}
 				}
 			}
 
