@@ -8,6 +8,15 @@ var SideBarView = require("./sideBarview");
 var CreateRoomView = require("./createRoomView");
 var GameRoom = require("../models/gameRoom");
 
+//Move me?
+var ConnectFourRoomView = require("./gameRoomViews/connectFourRoomView");
+var UnoRoomView = require("./gameRoomViews/unoRoomView");
+
+var GameRoomViewsMap = {
+	"1": ConnectFourRoomView,
+	"2": UnoRoomView
+};
+
 var GameRoomsView = Marionette.View.extend({
 	className: "gameRoomsView",
 	template: _.template(fs.readFileSync("./app/templates/gameRoomsView.html", "utf8")),
@@ -48,9 +57,17 @@ var GameRoomsView = Marionette.View.extend({
 	},
 
 	showGameRoom: function(){
-		console.log("SHOW");
-		//check active games, then render based on the id of self.model.get("roomId")
-		var roomId = self.model.get("roomId");
+		//check active games, then render based on the id of self.model.get("roomId")		
+		var roomId = this.model.get("roomId");
+		var activeRoom = this.model.get("activeRooms").get(roomId);
+		var self = this;
+		if(activeRoom){
+			this.showChildView("main", new GameRoomViewsMap[activeRoom.get("options").gameId]({
+				player: self.model
+			}));
+		}else{
+			//@TODO: show error
+		}
 	}
 
 });

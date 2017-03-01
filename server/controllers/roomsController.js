@@ -1,8 +1,10 @@
 var Backbone = require("backbone");
-var Room = require("../models/room");
 var _ = require("lodash");
 var games = require("../../games.json");
 var gamesCollection = new Backbone.Collection(games);
+
+//var Room = require("../models/room");
+var ConnectFourRoom = require("../models/connectFourRoom");
 
 var nextGameRoomId = 0;
 var RoomsController = Backbone.Collection.extend({
@@ -11,23 +13,30 @@ var RoomsController = Backbone.Collection.extend({
 	},
 
 	withoutPasswords: function(){
-		var self = this;
-		var rooms = self.toJSON();
-		_.forEach(rooms, function(room){
-			delete room.options.roomPassword;
-		});
-		return rooms;
+		var returnList = [];
+		for(var i=0; i<this.models.length; i++){
+			var model = this.models[i];
+			returnList.push(model.clientJSON());
+		}
+		return returnList;
 	},
 
 	validateAndCreate: function(io, socket, options){
 		var valid = this.validateRoomOptions(options, socket.id);
 		if(valid.valid){
-			var roomInfo = this.createGameRoom(options);
-			socket.emit("createRoomResponse", {
-				success: true,
-				id: roomInfo.id,
-				password: roomInfo.password
-			});
+			var roomInfo = this.createGameRoom(options, io);
+			if(roomInfo.id != -1){
+				socket.emit("createRoomResponse", {
+					success: true,
+					id: roomInfo.id,
+					password: roomInfo.password
+				});
+			}else{
+				socket.emit("createRoomResponse", {
+					success: false,
+					message: "That game is not available."
+				});
+			}
 		}else{
 			socket.emit("createRoomResponse", {
 				success: false,
@@ -73,15 +82,26 @@ var RoomsController = Backbone.Collection.extend({
 		}
 	},
 
-	createGameRoom: function(options){
+	idToRoomMap: {
+		"1": ConnectFourRoom
+	},
+
+	createGameRoom: function(options, io){
 		var game = gamesCollection.get(options.gameId);
-		var newRoom = new Room({
+		var RoomModel = this.idToRoomMap[options.gameId];
+		if(!RoomModel){
+			return {
+				id: -1
+			};
+		}
+		var newRoom = new RoomModel({
 			options: options,
 			id: ++nextGameRoomId,
 			hasPassword: (options.roomPassword != ""),
 			maxPlayers: game.get("maxPlayers"),
 		});
 		this.add(newRoom);
+		this.emitActiveRooms(io);
 		return {
 			id: nextGameRoomId,
 			password: options.roomPassword
@@ -116,6 +136,7 @@ var RoomsController = Backbone.Collection.extend({
 				room.get("maxPlayers") > room.get("players").length;
 	},
 
+	//@TODO: Find a way to remove io and set it in the model, barring recursive headaches...
 	playerJoin: function(playerId, roomId, playerModel){
 		var roomModel = this.get(roomId);
 		roomModel.playerJoin(playerModel);
@@ -129,6 +150,13 @@ var RoomsController = Backbone.Collection.extend({
 			inRoom.playerLeave(playerId);
 			delete this.playerMap[playerId];
 			this.emitActiveRooms(io);
+		}
+	},
+
+	requestRoomInfo: function(socket){
+		var inRoom = this.playerMap[socket.id];
+		if(inRoom){
+			inRoom.sendRoomInfo(socket);
 		}
 	}
 

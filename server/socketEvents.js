@@ -19,7 +19,8 @@ var socketEvents = function(io, mem){
 				mem.players.addPlayer({
 					id: socket.id,
 					name: name,
-					color: util.randomColor()
+					color: util.randomColor(),
+					socket: socket
 				});
 			}
 			socket.emit("nameRequest", response);
@@ -55,6 +56,11 @@ var socketEvents = function(io, mem){
 			var playerModel = mem.players.get(socket.id);
 			mem.rooms.joinRoom(io, socket, options, playerModel);
 		});
+
+		//Request info about a room
+		socket.on("requestRoomInfo", function(){
+			mem.rooms.requestRoomInfo(socket);
+		})
 	});
 }
 

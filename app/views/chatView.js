@@ -7,7 +7,9 @@ var common = require("../common");
 var ChatItemView = Marionette.View.extend({
 	tagName: "li",
 	className: "chatItem",
-	template: _.template(fs.readFileSync("./app/templates/partials/chatItem.html", "utf8")),
+	getTemplate: function(){
+		return _.template(fs.readFileSync("./app/templates/partials/chatItem.html", "utf8"), this.templateContext());
+	},
 	
 	regions: {
 		time: ".chatTime",
@@ -15,14 +17,12 @@ var ChatItemView = Marionette.View.extend({
 		message: ".chatMessage"
 	},
 
-	initialize: function(){
-		//@TODO: HANDLEBARS
-	},
-
-	onRender: function(){
-		this.$(this.regions.time).text(this.formatDate());
-		this.$(this.regions.name).text(this.formatName());
-		this.$(this.regions.message).text(this.formatMessage());
+	templateContext: function(){
+		return {
+			time: this.formatDate(),
+			name: this.formatName(),
+			message: this.formatMessage()
+		};
 	},
 
 	formatDate: function(){

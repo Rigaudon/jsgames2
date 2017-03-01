@@ -7,8 +7,14 @@ Run npm install, then npm start.
 
 #To dos
 - Implement games
+- Redo server side toJSON of controllers
+	- fix the io references in controller
+	- fix cloning in controller in withoutPassword
+	- add socket to the user model, then reference it instead of using socket's namespace
+- Rename old "gameRoom" references to "lobby"
 - Add console
 - Add controller for chat 
+	- Add channel for chat when new room is made
 - More dynamic templates
 - Add player color selection to settings
 - Add theme selection to settings

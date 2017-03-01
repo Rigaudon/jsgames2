@@ -40,7 +40,8 @@ var User = Backbone.Model.extend({
 		});
 		//Initialize/update active game rooms
 		self.getSocket().on("activeRooms", function(rooms){
-			self.get("activeRooms").reset(rooms);
+			console.log(rooms);
+			self.set("activeRooms", new Backbone.Collection(rooms));
 		});
 		//Show disconnection message
 		self.getSocket().on("disconnect", function(){

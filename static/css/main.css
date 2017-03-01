@@ -305,3 +305,33 @@ $passive-color: #282828;
 .modal-body.createGameBody .gameOptions .alertInfo ul { list-style-type: none; padding: 0; }
 
 .modal-body.createGameBody .gameOptions .alertInfo:empty { margin: 0; padding: 0; }
+
+/*
+primary-color: text color
+secondary-color: differing shade of primary (gradient in welcome)
+tertiary-color: contrasts well against primary
+bg-color: background color
+passive-color: background for chat; close to bg-color
+inset-color: border color for chat, etc
+menu-color: the color of the settings menu
+*/
+/*
+$bg-color: #222222;
+$primary-color: white;
+$menu-color: #cccccc;
+$secondary-color: #282828;
+$passive-color: #282828;
+*/
+.connectFourRoom { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+
+.connectFourRoom .gameName { background-color: #003366; color: #ffffff; font-size: 50px; border-radius: 0px 0px 30px 30px; width: 50%; }
+
+.connectFourRoom .connectFourBoard { width: 75%; padding-top: 64.29%; position: relative; }
+
+.connectFourRoom .connectFourBoard .square { border: 1px solid #003366; top: 0; left: 0; position: absolute; width: 100%; height: 100%; }
+
+.connectFourRoom .connectFourBoard .square .row { margin-left: 0%; width: 100%; height: 16.6666%; }
+
+.connectFourRoom .connectFourBoard .square .row .cell { width: 14.2857%; height: 100%; float: left; border: 1px solid #003366; background-color: #ffffff; }
+
+.connectFourRoom .controls { width: 60%; min-height: 100px; border: 2px solid #003366; border-radius: 10px; margin-bottom: 20px; }

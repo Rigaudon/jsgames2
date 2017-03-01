@@ -38,14 +38,15 @@ var GameRoomListItem = Marionette.View.extend({
 		//Check if room full
 		var actions = "";
 		if(this.model.get("maxPlayers") > this.model.get("players").length){
-			actions += "<button class='joinRoomBtn'>Join Room</button>";
+			actions += "<button class='joinRoomBtn' id='joinRoom" + this.model.get("id") +"'>Join Room</button>";
 		}
 		//if can spectate...
 		actions += "<button class='spectateBtn'>Spectate</button>";
 
 		return actions;
-	}
+	},
 	
+
 });
 
 var EmptyGameRoomListItem = Marionette.View.extend({
@@ -70,6 +71,14 @@ var GameRoomsTableView = Marionette.View.extend({
 		"change:activeRooms": "render"
 	},
 
+	ui: {
+		"joinRoomBtn": ".joinRoomBtn"
+	},
+
+	events: {
+		"click @ui.joinRoomBtn": "requestJoinRoom"
+	},
+
 	onRender: function(){
 		var self = this;
 		var roomColView = new RoomCollectionView({
@@ -77,6 +86,13 @@ var GameRoomsTableView = Marionette.View.extend({
 		});
 		this.$el.append(roomColView.$el);
 		roomColView.render();
+	},
+
+	requestJoinRoom: function(event){
+		var btnId = event.target.id;
+		var roomId = parseInt(btnId.replace("joinRoom", ""));
+		//@TODO: implement passwords
+		this.model.joinRoom(roomId, "");
 	}
 });
 
