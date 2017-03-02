@@ -3,7 +3,7 @@ var Marionette = require("backbone.marionette");
 var fs = require("fs");
 var common = require("../common");
 var NamePickerView = require("./namePickerView");
-var GameRoomsView = require("./gameRoomsView");
+var LobbyView = require("./lobbyView");
 var DisconnectedView = require("./disconnectedView");
 
 var RootView = Marionette.View.extend({
@@ -12,7 +12,7 @@ var RootView = Marionette.View.extend({
 
 	modelEvents: {
 		"change:pid" 	: "onPidChange",
-		"change:ready"	: "loadGameRooms",
+		"change:ready"	: "loadLobby",
 		"change:name"	: "onNameChange",
 		"change:disconnected": "onDisconnect",
 	},
@@ -57,8 +57,8 @@ var RootView = Marionette.View.extend({
 		cSelector.css("opacity", 0);
 	},
 
-	loadGameRooms: function(){
-		this.showChildView("contentRegion", new GameRoomsView({model: this.model}));
+	loadLobby: function(){
+		this.showChildView("contentRegion", new LobbyView({model: this.model}));
 		this.$(this.regions.contentRegion).css("opacity", 1);
 	},
 
