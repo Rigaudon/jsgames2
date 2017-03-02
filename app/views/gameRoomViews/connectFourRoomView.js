@@ -15,12 +15,15 @@ var ConnectFourRoomView = Marionette.View.extend({
 
 	className: "connectFourRoom",
 	templateContext: function(){
-		var opponentName = this.model.get("opponentName") || "Waiting for opponent...";
-		var roomName = this.model.get("roomName") || "Connect Four";
 		return {
-			opponent: opponentName,
-			controls: this.generateControls(),
-			roomName: roomName
+			opponent: this.model.get("opponentName") || "Waiting for opponent...",
+			controls: this.getOptions(),
+			roomName: this.model.get("roomName") || "Connect Four",
+			id: this.model.get("id"),
+			status: this.model.get("status"),
+			host: this.model.get("host") ? ( this.model.get("host").name + (this.model.get("isHost") ? " (you)" : "")) : "",
+			isHost: this.model.get("isHost"),
+			hostControls: this.getHostOptions()
 		};
 	},
 
@@ -28,14 +31,29 @@ var ConnectFourRoomView = Marionette.View.extend({
 		"update:room": "render"
 	},
 
-	generateControls: function(){
-		//change me
-		if(this.model.get("host") == this.player.getSocket().id){
-			return "host options";
-		}
-		return "options";
+	ui: {
+		"leaveBtn": ".leaveBtn"
 	},
 
+	events: {
+		"click @ui.leaveBtn": "leaveRoom"
+	},
+
+	getOptions: function(){
+		return "<button class='leaveBtn btn-big'>Leave Room</button>";
+	},
+
+	getHostOptions: function(){
+		if(this.model.get("isHost")){
+			return "<button>Kick Opponent</button>";
+		}else{
+			return "";
+		}
+	},
+
+	leaveRoom: function(){
+		this.player.leaveRoom();
+	}
 });
 
 module.exports = ConnectFourRoomView;

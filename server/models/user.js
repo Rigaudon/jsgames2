@@ -8,6 +8,11 @@ var User = Backbone.Model.extend({
 			name: this.get("name"),
 			room: this.get("room")
 		};
+	},
+
+	toJSON: function(){
+		//change me?
+		return this.clientJSON();
 	}
 });
 

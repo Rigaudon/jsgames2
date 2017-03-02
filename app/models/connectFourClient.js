@@ -4,7 +4,6 @@ var ConnectFourClient = Backbone.Model.extend({
 		var self = this;
 		this.socket = options.socket;
 		this.socket.on("roomInfo", function(roomInfo){
-			console.log(roomInfo);
 			self.processRoomInfo(roomInfo);
 		});
 		this.getRoomInfo();
@@ -16,11 +15,13 @@ var ConnectFourClient = Backbone.Model.extend({
 
 	processRoomInfo: function(roomInfo){
 		this.set("host", roomInfo.host);
+		this.set("isHost", this.isHost());
 		this.set("gameState", roomInfo.gameState);
 		this.set("status", roomInfo.status);
 		this.set("players", roomInfo.players);
 		this.set("opponentName", this.opponentName());
 		this.set("roomName", roomInfo.options.roomName);
+		this.set("id", roomInfo.id);
 		this.trigger("update:room");
 	},
 
@@ -35,6 +36,10 @@ var ConnectFourClient = Backbone.Model.extend({
 		}else{
 			return false;
 		}
+	},
+
+	isHost: function(){
+		return this.get("host") && this.get("host").id == this.socket.id;
 	}
 });
 

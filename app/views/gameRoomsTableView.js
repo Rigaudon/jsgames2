@@ -21,7 +21,7 @@ var GameRoomListItem = Marionette.View.extend({
 			game: gameName,
 			players: this.model.get("players").length,
 			status: this.model.get("status"),
-			actions: this.getActions()
+			actions: this.getActions(),
 		};
 	}, 
 

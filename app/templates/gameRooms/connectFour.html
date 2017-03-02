@@ -59,5 +59,31 @@
 	</div>
 </div>
 <div class="controls">
-	<%= controls %>
+	<div class="gameInfo">
+		<div>
+			<span>Game:</span>
+			<span>Connect Four</span>
+		</div>
+		<div>
+			<span>Game Room ID:</span>
+			<span><%- id %></span>
+		</div>
+		<div>
+			<span>Status:</span>
+			<span><%- status %></span>
+		</div>
+		<div>
+			<span>Host:</span>
+			<span><%- host %></span>
+		</div>
+	</div>
+	<div class="userControls">
+		<%= controls %>
+	</div>
+	<% if(isHost){ %>
+	<div class="hostControls">
+		<div>Host Controls</div>
+	<%= hostControls %>
+	</div>
+	<% } %>
 </div>

@@ -60,7 +60,12 @@ var socketEvents = function(io, mem){
 		//Request info about a room
 		socket.on("requestRoomInfo", function(){
 			mem.rooms.requestRoomInfo(socket);
-		})
+		});
+
+		//User requested to leave room
+		socket.on("leaveRoom", function(){
+			mem.rooms.playerLeave(io, socket.id);
+		});
 	});
 }
 

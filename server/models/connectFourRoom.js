@@ -29,19 +29,9 @@ var ConnectFourRoom = Room.extend({
 		Room.prototype.playerLeave.call(this, playerModel);
 		if(this.get("players").length == 1){
 			this.set("status", "Waiting for Players");
-			this.emitToAllExcept();			
+			this.emitToAllExcept();
 		}
 	},
-
-	emitToAllExcept: function(playerId){
-		var self = this;
-		_.forEach(self.get("players").models, function(playerModel){
-			if(playerId != playerModel.id){
-				self.sendRoomInfo(playerModel.get("socket"));
-			}
-		});
-	}
-	
 
 });
 

@@ -1,4 +1,5 @@
 var Backbone = require("backbone");
+var _  = require("lodash");
 
 var Room = Backbone.Model.extend({
 	
@@ -14,7 +15,7 @@ var Room = Backbone.Model.extend({
 	playerJoin: function(playerModel){
 		var roomPlayers = this.get("players");
 		if(roomPlayers.length == 0){
-			this.set("host", playerModel.id);
+			this.set("host", playerModel.clientJSON());
 		}
 		roomPlayers.add(playerModel);
 	},
@@ -26,9 +27,9 @@ var Room = Backbone.Model.extend({
 		if(this.get("players").length == 0){
 			this.collection.remove(self);
 		}else{
-			if(this.get("host") == playerId){
-				var randomPlayer = self.get("players").at(Math.floor(Math.random() * self.get("players").length)).id;
-				this.set("host", randomPlayer);	
+			if(this.get("host").id == playerId){
+				var randomPlayer = self.get("players").at(Math.floor(Math.random() * self.get("players").length));
+				this.set("host", randomPlayer.clientJSON());	
 			}
 		}
 	},
@@ -46,7 +47,7 @@ var Room = Backbone.Model.extend({
 		returnObj.id = this.get("id");
 		returnObj.maxPlayers = this.get("maxPlayers");
 		returnObj.status = this.get("status");
-
+		returnObj.id = this.get("id");
 		var myOptions = this.get("options");
 		returnObj.options = {
 			gameId: myOptions.gameId,
@@ -60,6 +61,7 @@ var Room = Backbone.Model.extend({
 		}
 		returnObj.players = players;
 
+		returnObj.gameState = this.get("gameState");
 		return returnObj;
 	},
 
@@ -68,6 +70,15 @@ var Room = Backbone.Model.extend({
 		var clientJSON = this.clientJSON();
 		clientJSON.options.roomPassword = this.get("options").roomPassword;
 		return clientJSON;
+	},
+
+	emitToAllExcept: function(playerId){
+		var self = this;
+		_.forEach(self.get("players").models, function(playerModel){
+			if(playerId != playerModel.id){
+				self.sendRoomInfo(playerModel.get("socket"));
+			}
+		});
 	}
 
 

@@ -9,7 +9,7 @@ var UsersController = Backbone.Collection.extend({
 
 	removePlayer: function(id){
 		this.remove(id);
-	}
+	},
 });
 
 module.exports = UsersController;

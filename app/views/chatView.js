@@ -21,7 +21,8 @@ var ChatItemView = Marionette.View.extend({
 		return {
 			time: this.formatDate(),
 			name: this.formatName(),
-			message: this.formatMessage()
+			message: this.formatMessage(),
+			color: this.model.get("color")
 		};
 	},
 
@@ -30,7 +31,6 @@ var ChatItemView = Marionette.View.extend({
 	},
 
 	formatName: function(){
-		this.$(this.regions.name).css("color", this.model.get("color"));
 		return this.model.get("name");
 	},
 
