@@ -21,10 +21,10 @@ var RoomsController = Backbone.Collection.extend({
 		return returnList;
 	},
 
-	validateAndCreate: function(io, socket, options){
+	validateAndCreate: function(socket, options){
 		var valid = this.validateRoomOptions(options, socket.id);
 		if(valid.valid){
-			var roomInfo = this.createGameRoom(options, io);
+			var roomInfo = this.createGameRoom(options, this.io);
 			if(roomInfo.id != -1){
 				socket.emit("createRoomResponse", {
 					success: true,
@@ -86,7 +86,7 @@ var RoomsController = Backbone.Collection.extend({
 		"1": ConnectFourRoom
 	},
 
-	createGameRoom: function(options, io){
+	createGameRoom: function(options){
 		var game = gamesCollection.get(options.gameId);
 		var RoomModel = this.idToRoomMap[options.gameId];
 		if(!RoomModel){
@@ -101,7 +101,7 @@ var RoomsController = Backbone.Collection.extend({
 			maxPlayers: game.get("maxPlayers"),
 		});
 		this.add(newRoom);
-		this.emitActiveRooms(io);
+		this.emitActiveRooms(this.io);
 		return {
 			id: nextGameRoomId,
 			password: options.roomPassword
@@ -110,7 +110,7 @@ var RoomsController = Backbone.Collection.extend({
 
 	playerMap: {}, //map player ids to game rooms
 
-	joinRoom: function(io, socket, options, playerModel){
+	joinRoom: function(socket, options, playerModel){
 		var room = this.get(options.roomId);
 		if(this.validateJoinRoom(socket.id, options, room)){
 			this.playerJoin(socket.id, options.roomId, playerModel);
@@ -118,7 +118,7 @@ var RoomsController = Backbone.Collection.extend({
 				success: true,
 				roomId: options.roomId
 			});
-			this.emitActiveRooms(io);
+			this.emitActiveRooms(this.io);
 		}else{
 			socket.emit("joinRoomResponse",{
 				success: false
@@ -136,7 +136,6 @@ var RoomsController = Backbone.Collection.extend({
 				room.get("maxPlayers") > room.get("players").length;
 	},
 
-	//@TODO: Find a way to remove io and set it in the model, barring recursive headaches...
 	playerJoin: function(playerId, roomId, playerModel){
 		var roomModel = this.get(roomId);
 		roomModel.playerJoin(playerModel);
@@ -144,12 +143,12 @@ var RoomsController = Backbone.Collection.extend({
 		this.playerMap[playerId] = roomModel;
 	},
 
-	playerLeave: function(io, playerId){
+	playerLeave: function(playerId){
 		var inRoom = this.playerMap[playerId];
 		if(inRoom){
 			inRoom.playerLeave(playerId);
 			delete this.playerMap[playerId];
-			this.emitActiveRooms(io);
+			this.emitActiveRooms(this.io);
 		}
 	},
 
@@ -157,6 +156,13 @@ var RoomsController = Backbone.Collection.extend({
 		var inRoom = this.playerMap[socket.id];
 		if(inRoom){
 			inRoom.sendRoomInfo(socket);
+		}
+	},
+
+	executeCommand: function(options, playerId){
+		var gameRoom = this.get(options.roomId);
+		if(gameRoom){
+			gameRoom.executeCommand(options, playerId);
 		}
 	}
 

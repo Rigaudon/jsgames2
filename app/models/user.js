@@ -54,6 +54,10 @@ var User = Backbone.Model.extend({
 				//@TODO: show error
 			}
 		});
+		//Kicked from room
+		self.getSocket().on("leaveRoom", function(){
+			self.unset("roomId");
+		});
 	},
 
 	requestName: function(name){

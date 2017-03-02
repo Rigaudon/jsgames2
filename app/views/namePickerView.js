@@ -36,7 +36,7 @@ var NamePickerView = Marionette.View.extend({
 	nameSet: function(){
 		var self = this;
 		this.$el.css("opacity", 0);
-
+		this.$el.html(`Welcome, ${this.model.get("name")}!`);
 		self.$el.bind(common.finishTransition, function(){
 			if(self.$el.css("opacity") == 0){
 				self.remove();	

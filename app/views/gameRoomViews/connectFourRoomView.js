@@ -32,11 +32,15 @@ var ConnectFourRoomView = Marionette.View.extend({
 	},
 
 	ui: {
-		"leaveBtn": ".leaveBtn"
+		"leaveBtn": ".leaveBtn",
+		"kickBtn": ".kickBtn",
+		"startBtn": ".startBtn"
 	},
 
 	events: {
-		"click @ui.leaveBtn": "leaveRoom"
+		"click @ui.leaveBtn": "leaveRoom",
+		"click @ui.kickBtn": "kickOpponent",
+		"click @ui.startBtn": "startRoom"
 	},
 
 	getOptions: function(){
@@ -44,15 +48,28 @@ var ConnectFourRoomView = Marionette.View.extend({
 	},
 
 	getHostOptions: function(){
+		var hostOptions = "";
 		if(this.model.get("isHost")){
-			return "<button>Kick Opponent</button>";
-		}else{
-			return "";
+			var players = this.model.get("players");
+			if(players.length == 2 && !this.model.get("inProgress")){
+				//Add restart option
+				hostOptions += "<button class=\"kickBtn\">Kick Opponent</button>";
+				hostOptions += "<button class=\"startBtn\">Start Game</button>";		
+			}
 		}
+		return hostOptions;
 	},
 
 	leaveRoom: function(){
 		this.player.leaveRoom();
+	},
+
+	kickOpponent: function(){
+		this.model.kickOpponent();
+	},
+
+	startRoom: function(){
+		this.model.startRoom();
 	}
 });
 

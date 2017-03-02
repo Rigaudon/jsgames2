@@ -5,9 +5,8 @@ A Marionette/Websocket based Nodejs game server.
 Developed in node 4.5.0, npm 4.1.2.
 Run npm install, then npm start.
 
-#To dos
+# To do
 - Implement games
-- Rename old "gameRoom" references to "lobby"
 - Add console
 - Add controller for chat 
 	- Add channel for chat when new room is made

@@ -1,6 +1,9 @@
 var Room = require("./room");
 var _ = require("lodash");
 
+var hostCommands = ["startGame", "kickOpponent"];
+var commands = ["makeMove"];
+
 var ConnectFourRoom = Room.extend({
 	initialize: function(options){
 		Room.prototype.initialize.call(this, options);
@@ -32,6 +35,35 @@ var ConnectFourRoom = Room.extend({
 			this.emitToAllExcept();
 		}
 	},
+
+	executeCommand: function(options, playerId){
+		var self = this;
+		var command = options.command;
+		if(commands.indexOf(command) > -1){
+			switch(command){
+				case "makeMove":
+
+				break;
+			}
+		}else if(hostCommands.indexOf(command) > -1 && this.get("host").id == playerId){
+			switch(command){
+				case "startGame":
+
+				break;
+				case "kickOpponent":
+					var otherPlayer = self.get("players").filter(function(player){ return player.id != playerId; })[0];
+					if(otherPlayer){
+						self.kickPlayer(otherPlayer);
+					}
+				break;
+			}
+		}
+	},
+
+	kickPlayer: function(player){
+		this.collection.playerLeave(player.id);
+		player.get("socket").emit("leaveRoom");
+	}
 
 });
 

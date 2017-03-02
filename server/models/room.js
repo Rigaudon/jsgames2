@@ -79,6 +79,11 @@ var Room = Backbone.Model.extend({
 				self.sendRoomInfo(playerModel.get("socket"));
 			}
 		});
+	},
+
+	executeCommand: function(options, playerId){
+		//Overwrite me!
+		console.error("Execute command not implemented!");
 	}
 
 

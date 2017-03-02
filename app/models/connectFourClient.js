@@ -40,6 +40,21 @@ var ConnectFourClient = Backbone.Model.extend({
 
 	isHost: function(){
 		return this.get("host") && this.get("host").id == this.socket.id;
+	},
+
+	//Below are host functions
+	kickOpponent: function(){
+		this.socket.emit("gameMessage", {
+			command: "kickOpponent",
+			roomId: this.get("id")
+		});
+	},
+
+	startRoom: function(){
+		this.socket.emit("gameMessage", {
+			command: "startGame",
+			roomId: this.get("id")
+		});
 	}
 });
 

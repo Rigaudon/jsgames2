@@ -3,9 +3,11 @@
 .namePicker{
 	font-size: 70px;
 	position: absolute;
-	-webkit-transition: 1.5s;
-	transition: 1.5s;
-	
+	-webkit-transition: $transition-speed;
+	transition: $transition-speed;
+	user-select: none;
+	cursor: default;
+
 	.nameInput{
 		border: 0px solid $primary-color;
 		border-bottom-width: 2px;

@@ -5,6 +5,8 @@ var dateFormat = require("dateformat");
 var nextMsgId = 0;
 
 var socketEvents = function(io, mem){
+	mem.rooms.io = io;
+
 	io.on("connection", function(socket){
 		//Give out an ID
 		socket.emit("myId", socket.id);
@@ -28,7 +30,7 @@ var socketEvents = function(io, mem){
 		
 		//User disconnected
 		socket.on("disconnect", function(){
-			mem.rooms.playerLeave(io, socket.id);
+			mem.rooms.playerLeave(socket.id);
 			mem.players.removePlayer(socket.id);
 		});
 
@@ -47,14 +49,14 @@ var socketEvents = function(io, mem){
 
 		//Request room creation
 		socket.on("createRoom", function(options){
-			mem.rooms.validateAndCreate(io, socket, options);
+			mem.rooms.validateAndCreate(socket, options);
 			//dont need to emit active, because user joins immediately after, which fires emit
 		});
 
 		//Request joining a room
 		socket.on("joinRoom", function(options){
 			var playerModel = mem.players.get(socket.id);
-			mem.rooms.joinRoom(io, socket, options, playerModel);
+			mem.rooms.joinRoom(socket, options, playerModel);
 		});
 
 		//Request info about a room
@@ -64,7 +66,14 @@ var socketEvents = function(io, mem){
 
 		//User requested to leave room
 		socket.on("leaveRoom", function(){
-			mem.rooms.playerLeave(io, socket.id);
+			mem.rooms.playerLeave(socket.id);
+		});
+
+		//Game message, delegate to the room
+		socket.on("gameMessage", function(options){
+			if(options.roomId){
+				mem.rooms.executeCommand(options, socket.id);
+			}
 		});
 	});
 }
