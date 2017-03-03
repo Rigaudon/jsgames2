@@ -108,12 +108,14 @@ var RoomsController = Backbone.Collection.extend({
 		};
 	},
 
+	//Deprecate and use io.sockets.adapter.sids[socket.id]?
 	playerMap: {}, //map player ids to game rooms
 
 	joinRoom: function(socket, options, playerModel){
 		var room = this.get(options.roomId);
 		if(this.validateJoinRoom(socket.id, options, room)){
 			this.playerJoin(socket.id, options.roomId, playerModel);
+
 			socket.emit("joinRoomResponse", {
 				success: true,
 				roomId: options.roomId
@@ -143,10 +145,11 @@ var RoomsController = Backbone.Collection.extend({
 		this.playerMap[playerId] = roomModel;
 	},
 
-	playerLeave: function(playerId){
+	playerLeave: function(socket){
+		var playerId = socket.id;
 		var inRoom = this.playerMap[playerId];
 		if(inRoom){
-			inRoom.playerLeave(playerId);
+			inRoom.playerLeave(socket);
 			delete this.playerMap[playerId];
 			this.emitActiveRooms(this.io);
 		}
@@ -164,6 +167,11 @@ var RoomsController = Backbone.Collection.extend({
 		if(gameRoom){
 			gameRoom.executeCommand(options, playerId);
 		}
+	},
+
+	processMessage: function(socket, channel, origMessage){
+		//Overwrite me!
+		this.io.sockets.in(channel).emit("chatMessage", origMessage);
 	}
 
 });

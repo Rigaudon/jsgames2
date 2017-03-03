@@ -28,11 +28,14 @@ function randomColor(){
 	return "#" + color;
 }
 
-function validateMessage(message){
+function validateMessage(message, socket, io){
 	return 	message && 
 			message.message &&
 			message.message.length > 0 && 
-			message.message.length < 200;
+			message.message.length < 200 &&
+			message.channel &&
+			io.sockets.adapter.rooms[message.channel] &&
+			io.sockets.adapter.rooms[message.channel].sockets[socket.id];
 }
 
 module.exports = {

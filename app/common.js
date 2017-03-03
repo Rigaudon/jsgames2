@@ -33,5 +33,5 @@ function fadeOutThenIn(view, callback){
 
 module.exports = {
 	finishTransition: finishTransition,
-    fadeOutThenIn: fadeOutThenIn
+    fadeOutThenIn: fadeOutThenIn,
 };

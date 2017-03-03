@@ -1,13 +1,13 @@
 //Handling of SERVER-SIDE io events
 var util = require("./socketUtil");
-var dateFormat = require("dateformat");
-
-var nextMsgId = 0;
 
 var socketEvents = function(io, mem){
 	mem.rooms.io = io;
+	mem.chat.io = io;
 
 	io.on("connection", function(socket){
+		//Join global channel
+		socket.join("global");
 		//Give out an ID
 		socket.emit("myId", socket.id);
 		//Give out the current list of rooms
@@ -30,21 +30,14 @@ var socketEvents = function(io, mem){
 		
 		//User disconnected
 		socket.on("disconnect", function(){
-			mem.rooms.playerLeave(socket.id);
+			mem.rooms.playerLeave(socket);
 			mem.players.removePlayer(socket.id);
 		});
 
 		//Chat message
 		socket.on("chatMessage", function(message){
-			if(util.validateMessage(message)){
-				io.emit("chatMessage", {
-					id: ++nextMsgId,
-					message: message.message,
-					name: mem.players.get(socket.id).get("name"),
-					time: dateFormat(new Date(), "h:MM"),
-					color: mem.players.get(socket.id).get("color")
-				})
-			}
+			var player = mem.players.get(socket.id);
+			mem.chat.processMessage(socket, message, player, mem.rooms);
 		});
 
 		//Request room creation
@@ -54,6 +47,7 @@ var socketEvents = function(io, mem){
 		});
 
 		//Request joining a room
+		//@TODO: implement passwords
 		socket.on("joinRoom", function(options){
 			var playerModel = mem.players.get(socket.id);
 			mem.rooms.joinRoom(socket, options, playerModel);
@@ -66,7 +60,7 @@ var socketEvents = function(io, mem){
 
 		//User requested to leave room
 		socket.on("leaveRoom", function(){
-			mem.rooms.playerLeave(socket.id);
+			mem.rooms.playerLeave(socket);
 		});
 
 		//Game message, delegate to the room

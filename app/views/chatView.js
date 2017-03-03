@@ -47,7 +47,11 @@ var ChatCollectionView = Marionette.CollectionView.extend({
 
 var ChatView = Marionette.View.extend({
 	className: "chatViewContainer",
-	template: _.template(fs.readFileSync("./app/templates/chatView.html", "utf8")),
+	
+	getTemplate: function(){
+		return _.template(fs.readFileSync("./app/templates/chatView.html", "utf8"), this.templateContext());
+	},
+
 	regions: {
 		main: ".chatMain",
 		messageList: ".messageList",
@@ -55,6 +59,7 @@ var ChatView = Marionette.View.extend({
 
 	modelEvents:{
 		"add:message" : "messageAdded",
+		"change:channel": "render"
 	},
 
 	ui: {
@@ -65,6 +70,12 @@ var ChatView = Marionette.View.extend({
 	events: {
 		"click @ui.collapse" : "collapseChat",
 		"keypress @ui.inputMessage": "onChatInput",
+	},
+
+	templateContext: function(){
+		return {
+			room: this.model.get("channel") 
+		};
 	},
  
 	onRender: function(){

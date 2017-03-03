@@ -14,14 +14,23 @@ var Room = Backbone.Model.extend({
 
 	playerJoin: function(playerModel){
 		var roomPlayers = this.get("players");
+		
+		var socket = playerModel.get("socket");
+		socket.leave("global"); //Need to guard or no?
+		socket.join("game" + this.get("id"));
+		
 		if(roomPlayers.length == 0){
 			this.set("host", playerModel.clientJSON());
 		}
 		roomPlayers.add(playerModel);
 	},
 
-	playerLeave: function(playerId){
+	playerLeave: function(socket){
 		var self = this;
+		var playerId = socket.id;
+
+		socket.leave("game" + this.get("id"));
+		socket.join("global");
 
 		this.get("players").remove(playerId);
 		if(this.get("players").length == 0){

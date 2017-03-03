@@ -68,7 +68,9 @@ var User = Backbone.Model.extend({
 		if(!this.get("name") || !this.getSocket()){
 			console.error("Could not create chat client without a name.");
 		}else{
-			this.chatClient = new ChatClient(this.getSocket());
+			//this.chatClient = new ChatClient(this.getSocket());
+			var self = this;
+			this.chatClient = new ChatClient({userModel: self});
 		}
 	},
 

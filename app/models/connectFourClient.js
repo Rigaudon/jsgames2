@@ -6,6 +6,7 @@ var ConnectFourClient = Backbone.Model.extend({
 		this.socket.on("roomInfo", function(roomInfo){
 			self.processRoomInfo(roomInfo);
 		});
+		//We do this instead of the server side event because of the delay it takes to create the view
 		this.getRoomInfo();
 	},
 

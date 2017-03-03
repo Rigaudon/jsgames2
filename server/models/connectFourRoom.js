@@ -61,7 +61,7 @@ var ConnectFourRoom = Room.extend({
 	},
 
 	kickPlayer: function(player){
-		this.collection.playerLeave(player.id);
+		this.collection.playerLeave(player.get("socket"));
 		player.get("socket").emit("leaveRoom");
 	}
 
