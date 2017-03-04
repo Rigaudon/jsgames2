@@ -5,6 +5,39 @@ var fs = require("fs");
 var common = require("../common");
 var gamesCollection = new Backbone.Collection(require("../../games.json"));
 
+var PasswordInputView = Marionette.View.extend({
+	className: "modal fade passwordInput",
+	attributes: {
+		role: "dialog"
+	},
+
+	initialize: function(options){
+		this.model = options.model;
+		this.room = options.room;
+	},
+
+	getTemplate: function(){
+		return _.template(fs.readFileSync("./app/templates/partials/gameRooms/passwordInputView.html", "utf8"));
+	},
+
+	regions: {
+		"password": "input"
+	},
+
+	ui: {
+		"joinBtn": ".joinBtn"
+	},
+
+	events: {
+		"click @ui.joinBtn": "joinRoom"
+	},
+
+	joinRoom: function(){
+		//@TODO: shake and show red when not correct
+		this.model.joinRoom(this.room.id, this.$(this.regions.password).val());
+	}
+});
+
 var GameRoomListItem = Marionette.View.extend({
 	getTemplate: function(){
 		var self = this;
@@ -91,8 +124,21 @@ var GameRoomsTableView = Marionette.View.extend({
 	requestJoinRoom: function(event){
 		var btnId = event.target.id;
 		var roomId = parseInt(btnId.replace("joinRoom", ""));
-		//@TODO: implement passwords
-		this.model.joinRoom(roomId, "");
+		var activeRoom = this.model.get("activeRooms").get(roomId);
+		if(activeRoom.get("hasPassword")){
+			var parentDiv = this.$el.parent().parent();
+			parentDiv.find(".passwordInput").remove();
+			var passInput = new PasswordInputView({model: this.model, room: activeRoom});
+			parentDiv.append(passInput.$el);
+			passInput.render();
+			$(passInput.$el).modal({
+				backdrop: false,
+				keyboard: true,
+				show: true
+			});
+		}else{
+			this.model.joinRoom(roomId, "");	
+		}
 	}
 });
 

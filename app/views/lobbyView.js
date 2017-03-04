@@ -6,7 +6,6 @@ var ChatView = require("./chatView");
 var SideBarView = require("./sideBarview");
 var GameRoomsView = require("./gameRoomsView");
 
-//Move me?
 var ConnectFourRoomView = require("./gameRoomViews/connectFourRoomView");
 var UnoRoomView = require("./gameRoomViews/unoRoomView");
 
@@ -67,6 +66,11 @@ var LobbyView = Marionette.View.extend({
 			});
 		}else{
 			//@TODO: show error
+			self.model.chatClient.addMessage({
+				type: "server",
+				class: "error",
+				message: "Failed to find room."
+			});
 		}
 	}
 

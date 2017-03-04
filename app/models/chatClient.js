@@ -36,7 +36,7 @@ var ChatClient = Backbone.Model.extend({
 		});
 	},
 
-	sendChatMessage: function(message){ //@TODO: add channels
+	sendChatMessage: function(message){ 
 		message = encodeURIComponent(emoji.emojify(message));
 		if(this.validateMessage(message)){
 			this.socket.emit("chatMessage", {
@@ -67,7 +67,6 @@ var ChatClient = Backbone.Model.extend({
 	updateChannel: function(){
 		var roomId = this.userModel.get("roomId");
 		if(roomId){
-			//@TODO: use channelName and set it to the game room's name.
 			var self = this;
 			this.set("channel", {
 				channel: "game" + roomId,
