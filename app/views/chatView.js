@@ -40,8 +40,33 @@ var ChatItemView = Marionette.View.extend({
 
 });
 
+var ChatItemServerView = Marionette.View.extend({
+	tagName: "li",
+	className: function(){
+		var myClass = "chatItemServer";
+		if(this.model.get("class")){
+			myClass += " " + this.model.get("class");
+		}
+		return myClass;
+	},	
+	getTemplate: function(){
+		return _.template(fs.readFileSync("./app/templates/partials/chatItemServer.html", "utf8"), this.templateContext());
+	},
+	templateContext: function(){
+		return {
+			message: this.model.get("message")
+		};
+	}
+});
+
 var ChatCollectionView = Marionette.CollectionView.extend({
-	childView: ChatItemView,
+	childView: function(item){
+		if(item.get("type") == "player"){
+			return ChatItemView;
+		}else{
+			return ChatItemServerView;
+		}
+	},
 	tagName: "ul"
 });
 
@@ -74,7 +99,7 @@ var ChatView = Marionette.View.extend({
 
 	templateContext: function(){
 		return {
-			room: this.model.get("channel") 
+			room: this.model.get("channel").display
 		};
 	},
  

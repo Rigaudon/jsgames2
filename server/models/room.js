@@ -4,6 +4,7 @@ var _  = require("lodash");
 var Room = Backbone.Model.extend({
 	
 	initialize: function(options){
+		this.io = options.io;
 		this.set("options", options.options);
 		this.set("status", "Waiting for Players");
 		this.set("players", new Backbone.Collection());
@@ -12,13 +13,31 @@ var Room = Backbone.Model.extend({
 		this.set("gameState", {});
 	},
 
+	switchChannel(socket, name, from, to){
+		//Any way to move me to chat controller?
+		this.io.sockets.in(from.channel).emit("chatMessage", {
+			message: name + " left " + from.display + ".",
+			type: "server"
+		});
+		socket.leave(from.channel);
+		socket.join(to.channel);
+		this.io.sockets.in(to.channel).emit("chatMessage", {
+			message: name + " joined " + to.display + ".",
+			type: "server"
+		});
+	},
+
 	playerJoin: function(playerModel){
+		var self = this;
+		self.switchChannel(	playerModel.get("socket"), 
+							playerModel.get("name"), 
+							{ channel: "global",
+							  display: "global chat"
+							}, 
+							{ channel: "game" + self.get("id"),
+							  display: self.get("options").roomName
+							});
 		var roomPlayers = this.get("players");
-		
-		var socket = playerModel.get("socket");
-		socket.leave("global"); //Need to guard or no?
-		socket.join("game" + this.get("id"));
-		
 		if(roomPlayers.length == 0){
 			this.set("host", playerModel.clientJSON());
 		}
@@ -29,8 +48,14 @@ var Room = Backbone.Model.extend({
 		var self = this;
 		var playerId = socket.id;
 
-		socket.leave("game" + this.get("id"));
-		socket.join("global");
+		self.switchChannel( socket, 
+							self.get("players").get(socket.id).get("name"), 
+							{ channel: "game" + self.get("id"),
+							  display: self.get("options").roomName
+							},
+							{ channel: "global", 
+							  display: "global chat"
+							});
 
 		this.get("players").remove(playerId);
 		if(this.get("players").length == 0){

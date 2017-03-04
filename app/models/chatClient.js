@@ -1,8 +1,23 @@
 var Backbone = require("backbone");
-var ChatMessage = require("./chatMessage");
 var emoji = require("node-emoji");
 
-//@TODO: add server messages (eg. Michael joined global, Michael left global, Michael joined x's room)
+var ChatMessage = Backbone.Model.extend({
+	initialize: function(data){
+		this.set("message", decodeURIComponent(data.message));
+		this.set("name", data.name);
+		this.set("time", data.time);
+		this.set("color", data.color);
+		this.set("type", "player");
+	},
+});
+
+var ServerMessage = Backbone.Model.extend({
+	initialize: function(data){
+		this.set("type", "server")
+		this.set("message", data.message);
+		this.set("class", data.class);
+	}
+});
 
 var ChatClient = Backbone.Model.extend({
 	initialize: function(options){
@@ -11,7 +26,11 @@ var ChatClient = Backbone.Model.extend({
 		this.userModel.on("change:roomId", self.updateChannel.bind(self));
 		this.socket = options.userModel.getSocket();
 		this.messageCollection = new Backbone.Collection();
-		this.set("channel", "global");
+		this.set("channel", {
+			channel: "global",
+			display: "Global Chat"
+		});
+		this.socket.off("chatMessage");
 		this.socket.on("chatMessage", function(value){
 			self.addMessage(value);
 		});
@@ -22,7 +41,7 @@ var ChatClient = Backbone.Model.extend({
 		if(this.validateMessage(message)){
 			this.socket.emit("chatMessage", {
 				message: message,
-				channel: this.get("channel")
+				channel: this.get("channel").channel
 			});
 		}
 	},
@@ -30,7 +49,11 @@ var ChatClient = Backbone.Model.extend({
 	maxMessages: 75,
 
 	addMessage: function(message){
-		this.messageCollection.add(new ChatMessage(message));
+		if(message.type == "player"){
+			this.messageCollection.add(new ChatMessage(message));
+		}else if(message.type == "server"){
+			this.messageCollection.add(new ServerMessage(message));
+		}
 		if(this.messageCollection.models.length > this.maxMessages){
 			this.messageCollection.shift();
 		}
@@ -45,9 +68,16 @@ var ChatClient = Backbone.Model.extend({
 		var roomId = this.userModel.get("roomId");
 		if(roomId){
 			//@TODO: use channelName and set it to the game room's name.
-			this.set("channel", "game" + roomId);
+			var self = this;
+			this.set("channel", {
+				channel: "game" + roomId,
+				display: self.userModel.get("channelName")
+			});
 		}else{
-			this.set("channel", "global");
+			this.set("channel", {
+				channel: "global",
+				display: "Global Chat"
+			});
 		}
 	}
 });

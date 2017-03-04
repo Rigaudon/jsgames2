@@ -99,6 +99,7 @@ var RoomsController = Backbone.Collection.extend({
 			id: ++nextGameRoomId,
 			hasPassword: (options.roomPassword != ""),
 			maxPlayers: game.get("maxPlayers"),
+			io: this.io
 		});
 		this.add(newRoom);
 		this.emitActiveRooms(this.io);
@@ -114,11 +115,12 @@ var RoomsController = Backbone.Collection.extend({
 	joinRoom: function(socket, options, playerModel){
 		var room = this.get(options.roomId);
 		if(this.validateJoinRoom(socket.id, options, room)){
+			var roomName = this.get(options.roomId).get("options").roomName;
 			this.playerJoin(socket.id, options.roomId, playerModel);
-
 			socket.emit("joinRoomResponse", {
 				success: true,
-				roomId: options.roomId
+				roomId: options.roomId,
+				channelName: roomName
 			});
 			this.emitActiveRooms(this.io);
 		}else{

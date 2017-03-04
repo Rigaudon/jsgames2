@@ -242,6 +242,12 @@ $create-room-bg-url: #222222;
 
 .chatView .chatViewContainer li .chatMessage { font-size: 14px; word-wrap: break-word; }
 
+.chatView .chatViewContainer li.chatItemServer { text-align: center; font-size: 14px; color: gray; font-style: italic; }
+
+.chatView .chatViewContainer li.chatItemServer.error { color: red; }
+
+.chatView .chatViewContainer li.chatItemServer.error::before { content: "Error: "; }
+
 /*
 primary-color: text color
 secondary-color: differing shade of primary (gradient in welcome)

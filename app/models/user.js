@@ -49,13 +49,19 @@ var User = Backbone.Model.extend({
 		//Response for joining a room
 		self.getSocket().on("joinRoomResponse", function(response){
 			if(response.success){
+				self.set("channelName", response.channelName);
 				self.set("roomId", response.roomId);
 			}else{
-				//@TODO: show error
+				self.chatClient.addMessage({
+					type: "server",
+					class: "error",
+					message: "Failed to join room."
+				});
 			}
 		});
 		//Kicked from room
 		self.getSocket().on("leaveRoom", function(){
+			self.set("channelName", "Global Chat");
 			self.unset("roomId");
 		});
 	},
@@ -84,6 +90,7 @@ var User = Backbone.Model.extend({
 	leaveRoom: function(){
 		this.getSocket().emit("leaveRoom");
 		//Don't need to wait for response
+		this.set("channelName", "Global Chat");
 		this.unset("roomId");
 	}
 });

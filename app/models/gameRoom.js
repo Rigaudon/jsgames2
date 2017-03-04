@@ -9,10 +9,12 @@ var GameRoom = Backbone.Model.extend({
 		var self = this;
 		this.user = options.user;
 		this.socket = this.user.getSocket();
+		this.socket.off("createRoomResponse");
 		this.socket.on("createRoomResponse", function(response){
 			if(response.success){
 				self.user.joinRoom(response.id, response.password);
 				self.trigger("close:modal");
+				self.destroy();
 			}else{
 				self.set("errors", [response.message]);
 				self.trigger("show:errors");

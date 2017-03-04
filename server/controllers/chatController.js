@@ -8,6 +8,7 @@ var ChatController = Backbone.Collection.extend({
 	processMessage: function(socket, message, player, rooms){
 		if(util.validateMessage(message, socket, this.io)){
 			var origMessage = {
+				type: "player",
 				id: ++nextMsgId,
 				message: message.message,
 				name: player.get("name"),

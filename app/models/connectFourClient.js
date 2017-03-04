@@ -3,6 +3,7 @@ var ConnectFourClient = Backbone.Model.extend({
 	initialize: function(options){
 		var self = this;
 		this.socket = options.socket;
+		this.socket.off("roomInfo");
 		this.socket.on("roomInfo", function(roomInfo){
 			self.processRoomInfo(roomInfo);
 		});

@@ -120,5 +120,20 @@
 				word-wrap: break-word;
 			}
 		}
+
+		li.chatItemServer{
+			text-align: center;
+			font-size: 14px;
+			color: gray;
+			font-style: italic;
+		}
+
+		li.chatItemServer.error{
+			color: red;
+		}
+
+		li.chatItemServer.error::before{
+			content: "Error: ";
+		}
 	}
 }
