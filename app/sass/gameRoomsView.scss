@@ -8,11 +8,14 @@
 	align-items: center;
 
 	.passwordInput{
-		.modal-body{
-			button{
-				margin: 10px 10px 0 10px;
-				padding: 5px 3px 3px 0px;
-				width: 40%;
+		.passwordModal{
+			top: 20%;
+			.modal-body{
+				button{
+					margin: 10px 10px 0 10px;
+					padding: 5px 3px 3px 0px;
+					width: 40%;
+				}
 			}
 		}
 	}

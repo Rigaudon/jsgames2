@@ -1,63 +1,3 @@
-<div class="gameName"><%- roomName %></div>
-<div class="opponentName"><%= opponent %></div>
-<div class="connectFourBoard">
-	<div class="square">
-		<div class="row">
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-		</div>
-		<div class="row">
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-		</div>
-		<div class="row">
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-		</div>
-		<div class="row">
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-		</div>
-		<div class="row">
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-		</div>
-		<div class="row">
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-			<div class="cell"></div>
-		</div>
-	</div>
-</div>
 <div class="controls">
 	<div class="gameInfo">
 		<div>
@@ -65,7 +5,7 @@
 			<span>Connect Four</span>
 		</div>
 		<div>
-			<span>Game Room ID:</span>
+			<span>Room ID:</span>
 			<span><%- id %></span>
 		</div>
 		<div>
@@ -77,12 +17,76 @@
 			<span><%- host %></span>
 		</div>
 	</div>
-	<div class="userControls">
-		<%= controls %>
-	</div>
 	<% if(isHost){ %>
 	<div class="hostControls">
+	Host Options: 
 	<%= hostControls %>
 	</div>
 	<% } %>
+	<div class="userControls">
+		<%= controls %>
+	</div>
+</div> 
+<div class="connectFourMain">
+	<div class="gameName"><%- roomName %></div>
+	<div class="playerName"><%= opponent %></div>
+	<div class="connectFourBoard">
+		<div class="square">
+			<div class="row">
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+			</div>
+			<div class="row">
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+			</div>
+			<div class="row">
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+			</div>
+			<div class="row">
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+			</div>
+			<div class="row">
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+			</div>
+			<div class="row">
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+				<div class="cell"></div>
+			</div>
+		</div>
+	</div>
+	<div class="playerName"><%= player %></div>
 </div>

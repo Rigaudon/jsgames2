@@ -7,13 +7,8 @@ Run npm install, then npm start.
 
 # To do
 - Implement games
-- Add console
-- Add controller for chat 
-	- Add channel for chat when new room is made
+- Add who's online list to chat
 - More dynamic templates
 - Add player color selection to settings
 - Add theme selection to settings
-- Add who's online tab to chat
-- Redo game selection screen (low priority)
-	- Fix alert formatting
-	- Add selection styles to tabs?
+- Add console

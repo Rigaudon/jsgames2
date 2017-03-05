@@ -23,7 +23,8 @@ var ConnectFourRoomView = Marionette.View.extend({
 			status: this.model.get("status"),
 			host: this.model.get("host") ? ( this.model.get("host").name + (this.model.get("isHost") ? " (you)" : "")) : "",
 			isHost: this.model.get("isHost"),
-			hostControls: this.getHostOptions()
+			hostControls: this.getHostOptions(),
+			player: this.player.get("name")
 		};
 	},
 
@@ -53,8 +54,8 @@ var ConnectFourRoomView = Marionette.View.extend({
 			var players = this.model.get("players");
 			if(players.length == 2 && !this.model.get("inProgress")){
 				//Add restart option
-				hostOptions += "<button class=\"kickBtn\">Kick Opponent</button>";
-				hostOptions += "<button class=\"startBtn\">Start Game</button>";		
+				hostOptions += "<button class=\"kickBtn btn-big\">Kick Opponent</button>";
+				hostOptions += "<button class=\"startBtn btn-big\">Start Game</button>";		
 			}
 		}
 		return hostOptions;
