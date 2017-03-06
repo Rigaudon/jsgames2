@@ -2,7 +2,11 @@
 var sBrowser, sUsrAg = navigator.userAgent;
 var finishTransition;
 
-if(sUsrAg.indexOf("Chrome") > -1) {
+if(sUsrAg.indexOf("Edge") > -1){
+    sBrowser = "Edge";
+    finishTransition = "transitionend";
+    alert("Microsoft Browser detected. Please consider switching to Chrome or Firefox for best performance.");
+}else if(sUsrAg.indexOf("Chrome") > -1) {
     sBrowser = "Chrome";
     finishTransition = "transitionend";
 } else if (sUsrAg.indexOf("Safari") > -1) {
@@ -17,6 +21,7 @@ if(sUsrAg.indexOf("Chrome") > -1) {
 } else if (sUsrAg.indexOf("MSIE") > -1) {
     sBrowser = "MSIE";
     finishTransition = "transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd";
+    alert("Microsoft Browser detected. Please consider switching to Chrome or Firefox for best performance.");
 }
 
 function fadeOutThenIn(view, callback){

@@ -7,6 +7,11 @@ Run npm install, then npm start.
 
 # To do
 - Implement games
+	- Connect Four: 
+		- Auto size the box on render
+		- Host to pick color of self and opponent
+		- Outline winning four-in-a-row after win
+- Spectate mode
 - Add who's online list to chat
 - More dynamic templates
 - Add player color selection to settings
