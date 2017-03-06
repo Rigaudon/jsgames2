@@ -2,11 +2,18 @@ var Backbone = require("backbone");
 var ConnectFourClient = Backbone.Model.extend({
 	initialize: function(options){
 		var self = this;
-		this.socket = options.socket;
+		this.player = options.player;
+		this.socket = this.player.getSocket();
 		this.socket.off("roomInfo");
 		this.socket.on("roomInfo", function(roomInfo){
 			self.processRoomInfo(roomInfo);
 		});
+		this.socket.off("gameMessage");
+		this.socket.on("gameMessage", function(message){
+			self.processGameMessage(message);
+		});
+		this.set("myTurn", undefined);
+		this.set("inProgress", false);
 		//We do this instead of the server side event because of the delay it takes to create the view
 		this.getRoomInfo();
 	},
@@ -16,6 +23,7 @@ var ConnectFourClient = Backbone.Model.extend({
 	},
 
 	processRoomInfo: function(roomInfo){
+		var self = this;
 		this.set("host", roomInfo.host);
 		this.set("isHost", this.isHost());
 		this.set("gameState", roomInfo.gameState);
@@ -24,6 +32,13 @@ var ConnectFourClient = Backbone.Model.extend({
 		this.set("opponentName", this.opponentName());
 		this.set("roomName", roomInfo.options.roomName);
 		this.set("id", roomInfo.id);
+		this.set("inProgress", roomInfo.status == 2);
+		if(roomInfo.gameState.playerNum){
+			this.set("myPlayerNum", roomInfo.gameState.playerNum[self.player.get("name")]);
+			if(roomInfo.gameState.colors){
+				this.set("myColor", roomInfo.gameState.colors[self.get("myPlayerNum")]);
+			}
+		}
 		this.trigger("update:room");
 	},
 
@@ -37,6 +52,48 @@ var ConnectFourClient = Backbone.Model.extend({
 			}
 		}else{
 			return false;
+		}
+	},
+
+	processGameMessage: function(message){
+		switch(message.message){
+			case "turn":
+				if(message.turn == this.player.get("name")){
+					this.set("myTurn", true);
+				}else{
+					this.set("myTurn", false);
+				}
+			break;
+			case "madeMove":
+				var targetPosition = this.get("gameState").boardState[message.move].indexOf(-1);
+				var color = this.get("gameState").colors[message.playerNum];
+				//Set the local gamestate
+				this.get("gameState").boardState[message.move][targetPosition] = message.playerNum;
+				this.trigger("animate:preview", {
+					color: color,
+					row: targetPosition,
+					col: message.move
+				});
+			break;
+			case "victory":
+				this.player.chatClient.addMessage({
+					message: message.player + " won!",
+					class: "success",
+					type: "server"
+				});
+				this.set("inProgress", false);
+				this.set("myTurn", null);
+			break;
+		}
+	},
+
+	makeMove: function(col){
+		if(this.get("myTurn") && this.get("inProgress")){
+			this.socket.emit("gameMessage", {
+				command: "makeMove",
+				roomId: this.get("id"),
+				column: col
+			});
 		}
 	},
 
@@ -56,7 +113,7 @@ var ConnectFourClient = Backbone.Model.extend({
 		this.socket.emit("gameMessage", {
 			command: "startGame",
 			roomId: this.get("id")
-		});
+		}); 
 	}
 });
 

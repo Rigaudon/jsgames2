@@ -14,11 +14,23 @@
 		justify-content: center;
 		align-items: center;
 		overflow-y: auto;
+		padding-top: 45px;
+
+		.preview{
+			position :absolute;
+			display: none;
+			transition: $transition-very-fast;
+		}
+
+		.dropPreview{
+			position :absolute;
+			display: none;
+		}
 
 		.gameName{
 			background-color: $primary-color;
 			color: $bg-color;
-			font-size: 50px;
+			font-size: 30px;
 			border-radius: 0px 0px 30px 30px;
 			width: 50%;
 			position: absolute;
@@ -28,6 +40,21 @@
 		.playerName{
 			font-size: 30px;
 			margin: 20px;
+			transition: $transition-very-fast;
+			min-height: 60px;
+		}
+
+		.currentTurn{
+			font-size: 40px;
+			font-weight: bold;
+		}
+
+		.currentTurn::before{
+			content: ">> ";
+		}
+
+		.currentTurn::after{
+			content: " <<";
 		}
 
 		.connectFourBoard{
@@ -35,9 +62,10 @@
 			padding-top: 51.5%;
 			position: relative;
 			opacity: 0.85;
+			/*
 			min-height: 600px;
 			min-width: 700px;
-
+			*/
 			.square{
 				border: 1px solid $primary-color;
 				top: 0;
@@ -55,6 +83,9 @@
 						float: left;
 						border: 1px solid $primary-color;
 						background-color: $bg-color;
+						background-position: center;
+						background-size: cover;
+						background-repeat: no-repeat;
 					}
 				}
 			}

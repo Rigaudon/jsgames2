@@ -6,10 +6,11 @@ var Room = Backbone.Model.extend({
 	initialize: function(options){
 		this.io = options.io;
 		this.set("options", options.options);
-		this.set("status", "Waiting for Players");
+		this.set("status", 0);
 		this.set("players", new Backbone.Collection());
 		this.set("hasPassword", options.hasPassword);
 		this.set("maxPlayers", options.maxPlayers);
+		this.set("channel", "game" + this.get("id"));
 		this.set("gameState", {});
 	},
 
@@ -34,7 +35,7 @@ var Room = Backbone.Model.extend({
 							{ channel: "global",
 							  display: "global chat"
 							}, 
-							{ channel: "game" + self.get("id"),
+							{ channel: self.get("channel"),
 							  display: self.get("options").roomName
 							});
 		var roomPlayers = this.get("players");
@@ -50,7 +51,7 @@ var Room = Backbone.Model.extend({
 
 		self.switchChannel( socket, 
 							self.get("players").get(socket.id).get("name"), 
-							{ channel: "game" + self.get("id"),
+							{ channel: self.get("channel"),
 							  display: self.get("options").roomName
 							},
 							{ channel: "global", 

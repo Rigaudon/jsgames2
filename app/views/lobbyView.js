@@ -44,6 +44,9 @@ var LobbyView = Marionette.View.extend({
 			//User joined a room
 			this.showGameRoom(roomId);
 		}else{
+			//Disable game messages since we left the room.
+			//Although technically we shouldn't be receiving any, since user is no longer in the room
+			this.model.getSocket().off("gameMessage");
 			//User left a room; show the root view.
 			var mainView = this.$(this.regions.main);
 			var self = this;

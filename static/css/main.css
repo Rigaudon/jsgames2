@@ -252,6 +252,8 @@ $create-room-bg-url: #222222;
 
 .chatView .chatViewContainer li.chatItemServer.error::before { content: "Error: "; }
 
+.chatView .chatViewContainer li.chatItemServer.success { color: #008000; font-size: 20px; font-weight: bold; font-style: normal; }
+
 /*
 primary-color: text color
 secondary-color: differing shade of primary (gradient in welcome)
@@ -364,19 +366,29 @@ $create-room-bg-url: #222222;
 */
 .connectFourRoom { width: 100%; height: 100%; display: flex; flex-direction: row; align-items: center; }
 
-.connectFourRoom .connectFourMain { flex-grow: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow-y: auto; }
+.connectFourRoom .connectFourMain { flex-grow: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow-y: auto; padding-top: 45px; }
 
-.connectFourRoom .connectFourMain .gameName { background-color: #003366; color: #ffffff; font-size: 50px; border-radius: 0px 0px 30px 30px; width: 50%; position: absolute; top: 0; }
+.connectFourRoom .connectFourMain .preview { position: absolute; display: none; transition: 0.2s; }
 
-.connectFourRoom .connectFourMain .playerName { font-size: 30px; margin: 20px; }
+.connectFourRoom .connectFourMain .dropPreview { position: absolute; display: none; }
 
-.connectFourRoom .connectFourMain .connectFourBoard { width: 60%; padding-top: 51.5%; position: relative; opacity: 0.85; min-height: 600px; min-width: 700px; }
+.connectFourRoom .connectFourMain .gameName { background-color: #003366; color: #ffffff; font-size: 30px; border-radius: 0px 0px 30px 30px; width: 50%; position: absolute; top: 0; }
+
+.connectFourRoom .connectFourMain .playerName { font-size: 30px; margin: 20px; transition: 0.2s; min-height: 60px; }
+
+.connectFourRoom .connectFourMain .currentTurn { font-size: 40px; font-weight: bold; }
+
+.connectFourRoom .connectFourMain .currentTurn::before { content: ">> "; }
+
+.connectFourRoom .connectFourMain .currentTurn::after { content: " <<"; }
+
+.connectFourRoom .connectFourMain .connectFourBoard { width: 60%; padding-top: 51.5%; position: relative; opacity: 0.85; /* min-height: 600px; min-width: 700px; */ }
 
 .connectFourRoom .connectFourMain .connectFourBoard .square { border: 1px solid #003366; top: 0; left: 0; position: absolute; width: 100%; height: 100%; }
 
 .connectFourRoom .connectFourMain .connectFourBoard .square .row { margin-left: 0.01%; width: 100%; height: 16.6666%; }
 
-.connectFourRoom .connectFourMain .connectFourBoard .square .row .cell { width: 14.2857%; height: 100%; float: left; border: 1px solid #003366; background-color: #ffffff; }
+.connectFourRoom .connectFourMain .connectFourBoard .square .row .cell { width: 14.2857%; height: 100%; float: left; border: 1px solid #003366; background-color: #ffffff; background-position: center; background-size: cover; background-repeat: no-repeat; }
 
 .connectFourRoom .controls { height: 80%; border: 3px solid #003366; background-color: #ffffff; color: #003366; margin: 10px; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; max-width: 220px; padding-bottom: 10px; background-color: #efeef1; }
 
