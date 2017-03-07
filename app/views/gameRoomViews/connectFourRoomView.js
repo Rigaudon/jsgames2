@@ -156,6 +156,7 @@ var ConnectFourRoomView = Marionette.View.extend({
 		var gameState = this.model.get("gameState");
 		if(gameState && gameState.boardState){
 			var boardState = gameState.boardState;
+			var highlight = gameState.highlight;
 			for(var col=0; col<boardState.length; col++){
 				for(var row=0; row<boardState[col].length; row++){
 					if(boardState[col][row] != -1){
@@ -163,7 +164,10 @@ var ConnectFourRoomView = Marionette.View.extend({
 						var color = gameState.colors[boardState[col][row]];
 						var pieceImg = "/static/images/assets/connectFour/c4" +  color + ".png";
 						cell.css("background-image", `url(${pieceImg})`);
-					}
+						if(highlight && highlight.filter(function(val){ return _.isEqual(val, [col, row]); }).length > 0){
+							cell.css("background-color", color);
+						}
+					}	
 				}
 			}
 		}

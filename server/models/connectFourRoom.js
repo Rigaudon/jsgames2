@@ -63,6 +63,7 @@ var ConnectFourRoom = Room.extend({
 				case "startGame":
 					if(players.length == 2){
 						self.set("status", 2);
+						gameState.highlight = undefined;
 						gameState.turn = Math.floor(Math.random() * 2); //Random player starts
 						gameState.colors = {};
 						gameState.colors[0] = "blue";
@@ -123,12 +124,14 @@ var ConnectFourRoom = Room.extend({
 				"player": this.get("players").at(this.get("gameState").turn).get("name"),
 				"playerNum": this.get("gameState").turn
 			});
-			if(this.checkForWin(col, row)){
+			var winningPosition = this.checkForWin(col, row);
+			if(winningPosition){
 				this.io.in(this.get("channel")).emit("gameMessage", {
 					"message": "victory",
 					"player": this.get("players").at(this.get("gameState").turn).get("name")
 				});
 				this.set("status", 1);
+				this.get("gameState").highlight = winningPosition;
 				this.emitToAllExcept();
 			}else{
 				this.progressTurn();
@@ -164,7 +167,10 @@ var ConnectFourRoom = Room.extend({
 			}else if(board[i][row] == prev){
 				inARow++;
 				if(inARow >= 4){
-					return true;
+					return [[i, row],
+							[i-1, row],
+							[i-2, row],
+							[i-3, row]];
 				}
 			}else{
 				prev = board[i][row];
@@ -184,7 +190,10 @@ var ConnectFourRoom = Room.extend({
 			}else if(boardCol[i] == prev){
 				inARow++;
 				if(inARow >= 4){
-					return true;
+					return [[col, i],
+							[col, i-1],
+							[col, i-2],
+							[col, i-3]];
 				}
 			}else{
 				prev = boardCol[i];
@@ -207,7 +216,10 @@ var ConnectFourRoom = Room.extend({
 			}else if(board[col][row] == prev){
 				inARow++;
 				if(inARow >= 4){
-					return true;
+					return [[col, row],
+							[col-1, row-1],
+							[col-2, row-2],
+							[col-3, row-3]];
 				}
 			}else{
 				prev = board[col][row];
@@ -232,7 +244,10 @@ var ConnectFourRoom = Room.extend({
 			}else if(board[col][row] == prev){
 				inARow++;
 				if(inARow >= 4){
-					return true;
+					return [[col, row],
+							[col-1, row+1],
+							[col-2, row+2],
+							[col-3, row+3]];
 				}
 			}else{
 				prev = board[col][row];
