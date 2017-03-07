@@ -14,4 +14,11 @@ var App = Marionette.Application.extend({
 });
 
 var myApp = new App();
+
 myApp.start();
+
+$(document).on("keypress", function(e){
+	if(e.which == 96){ //~
+		$(".console").toggleClass("show");
+	}
+})

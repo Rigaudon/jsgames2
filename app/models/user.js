@@ -4,6 +4,8 @@ var ChatClient = require("./chatClient.js");
 var User = Backbone.Model.extend({
 	initialize: function(){
 		this.set("activeRooms", new Backbone.Collection());
+		this.consoleRequests = [];
+		this.consoleResponses = new Backbone.Collection();
 		if(!io){
 			console.error("No socket.io detected!");
 			return;
@@ -64,6 +66,10 @@ var User = Backbone.Model.extend({
 			self.set("channelName", "Global Chat");
 			self.unset("roomId");
 		});
+		//Received a console message
+		self.getSocket().on("consoleMessage", function(message){
+			self.consoleResponses.add(message);
+		});
 	},
 
 	requestName: function(name){
@@ -92,6 +98,68 @@ var User = Backbone.Model.extend({
 		//Don't need to wait for response
 		this.set("channelName", "Global Chat");
 		this.unset("roomId");
+		this.gameClient = undefined;
+	},
+
+	consoleMessage: function(message){
+		if(message && message.length > 0){
+			this.consoleRequests.push(message);
+			var args = message.split(" ");
+			switch(args[0]){
+				case "clear":
+					this.consoleResponses.reset();
+				break;
+				case "log":
+					this.clientConsole(args.splice(1));
+				break;
+				case "server":
+					this.getSocket().emit("consoleMessage", {
+						message: args
+					});
+				break;
+				default:
+					this.consoleResponses.add({
+						message: "Unknown command"
+					});
+				break;
+			}
+		}
+	},
+
+	clientConsole: function(args){
+		if(args.length != 1){
+			this.consoleResponses.add({
+				message: "Unknown command"
+			});
+		}else{
+			switch(args[0]){
+				case "user":
+					console.log("%cUser", "color:green; font-size:20pt");
+					console.log(this);
+					this.consoleResponses.add({
+						message: "Logged user"
+					});
+				break;
+				case "gameClient":
+					console.log("%cGame Client", "color:blue; font-size:20pt");
+					console.log(this.gameClient);
+					this.consoleResponses.add({
+						message: "Logged game client"
+					});
+				break;
+				case "chatClient":
+					console.log("%cChat Client", "color:orange; font-size:20pt");
+					console.log(this.chatClient);
+					this.consoleResponses.add({
+						message: "Logged chat client"
+					});
+				default:
+					this.consoleResponses.add({
+						message: "Unknown command"
+					});
+				break;
+			}
+		}
 	}
 });
 

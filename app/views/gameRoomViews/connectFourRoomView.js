@@ -7,6 +7,7 @@ var ConnectFourRoomView = Marionette.View.extend({
 	initialize: function(options){
 		this.player = options.player;
 		this.model = new ConnectFourClient({player: options.player});
+		this.player.gameClient = this.model;
 	},
 
 	getTemplate: function(){

@@ -1,5 +1,6 @@
 //Handling of SERVER-SIDE io events
 var util = require("./socketUtil");
+var consoleManager = require("./consoleManager");
 
 var socketEvents = function(io, mem){
 	mem.rooms.io = io;
@@ -47,7 +48,6 @@ var socketEvents = function(io, mem){
 		});
 
 		//Request joining a room
-		//@TODO: implement passwords
 		socket.on("joinRoom", function(options){
 			var playerModel = mem.players.get(socket.id);
 			mem.rooms.joinRoom(socket, options, playerModel);
@@ -68,6 +68,11 @@ var socketEvents = function(io, mem){
 			if(options.roomId){
 				mem.rooms.executeCommand(options, socket.id);
 			}
+		});
+
+		//Console message
+		socket.on("consoleMessage", function(message){
+			consoleManager.processMessage(socket, message, mem);
 		});
 	});
 }

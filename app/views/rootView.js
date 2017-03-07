@@ -5,6 +5,7 @@ var common = require("../common");
 var NamePickerView = require("./namePickerView");
 var LobbyView = require("./lobbyView");
 var DisconnectedView = require("./disconnectedView");
+var ConsoleView = require("./consoleView");
 
 var RootView = Marionette.View.extend({
 	className: "root",
@@ -20,7 +21,14 @@ var RootView = Marionette.View.extend({
 	regions: {
 		contentRegion: 	".content",
 		loadingRegion: 	".loading",
-		logoRegion:  	".logo"
+		logoRegion:  	".logo",
+		consoleRegion:  ".console"
+	},
+
+	onRender: function(){
+		var consoleView = new ConsoleView({model: this.model});
+		this.$el.append(consoleView.$el);
+		consoleView.render();
 	},
 
 	//Should only be called when the user connects
@@ -68,7 +76,7 @@ var RootView = Marionette.View.extend({
 
 	onDisconnect: function(){
 		this.showChildView("contentRegion", new DisconnectedView());
-	},
+	}
 
 });
 

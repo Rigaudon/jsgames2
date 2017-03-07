@@ -86,6 +86,20 @@ $create-room-bg-url: #222222;
 
 .disconnected { display: flex; width: 100%; height: 100%; flex-direction: column; justify-content: space-around; font-size: 200%; font-weight: bold; }
 
+.console { position: absolute; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; color: #00FF00; text-align: left; padding: 10px; font-family: "courier"; font-size: 20px; }
+
+.console label { width: 100px; height: 30px; }
+
+.console .consoleInput { border: none; background: transparent; width: calc(100% - 150px); outline: none; }
+
+.console .consoleOutput { width: 100%; height: calc(100% - 30px); resize: none; background: transparent; border: none; outline: none; }
+
+.console ::-webkit-scrollbar { width: 6px; }
+
+.console ::-webkit-scrollbar-track { -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); -webkit-border-radius: 10px; border-radius: 10px; }
+
+.console ::-webkit-scrollbar-thumb { -webkit-border-radius: 20px; border-radius: 20px; background: rgba(0, 0, 0, 0.5); }
+
 /*
 primary-color: text color
 secondary-color: differing shade of primary (gradient in welcome)
