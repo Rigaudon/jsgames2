@@ -2,16 +2,16 @@
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
+	background: rgba(0, 0, 0, 0.65);
 	display: none;
 	color: #00FF00;
 	text-align: left;
 	padding: 10px;
-	font-family: "courier";
-	font-size: 20px;
+	font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo", "Courier", "monospace";
+	font-size: 18px;
 
 	label{
-		width: 100px;
+		width: 80px;
 		height: 30px;
 	}	
 

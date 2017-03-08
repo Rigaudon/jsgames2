@@ -114,7 +114,7 @@ var User = Backbone.Model.extend({
 				break;
 				case "server":
 					this.getSocket().emit("consoleMessage", {
-						message: args
+						args: args.splice(1)
 					});
 				break;
 				default:

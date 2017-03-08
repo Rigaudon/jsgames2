@@ -2,7 +2,7 @@
 A Marionette/Websocket based Nodejs game server.
 
 # Local Setup
-Developed in node 4.5.0, npm 4.1.2.
+Developed in node 6.10.0, npm 4.3.0.
 Run npm install, then npm start.
 
 # To do

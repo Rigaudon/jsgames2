@@ -33,6 +33,7 @@ var socketEvents = function(io, mem){
 		socket.on("disconnect", function(){
 			mem.rooms.playerLeave(socket);
 			mem.players.removePlayer(socket.id);
+			consoleManager.removeUser(socket.id);
 		});
 
 		//Chat message
@@ -72,7 +73,7 @@ var socketEvents = function(io, mem){
 
 		//Console message
 		socket.on("consoleMessage", function(message){
-			consoleManager.processMessage(socket, message, mem);
+			consoleManager.processMessage(socket, message, mem, io);
 		});
 	});
 }

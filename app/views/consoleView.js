@@ -11,7 +11,8 @@ var ConsoleView = Marionette.View.extend({
 		"output": ".consoleOutput"
 	},
 	events: {
-		"keydown @ui.input": "onKeyDown"
+		"keydown @ui.input": "onKeyDown",
+		"click": "focusInput"
 	},
 
 	requestPointer: -1,
@@ -54,6 +55,10 @@ var ConsoleView = Marionette.View.extend({
 	    		target.val(this.model.consoleRequests[this.requestPointer]);
 	    	}
 	    }
+	},
+
+	focusInput: function(){
+		$(this.ui.input).focus();
 	}
 
 });

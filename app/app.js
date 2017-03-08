@@ -19,6 +19,11 @@ myApp.start();
 
 $(document).on("keypress", function(e){
 	if(e.which == 96){ //~
-		$(".console").toggleClass("show");
+		var consoleView = $(".console");
+		consoleView.toggleClass("show");
+		if(consoleView.hasClass("show")){
+			e.preventDefault();
+			$(".consoleInput").focus();
+		}
 	}
 })
