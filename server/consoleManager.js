@@ -42,6 +42,19 @@ function processMessage(socket, message, mem, io){
 		case "list_all_rooms":
 			returnMessage = getAllRooms(mem);
 		break;
+		case "room_details":
+			if(message.args[1]){
+				var room = mem.rooms.get(message.args[1]);
+				if(room){
+					returnMessage = "Displaying details of room " + message.args[1] + "\n";
+					returnMessage+= JSON.stringify(room.toJSON(), null, 4);
+				}else{
+					returnMessage = "No room found with id " + message.args[1];
+				}
+			}else{
+				returnMessage = "No room specified";
+			}
+		break;
 		default:
 			returnMessage = "Unknown server command";
 		break;

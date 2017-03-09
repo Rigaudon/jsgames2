@@ -21,7 +21,9 @@ var ConsoleView = Marionette.View.extend({
 		var self = this;
 		var responses = this.model.consoleResponses;
 		responses.on("add", function(message){
-			$(self.ui.output).append(message.get("message") + "\n");
+			$output = $(self.ui.output);
+			$output.append(message.get("message") + "\n");
+			$output.scrollTop($output[0].scrollHeight);
 		});
 		responses.on("reset", function(){
 			$(self.ui.output).empty();

@@ -25,5 +25,19 @@
 			"roomPassword",
 			"start"
 		]
+	},
+
+	{
+		"id": 3,
+		"name": "Pictionary",
+		"minPlayers": 3,
+		"maxPlayers": 6,
+		"description": "Earn points by guessing what your friends are drawing. When it's your turn, draw the word within a minute, and earn points for each person that guesses your word.",
+		"image": "pictionary.png",
+		"options": [
+			"roomName",
+			"roomPassword",
+			"start"
+		]
 	}
 ]

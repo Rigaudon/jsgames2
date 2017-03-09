@@ -11,6 +11,7 @@
 	text-align: center;
 	color: $primary-color;
 	background-color: $primary-color; /*this is reset in code for transition*/
+	background: linear-gradient($primary-color, $gradient-color);
 
 	.logo, .content{
 		width: 100%;
@@ -20,7 +21,6 @@
 	}
 
 	.logo{
-		-webkit-text-stroke: 1px $secondary-color;
 		-webkit-transition: $transition-fast;
 		transition: $transition-fast;
 	    width: 200%;
@@ -35,9 +35,15 @@
 		justify-content: center;
 		align-items: flex-end;
 		span{
-			height: 15%;
+			height: 13%;
 			display: flex;
 			align-items: center;
+			color: $primary-color;
+			flex-direction: column;
+			img{
+				width: 150px;
+				height: 150px;
+			}
 		}
 	}
 
@@ -73,6 +79,7 @@
 
 .root.noInvert{
 	background-color: $bg-color;
+	background: $bg-color;
 }
 
 

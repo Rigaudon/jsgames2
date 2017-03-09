@@ -2,6 +2,7 @@
 
 .sideBar{
 	background-color: $menu-color;
+	background: linear-gradient($menu-color, $gradient-color);
 	color: $bg-color;
 	height: 100%;
 	position: relative;

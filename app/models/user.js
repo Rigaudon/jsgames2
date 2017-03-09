@@ -104,6 +104,9 @@ var User = Backbone.Model.extend({
 	consoleMessage: function(message){
 		if(message && message.length > 0){
 			this.consoleRequests.push(message);
+			this.consoleResponses.add({
+				message: "&gt;&gt;&gt; " + message
+			});
 			var args = message.split(" ");
 			switch(args[0]){
 				case "clear":

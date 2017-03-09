@@ -7,7 +7,11 @@ var gamesCollection = new Backbone.Collection(games);
 var ConnectFourRoom = require("../models/connectFourRoom");
 
 var nextGameRoomId = 0;
-var RoomsController = Backbone.Collection.extend({
+var RoomsController = Backbone.Collection.extend({	
+	idToRoomMap: {
+		"1": ConnectFourRoom
+	},
+	
 	emitActiveRooms: function(socket){
 		socket.emit("activeRooms", this.withoutPasswords());
 	},
@@ -80,10 +84,6 @@ var RoomsController = Backbone.Collection.extend({
 			default:
 				return false;
 		}
-	},
-
-	idToRoomMap: {
-		"1": ConnectFourRoom
 	},
 
 	createGameRoom: function(options){

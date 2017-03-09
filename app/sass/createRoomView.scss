@@ -15,6 +15,7 @@
 		min-width: 120px;
 		min-height: 400px;
 		background-color: $primary-color;
+		background: linear-gradient($primary-color, $gradient-color);
 		
 		.gameSelectionList{
 			padding: 0;
