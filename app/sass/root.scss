@@ -35,14 +35,18 @@
 		justify-content: center;
 		align-items: flex-end;
 		span{
-			height: 13%;
+			height: 15%;
 			display: flex;
 			align-items: center;
 			color: $primary-color;
 			flex-direction: column;
-			img{
-				width: 150px;
-				height: 150px;
+			.logoContainer{
+				height: 50%;
+				width: 100%;
+				background:url("/static/images/logo.png");
+				background-position: center center;
+				background-size: contain;
+				background-repeat: no-repeat;
 			}
 		}
 	}
