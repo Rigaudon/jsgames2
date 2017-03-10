@@ -31,6 +31,28 @@ var ConnectFourRoom = Room.extend({
 		return boardState;
 	},
 
+	prettifyGameState: function(){
+		var gameState = this.get("gameState");
+		var boardState = gameState.boardState;
+		var prettyState = [];
+		prettyState.push("_______________");
+		for(var i=0; i<6; i++){
+			var lineStr = "|";
+			for(var j=0; j<7; j++){
+				if(boardState[j][5-i] == -1){
+					lineStr+= "_|";
+				}else{
+					lineStr+= boardState[j][5-i] + "|";
+				}
+			}
+			prettyState.push(lineStr);
+		}
+		if(gameState.turn){
+			prettyState.push(gameState.turn + "'s turn.");
+		}
+		return prettyState;
+	},
+
 	playerJoin: function(playerModel){
 		Room.prototype.playerJoin.call(this, playerModel);
 		if(this.get("players").length == this.get("maxPlayers")){
@@ -132,6 +154,7 @@ var ConnectFourRoom = Room.extend({
 				});
 				this.set("status", 1);
 				this.get("gameState").highlight = winningPosition;
+				this.get("gameState").turn = undefined;
 				this.emitToAllExcept();
 			}else{
 				this.progressTurn();

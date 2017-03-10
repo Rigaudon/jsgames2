@@ -48,17 +48,19 @@ $create-room-bg-url: #222222;
 
 .root .logo, .root .content { width: 100%; display: flex; justify-content: center; align-items: center; }
 
-.root .logo { -webkit-transition: 1s; transition: 1s; width: 200%; height: 200%; position: absolute; font-size: 90px; background-color: #ffffff; border-radius: 0 0 100% 100%; top: -170%; left: -50%; display: flex; justify-content: center; align-items: flex-end; }
+.root .logo { -webkit-transition: 1s; transition: 1s; width: 200%; height: 200%; position: absolute; font-size: 70px; background-color: #ffffff; border-radius: 0 0 100% 100%; top: -170%; left: -50%; display: flex; justify-content: center; align-items: flex-end; }
 
-.root .logo span { height: 15%; display: flex; align-items: center; color: #003366; flex-direction: column; }
+.root .logo span { height: 15%; width: 100%; display: flex; align-items: center; color: #003366; flex-direction: column; }
 
-.root .logo span .logoContainer { height: 50%; width: 100%; background: url("/static/images/logo.png"); background-position: center center; background-size: contain; background-repeat: no-repeat; }
+.root .logo span .logoContainer { transition: 1s; height: 90%; width: 100%; margin: 20px; background: url("/static/images/logo.png"); background-position: center center; background-size: contain; background-repeat: no-repeat; }
 
 .root .logo.expanded { top: -60%; font-size: 1px; width: 130%; left: -15%; }
 
+.root .logo.expanded .logoContainer { width: 0; height: 0; }
+
 .root .content { height: 100%; color: #003366; transition: 1.5s; }
 
-.root .content .loading { transition: 1.5s; background: url(../images/ripple.svg) no-repeat center center; background-size: cover; line-height: 200px; min-width: 200px; min-height: 200px; color: #ffffff; font-size: 35px; width: 400px; height: 400px; display: flex; justify-content: center; align-items: center; }
+.root .content .loading { transition: 1.5s; background: url(../images/ripple.svg) no-repeat center center; background-size: contain; color: #ffffff; font-size: 35px; margin-top: 10%; width: 50%; height: 50%; display: flex; justify-content: center; align-items: center; }
 
 .root.noInvert { background-color: #ffffff; background: #ffffff; }
 
@@ -303,9 +305,15 @@ $create-room-bg-url: #222222;
 
 .sideBar .sideBarItems .sideBarItem { padding-top: 10px; }
 
-.sideBar .sideBarItems .sideBarItem:first-child { color: #003366; background-color: #efeef1; font-size: 25px; border-radius: 0px 0px 30px 30px; }
+.sideBar .sideBarItems .sideBarItem:first-child { color: #003366; background-color: #ffffff; font-size: 25px; border-radius: 0px 0px 30px 30px; }
 
-.sideBar .sideBarItems .sideBarItem:last-child { position: absolute; bottom: 0; left: 0; width: 100%; font-size: 16px; color: #003366; background-color: #efeef1; border-radius: 40px 40px 0px 0px; }
+.sideBar .sideBarItems .sideBarItem:last-child { position: absolute; bottom: 0; left: 0; width: 100%; font-size: 16px; color: #003366; display: flex; flex-direction: column; }
+
+.sideBar .sideBarItems .sideBarItem:last-child img { height: 100%; }
+
+.sideBar .sideBarItems .sideBarItem:last-child span:first-child { height: 50px; }
+
+.sideBar .sideBarItems .sideBarItem:last-child span:last-child { background-color: #ffffff; }
 
 .sideBar .sideBarItems.closed { position: relative; width: 0; overflow: hidden; }
 

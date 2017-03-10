@@ -39,7 +39,7 @@
 
 		.sideBarItem:first-child{
 			color: $primary-color;
-			background-color: $passive-color;
+			background-color: $bg-color;
 			font-size: 25px;
 			border-radius: 0px 0px 30px 30px;
 		}
@@ -51,8 +51,17 @@
 			width: 100%;
 			font-size: 16px;
 			color: $primary-color;
-			background-color: $passive-color;
-			border-radius: 40px 40px 0px 0px;
+			display: flex;
+			flex-direction: column;	
+			img{
+				height: 100%;
+			}
+			span:first-child{
+				height: 50px;
+			}
+			span:last-child{
+				background-color: $bg-color;
+			}
 		}
 	}
 

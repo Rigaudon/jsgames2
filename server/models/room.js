@@ -95,9 +95,13 @@ var Room = Backbone.Model.extend({
 			players.push(myPlayers[i].clientJSON());
 		}
 		returnObj.players = players;
-
 		returnObj.gameState = this.get("gameState");
 		return returnObj;
+	},
+
+	prettifyGameState: function(){
+		//Overwrite me if neccessary!
+		return this.get("gameState");
 	},
 
 	toJSON: function(){

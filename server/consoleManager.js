@@ -47,7 +47,8 @@ function processMessage(socket, message, mem, io){
 				var room = mem.rooms.get(message.args[1]);
 				if(room){
 					returnMessage = "Displaying details of room " + message.args[1] + "\n";
-					returnMessage+= JSON.stringify(room.toJSON(), null, 4);
+					returnMessage+= JSON.stringify(room.toJSON(), null, 4) + "\n";
+					returnMessage+= JSON.stringify(room.prettifyGameState(), null, 4);
 				}else{
 					returnMessage = "No room found with id " + message.args[1];
 				}
