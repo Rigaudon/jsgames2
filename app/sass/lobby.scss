@@ -1,8 +1,8 @@
 @import "variables";
 
 @keyframes animatedBackground{
-	from { background-position: 0% 100%; }
-	to { background-position: 100% 100%; }
+	from { background-position: 0 100%; }
+	to { background-position: 560px 100%; }
 }
 
 .lobbyView{
@@ -12,14 +12,13 @@
 	flex-wrap: nowrap;
 	justify-content: space-between;
 	align-items: center;
-	transition: $transition-fast;
 	text-align: center;
 	font-size: 20px;
 	transition: $transition-speed;
 	background: $bg-url;
 	background-position: 0% 100%;
 	background-repeat: repeat-x;
-	animation: animatedBackground 60s linear infinite;
+	animation: animatedBackground 20s linear infinite;
 }
 
 

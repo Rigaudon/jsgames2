@@ -2,7 +2,7 @@
   "name": "jsgames2",
   "version": "1.0.0",
   "description": "A more object oriented iteration of JSGames",
-  "main": "app.js",
+  "main": "entry.js",
   "scripts": {
     "start": "concurrently --kill-others \"gulp bundle\" \"node entry.js\" \"node-sass --output-style compact -w app/sass/main.scss static/css/main.css\"",
     "bundle-js": "gulp bundle",
@@ -23,6 +23,7 @@
     "backbone.marionette": "^3.1.0",
     "bufferutil": "^2.0.1",
     "dateformat": "^2.0.0",
+    "dotenv": "^4.0.0",
     "engine.io": "^2.0.2",
     "express": "^4.14.1",
     "jquery": "^3.1.1",
@@ -46,5 +47,8 @@
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.9.0",
     "node-sass": "^4.5.0"
+  },
+  "engines": {
+    "node": "6.10.0"
   }
 }

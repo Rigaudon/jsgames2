@@ -1,4 +1,4 @@
-var Backbone = require("Backbone");
+var Backbone = require("backbone");
 var RoomsController = require("./controllers/roomsController");
 var UsersController = require("./controllers/usersController");
 var ChatController = require("./controllers/chatController");
