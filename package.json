@@ -4,9 +4,9 @@
   "description": "A more object oriented iteration of JSGames",
   "main": "entry.js",
   "scripts": {
-    "watch": "concurrently --kill-others \"gulp bundle\" \"node entry.js\" \"node-sass --output-style compact -w app/sass/main.scss static/css/main.css\"",
+    "start": "concurrently --kill-others \"gulp bundle\" \"node entry.js\" \"node-sass --output-style compact -w app/sass/main.scss static/css/main.css\"",
     "bundle-js": "gulp bundle",
-    "start": "node entry.js"
+    "server": "node entry.js"
   },
   "repository": {
     "type": "git",
