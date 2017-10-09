@@ -1,0 +1,126 @@
+@import "../variables";
+
+.explodingKittensRoom{
+	width: 100%;
+	height: 100%;
+	position: relative;	
+	display: flex;
+	flex-direction: column;
+	transition: 1s;
+	margin: auto;
+	max-width: 1200px;
+}
+
+.playtable{
+	background-color: red;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+	width: 100%;
+	height: 60%;
+	border-radius: 50%;
+	border: 3px solid $primary-color;
+	background-color: $passive-color-transparent;
+}
+
+.heldCards{
+	height: 30%;
+	border: 3px solid $primary-color;
+	color: $primary-color;
+	margin: 10px;
+	border-radius: 20px;
+	background-color: $passive-color-transparent;
+}
+
+.controls{
+	height: 10%;
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-evenly;
+}
+
+.player{
+	border-radius: 50%;
+	background-color: green;
+	width: 150px;
+	height: 150px;
+	margin: auto;
+}
+
+.playerSeat{
+	grid-column-start: 4;
+	grid-row-start: 5;
+}
+
+.onePlayer{
+	.playerTwoSeat, .playerThreeSeat, .playerFourSeat, .playerFiveSeat{
+		display: none;
+	}
+}
+
+.twoPlayers{
+	.playerTwoSeat{
+		grid-column-start: 4;
+		grid-row-start: 1;
+	}
+	.playerThreeSeat, .playerFourSeat, .playerFiveSeat{
+		display: none;
+	}
+}
+
+.threePlayers{
+	.playerTwoSeat{
+		grid-column-start: 2;
+		grid-row-start: 1;
+	}
+	.playerThreeSeat{
+		grid-column-start: 6;
+		grid-row-start: 1;
+	}
+	.playerFourSeat, .playerFiveSeat{
+		display: none;
+	}
+}
+
+.fourPlayers{
+	.playerTwoSeat{
+		grid-column-start: 1;
+		grid-row-start: 3;
+	}
+
+	.playerThreeSeat{
+		grid-column-start: 4;
+		grid-row-start: 1;
+	}
+
+	.playerFourSeat{
+		grid-column-start: 7;
+		grid-row-start: 3;
+	}
+
+	.playerFiveSeat{
+		display: none;
+	}
+}
+
+.fivePlayers{
+	.playerTwoSeat{
+		grid-column-start: 1;
+		grid-row-start: 3;
+	}
+
+	.playerThreeSeat{
+		grid-column-start: 2;
+		grid-row-start: 1;
+	}
+
+	.playerFourSeat{
+		grid-column-start: 6;
+		grid-row-start: 1;
+	}
+
+	.playerFiveSeat{
+		grid-column-start: 7;
+		grid-row-start: 3;
+	}
+}

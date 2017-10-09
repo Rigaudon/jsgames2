@@ -39,5 +39,19 @@
 			"roomPassword",
 			"start"
 		]
+	},
+
+	{
+		"id": 4,
+		"name": "Exploding Kittens",
+		"minPlayers": 2,
+		"maxPlayers": 5,
+		"description": "It's like UNO, except there are goats, magical enchiladas and kittens that can kill you.",
+		"image": "kittens.jpg",
+		"options": [
+			"roomName",
+			"roomPassword",
+			"start"
+		]
 	}
 ]

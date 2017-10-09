@@ -5,11 +5,13 @@ var gamesCollection = new Backbone.Collection(games);
 
 //var Room = require("../models/room");
 var ConnectFourRoom = require("../models/connectFourRoom");
+var ExplodingKittensRoom = require("../models/explodingKittensRoom");
 
 var nextGameRoomId = 0;
 var RoomsController = Backbone.Collection.extend({	
 	idToRoomMap: {
-		"1": ConnectFourRoom
+		"1": ConnectFourRoom,
+		"4": ExplodingKittensRoom,
 	},
 	
 	emitActiveRooms: function(socket){

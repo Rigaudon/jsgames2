@@ -7,11 +7,11 @@ var SideBarView = require("./sideBarview");
 var GameRoomsView = require("./gameRoomsView");
 
 var ConnectFourRoomView = require("./gameRoomViews/connectFourRoomView");
-var UnoRoomView = require("./gameRoomViews/unoRoomView");
+var ExplodingKittensRoomView = require("./gameRoomViews/explodingKittensRoomView");
 
 var GameRoomViewsMap = {
 	"1": ConnectFourRoomView,
-	"2": UnoRoomView
+	"4": ExplodingKittensRoomView,
 };
 
 var LobbyView = Marionette.View.extend({
