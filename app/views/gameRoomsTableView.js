@@ -74,7 +74,7 @@ var GameRoomListItem = Marionette.View.extend({
 			actions += "<button class='joinRoomBtn' id='joinRoom" + this.model.get("id") +"'>Join Room</button>";
 		}
 		//if can spectate...
-		actions += "<button class='spectateBtn'>Spectate</button>";
+		//actions += "<button class='spectateBtn'>Spectate</button>";
 
 		return actions;
 	},

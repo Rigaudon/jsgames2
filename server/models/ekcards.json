@@ -1,0 +1,95 @@
+{
+	"cards": [
+		{
+			"id": "cat1",
+			"num": 4,
+			"name": "Cattermelon",
+			"type": "cat",
+			"variableImage": false
+		},
+		{
+			"id": "cat2",
+			"num": 4,
+			"name": "Rainbow-Ralphing Cat",
+			"type": "cat",
+			"variableImage": false
+		},
+		{
+			"id": "cat3",
+			"num": 4,
+			"name": "Tacocat",
+			"type": "cat",
+			"variableImage": false
+		},
+		{
+			"id": "cat4",
+			"num": 4,
+			"name": "Hairy Potato Cat",
+			"type": "cat",
+			"variableImage": false
+		},
+		{
+			"id": "cat5",
+			"num": 4,
+			"name": "Beard Cat",
+			"type": "cat",
+			"variableImage": false
+		},
+		{
+			"id": "stf",
+			"num": 5,
+			"name": "See The Future",
+			"type": "stf",
+			"variableImage": true
+		},
+		{
+			"id": "skip",
+			"num": 4,
+			"name": "Skip",
+			"type": "skip",
+			"variableImage": true
+		},
+		{
+			"id": "nope",
+			"num": 5,
+			"name": "Nope",
+			"type": "nope",
+			"variableImage": true
+		},
+		{
+			"id": "attack",
+			"num": 4,
+			"name": "Attack",
+			"type": "attack",
+			"variableImage": true
+		},
+		{
+			"id": "shuffle",
+			"num": 4,
+			"name": "Shuffle",
+			"type": "shuffle",
+			"variableImage": true
+		},
+		{
+			"id": "favor",
+			"num": 4,
+			"name": "Favor",
+			"type": "favor",
+			"variableImage": true
+		}
+	],
+	"defuse": {
+		"id": "defuse",
+		"num": 6,
+		"name": "Defuse",
+		"type": "defuse",
+		"variableImage": true
+	},
+	"explodingKitten": {
+		"id": "expldktn",
+		"name": "Exploding Kitten",
+		"type": "explode",
+		"num": 4,
+		"variableImage": true
+	}
+}

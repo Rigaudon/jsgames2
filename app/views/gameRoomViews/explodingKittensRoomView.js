@@ -2,6 +2,7 @@ var _ = require("lodash");
 var Marionette = require("backbone.marionette");
 var ExplodingKittensClient = require("../../models/explodingKittensClient");
 var fs = require("fs");
+var EKCardView = require("./explodingKittensCardView")
 
 var ExplodingKittensRoomView = Marionette.View.extend({
 	initialize: function(options){
@@ -54,7 +55,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		var options = "";
 		if(this.model.isHost()){
 			var players = this.model.get("players");
-			if(players.length >= 2 && !this.model.get("inProgress")){
+			if(players.length >= 2 && !this.model.inProgress()){
 				//Add restart option
 				options += "<button class=\"startBtn btn-big\">Start Game</button>";		
 			}
@@ -69,10 +70,16 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 
 	ui: {
 		"leaveBtn": ".leaveBtn",
+		"startBtn": ".startBtn"
+	},
+
+	regions: {
+		"hand": ".heldCards"
 	},
 
 	events: {
 		"click @ui.leaveBtn": "leaveRoom",
+		"click @ui.startBtn": "startRoom",
 	},
 
 	leaveRoom: function(){
@@ -81,6 +88,18 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 
 	startRoom: function(){
 		this.model.startRoom();
+	},
+
+	onRender: function(){
+		var self = this;
+		var gameState = this.model.get("gameState");
+		if(gameState && !_.isEmpty(gameState.hand)){
+			gameState.hand.forEach(function(card){
+				let cardView = new EKCardView({card: card});
+				cardView.render();
+				$(self.regions.hand).append(cardView.$el);
+			});
+		}
 	},
 });
 

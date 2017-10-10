@@ -42,7 +42,11 @@ var ExplodingKitten = Backbone.Model.extend({
 			command: "startGame",
 			roomId: this.get("id")
 		}); 
-	}
+	},
+
+	inProgress: function(){
+		return this.get("status") == 2;
+	} 
 
 });
 
