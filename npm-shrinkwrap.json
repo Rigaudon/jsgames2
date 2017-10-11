@@ -4004,6 +4004,11 @@
       "from": "socket.io-parser@2.3.1",
       "resolved": "https://registry.npmjs.org/socket.io-parser/-/socket.io-parser-2.3.1.tgz"
     },
+    "sortablejs": {
+      "version": "1.6.1",
+      "from": "sortablejs@latest",
+      "resolved": "https://registry.npmjs.org/sortablejs/-/sortablejs-1.6.1.tgz"
+    },
     "source-map": {
       "version": "0.5.6",
       "from": "source-map@>=0.5.3 <0.6.0",

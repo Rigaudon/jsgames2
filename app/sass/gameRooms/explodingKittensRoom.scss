@@ -59,6 +59,10 @@
 			background-color: $tertiary-color;
 		}
 	}
+
+	.sortable-ghost{
+		opacity: 0;
+	}
 }
 
 .cardPreview{

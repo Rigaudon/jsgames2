@@ -3,6 +3,7 @@ var Marionette = require("backbone.marionette");
 var ExplodingKittensClient = require("../../models/explodingKittensClient");
 var fs = require("fs");
 var EKCardView = require("./explodingKittensCardView");
+var Sortable = require("sortablejs");
 
 var playerSeats = [
 	'.playerSeat',
@@ -107,10 +108,13 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			cardView.render();
 			$(self.regions.hand).append(cardView.$el);
 		});
+		$(self.regions.hand).sortable({
+			animation: 150
+		});
 	},
 
 	renderPlayers: function(players){
-		players.forEach(function(player, i){
+		players.forEach(function(player, i){ 
 			var playerEl = $(playerSeats[i]);
 			playerEl.css({
 				"border-color": player.color,

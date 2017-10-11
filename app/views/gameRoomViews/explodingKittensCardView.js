@@ -25,7 +25,8 @@ var ExplodingKittensCard = Marionette.View.extend({
 
 	events: {
 		"mouseover @ui.hand": "showPreview",
-		"mouseout @ui.hand": "hidePreview"
+		"mouseout @ui.hand": "hidePreview",
+		"mousedown @ui.hand": "hidePreview",
 	},
 
 	ui: {
@@ -45,7 +46,6 @@ var ExplodingKittensCard = Marionette.View.extend({
 
 	hidePreview: function(){
 		var preview = this.$el.find(this.ui.preview);
-		var hand = this.$el.find(this.ui.hand);
 		preview.hide();
 	}
 });

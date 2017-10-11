@@ -459,6 +459,8 @@ $create-room-bg-url: #222222;
 
 .heldCards .EKCard:hover { background-color: #FFCC66; }
 
+.heldCards .sortable-ghost { opacity: 0; }
+
 .cardPreview { display: none; position: absolute; left: 10px; top: calc(60% - 600px); max-width: 25%; }
 
 .controls { height: 10%; display: flex; flex-wrap: nowrap; justify-content: space-evenly; }
