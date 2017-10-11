@@ -41,10 +41,18 @@
 		margin: 3px;
 		border: 1px solid black;
 		transition: $transition-very-fast;
-		img{
+		position: relative;
+		img.hand{
 			cursor: pointer;
 			width: 100px;
 			height: 150px;
+		}
+
+		img.preview{
+			display: none;
+			position: absolute;
+			width: 300px;
+			bottom: 160px;
 		}
 
 		&:hover {
@@ -70,10 +78,28 @@
 
 .player{
 	border-radius: 50%;
-	background-color: green;
+	border-width: 4px;
+	border-style: solid;
+	background-color: $bg-color;
 	width: 150px;
 	height: 150px;
 	margin: auto;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: center;
+	background-image: url("/static/images/assets/explodingKittens/player.png");
+	background-size: cover;
+	.playerName{
+		font-size: 24px;
+		max-width: inherit;
+		width: inherit;
+		word-wrap: break-word;
+		padding: 6px;
+	    color: white;
+	    text-shadow: 2px 2px 4px black;
+	}
 }
 
 .playerSeat{

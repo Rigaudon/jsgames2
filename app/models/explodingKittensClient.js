@@ -29,12 +29,22 @@ var ExplodingKitten = Backbone.Model.extend({
 		Object.keys(roomInfo).forEach(function(val){
 			self.set(val, roomInfo[val]);
 		});
+		this.rotatePlayers();
 		this.trigger("update:room");
 	},
 
 	processGameMessage: function(message){
 //		switch(message.message){
 //		}
+	},
+
+	rotatePlayers: function(){
+		var players = this.get("players");
+		if(players && players.length){
+			while(players[0].id != this.player.get("pid")){
+				players.unshift(players.pop());
+			}
+		}
 	},
 
 	startRoom: function(){

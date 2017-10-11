@@ -451,9 +451,11 @@ $create-room-bg-url: #222222;
 
 .heldCards { height: 30%; border: 3px solid #003366; color: #003366; margin: 10px; border-radius: 20px; background-color: rgba(239, 238, 241, 0.8); display: flex; flex-wrap: wrap; padding: 2px; }
 
-.heldCards .EKCard { padding: 5px; background-color: white; height: 160px; border-radius: 7px; margin: 3px; border: 1px solid black; transition: 0.2s; }
+.heldCards .EKCard { padding: 5px; background-color: white; height: 160px; border-radius: 7px; margin: 3px; border: 1px solid black; transition: 0.2s; position: relative; }
 
-.heldCards .EKCard img { cursor: pointer; width: 100px; height: 150px; }
+.heldCards .EKCard img.hand { cursor: pointer; width: 100px; height: 150px; }
+
+.heldCards .EKCard img.preview { display: none; position: absolute; width: 300px; bottom: 160px; }
 
 .heldCards .EKCard:hover { background-color: #FFCC66; }
 
@@ -461,7 +463,9 @@ $create-room-bg-url: #222222;
 
 .controls { height: 10%; display: flex; flex-wrap: nowrap; justify-content: space-evenly; }
 
-.player { border-radius: 50%; background-color: green; width: 150px; height: 150px; margin: auto; }
+.player { border-radius: 50%; border-width: 4px; border-style: solid; background-color: #ffffff; width: 150px; height: 150px; margin: auto; position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; background-image: url("/static/images/assets/explodingKittens/player.png"); background-size: cover; }
+
+.player .playerName { font-size: 24px; max-width: inherit; width: inherit; word-wrap: break-word; padding: 6px; color: white; text-shadow: 2px 2px 4px black; }
 
 .playerSeat { grid-column-start: 4; grid-row-start: 5; }
 
