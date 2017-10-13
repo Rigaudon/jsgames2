@@ -10,6 +10,12 @@ var UsersController = Backbone.Collection.extend({
 	removePlayer: function(id){
 		this.remove(id);
 	},
+
+	pickColor: function(id, color){
+		if(typeof color == "string" && color.length === 7 && !isNaN(parseInt(color.substring(1), 16)) && color.charAt(0) == "#"){
+			this.get(id).set("color", color);
+		}
+	}
 });
 
 module.exports = UsersController;

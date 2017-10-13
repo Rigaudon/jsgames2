@@ -24,8 +24,12 @@ var NamePickerView = Marionette.View.extend({
 	onNameInput: function(e){
 		var keycode = (e.keyCode ? e.keyCode : e.which);
 	    if(keycode == '13'){
+	    	//Enter
 	    	this.$(e.target).prop("disabled", true);
 	        this.requestName($(e.target).val().trim());
+	    }else{
+	    	//Only allow alphanumic and spaces
+			return /[a-zA-Z0-9-_ ]/.test(String.fromCharCode(keycode));
 	    }
 	},
 

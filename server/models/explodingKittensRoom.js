@@ -30,13 +30,17 @@ var CardObj = function(card, i) {
 var ExplodingKittensRoom = Room.extend({
 	initialize: function(options){
 		Room.prototype.initialize.call(this, options);
+		this.resetDefaultGamestate();
+	},
+
+	resetDefaultGamestate: function(){
 		this.set("gameState", {
 			deck: {},
 			hands: {},
 			turn: "undefined"
 		});
 	},
-
+	
 	playerJoin: function(playerModel){
 		Room.prototype.playerJoin.call(this, playerModel);
 		if(this.get("players").length == this.get("maxPlayers")){
@@ -49,6 +53,7 @@ var ExplodingKittensRoom = Room.extend({
 		Room.prototype.playerLeave.call(this, playerModel);
 		if(this.get("players").length == 1){
 			this.set("status", 0);
+			this.resetDefaultGamestate();
 			this.emitToAllExcept();
 		}
 	},
@@ -66,6 +71,7 @@ var ExplodingKittensRoom = Room.extend({
 						gameState.turn = Math.floor(Math.random() * players.length); //Random player starts
 						gameState.deck = self.initializeDeck(players.length);
 						gameState.hands = self.initializeHands();
+						gameState.pile = [];
 						self.emitToAllExcept();
 						self.progressTurn();
 					}
@@ -114,6 +120,7 @@ var ExplodingKittensRoom = Room.extend({
 		if(gameState && !_.isEmpty(gameState.hands)){
 			gameState.hand = gameState.hands[socket.id];
 			gameState.deckCount = gameState.deck.length;
+			gameState.pileCount = gameState.pile.length;
 			allJson.players.forEach(function(player, i){
 				player.handSize = gameState.hands[player.id].length;
 			});
@@ -123,9 +130,9 @@ var ExplodingKittensRoom = Room.extend({
 		socket.emit("roomInfo", allJson);
 	},
 
-	isPlaying: function(){
+	inProgress: function(){
 		return this.get("status") == 2;
-	},
+	}, 
 
 	makeMove: function(playerId, col){
 

@@ -20,6 +20,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		this.player.gameClient = this.model;
 	},
 
+	statusCodes: ["Waiting for players", "Waiting to start", ""],
+
 	className: "explodingKittensRoom",
 
 	getTemplate: function(){
@@ -32,6 +34,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			playerNum: this.playerClass(numPlayers),
 			isHost: this.model.isHost(),
 			controls: this.getOptions(),
+			status: this.statusCodes[this.model.get("status")],
 		};
 	},
 
@@ -75,7 +78,9 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 	},
 
 	regions: {
-		"hand": ".heldCards"
+		"hand": ".heldCards",
+		"pile": ".pile",
+		"deck": ".deck"
 	},
 
 	events: {
@@ -106,14 +111,32 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		gameState.hand.forEach(function(card){
 			let cardView = new EKCardView({card: card});
 			cardView.render();
-			$(self.regions.hand).append(cardView.$el);
+			$(self.regions.hand).prepend(cardView.$el);
 		});
 		$(self.regions.hand).sortable({
-			animation: 150
+			animation: 150,
+			draggable: ".EKCard",
+			group: "hand"
 		});
+		$(self.regions.pile).sortable({
+			animation: 150,
+			group: {
+				name: "pile",
+				put: function(to){
+					return $(to.el).find(".EKCard").length == 0;
+				}
+			},
+			onAdd: function(evt){
+				$draggedEl = $(evt.item);
+			}
+		});
+
+		$(self.regions.deck).find(".numCards").text(gameState.deckCount);
+		$(self.regions.pile).find(".numCards").text(gameState.pileCount);
 	},
 
 	renderPlayers: function(players){
+		var self = this;
 		players.forEach(function(player, i){ 
 			var playerEl = $(playerSeats[i]);
 			playerEl.css({
@@ -122,6 +145,11 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			});
 			var playerNameEl = playerEl.find(".playerName");
 			playerNameEl.html(player.name);
+			var gameState = self.model.get("gameState");
+			if(gameState){
+				var handCountEl = playerEl.find(".numCards");
+				handCountEl.text(self.model.get("players")[i].handSize);
+			}
 		});
 	}
 });

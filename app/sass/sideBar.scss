@@ -36,6 +36,12 @@
 
 		.sideBarItem{
 			padding-top: 10px;
+			input[type=color]{
+				background-color:transparent;
+				border: none;
+				cursor: pointer;
+				height: 25px;
+			}
 		}
 
 		.sideBarItem:first-child{

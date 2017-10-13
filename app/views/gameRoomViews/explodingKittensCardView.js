@@ -5,10 +5,11 @@ var fs = require("fs");
 var ExplodingKittensCard = Marionette.View.extend({
 	initialize: function(options){
 		this.card = options.card;
+		this.$el.attr("data-id", this.card.id);
 	},
 
 	fullImagePath: function(){
-		return "/static/images/assets/explodingKittens/" + this.card.image + ".png";
+		return this.card ? "/static/images/assets/explodingKittens/" + this.card.image + ".png" : "";
 	},
 
 	getTemplate: function(){
@@ -17,7 +18,7 @@ var ExplodingKittensCard = Marionette.View.extend({
 
 	templateContext: function(){
 		return {
-			image: this.fullImagePath()
+			image: this.fullImagePath() 
 		};
 	},
 
@@ -35,6 +36,9 @@ var ExplodingKittensCard = Marionette.View.extend({
 	},
 
 	showPreview: function(){
+		if(!this.$el.parent().hasClass("heldCards")){
+			return;
+		}
 		var preview = this.$el.find(this.ui.preview);
 		var hand = this.$el.find(this.ui.hand);
 		preview.show();

@@ -36,6 +36,7 @@ var User = Backbone.Model.extend({
 		self.getSocket().on("nameRequest", function(response){
 			if(response.success){
 				self.set("name", response.name);
+				self.set("color", response.color);
 			}else{
 				self.set("error", response.error);
 			}
@@ -99,6 +100,10 @@ var User = Backbone.Model.extend({
 		this.set("channelName", "Global Chat");
 		this.unset("roomId");
 		this.gameClient = undefined;
+	},
+
+	pickColor: function(color){
+		this.getSocket().emit("pickColor", color);
 	},
 
 	consoleMessage: function(message){

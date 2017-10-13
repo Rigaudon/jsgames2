@@ -1,21 +1,58 @@
 <div class="playtable <%- playerNum %>">
 	<div class="player playerSeat">
 		<span class="playerName"></span>
+		<span class="handCount">
+			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
+			<span class="numCards"></span>
+		</span>
 	</div>
 	<div class="player playerTwoSeat">
 		<span class="playerName"></span>
+		<span class="handCount">
+			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
+			<span class="numCards"></span>
+		</span>
 	</div>
 	<div class="player playerThreeSeat">
 		<span class="playerName"></span>
+		<span class="handCount">
+			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
+			<span class="numCards"></span>
+		</span>
 	</div>
 	<div class="player playerFourSeat">
 		<span class="playerName"></span>
+		<span class="handCount">
+			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
+			<span class="numCards"></span>
+		</span>
 	</div>
 	<div class="player playerFiveSeat">
 		<span class="playerName"></span>
+		<span class="handCount">
+			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
+			<span class="numCards"></span>
+		</span>
+	</div>
+	<div class="pile">
+		<span>Drag from Hand</span>
+		<span class="handCount">
+			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
+			<span class="numCards"></span>
+		</span>
+	</div>
+	<div class="status"><%= status %></div>
+	<div class="deck">
+		<span>Click to Draw</span>
+		<span class="handCount">
+			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
+			<span class="numCards"></span>
+		</span>
 	</div>
 </div>
-<div class="heldCards"></div>
+<div class="heldCards">
+	<div class="EKCard invis"></div>
+</div>
 <div class="controls">
 	<%= controls %>
 </div>

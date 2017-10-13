@@ -18,11 +18,13 @@ var socketEvents = function(io, mem){
 		socket.on("nameRequest", function(name){
 			name = name.trim();
 			var response = util.validateName(name, mem, socket);
+			let color = util.randomColor();
 			if(response.success){
+				response.color = color;
 				mem.players.addPlayer({
 					id: socket.id,
 					name: name,
-					color: util.randomColor(),
+					color: color,
 					socket: socket
 				});
 			}
@@ -62,6 +64,11 @@ var socketEvents = function(io, mem){
 		//User requested to leave room
 		socket.on("leaveRoom", function(){
 			mem.rooms.playerLeave(socket);
+		});
+
+		//User requested a new color
+		socket.on("pickColor", function(color){
+			mem.players.pickColor(socket.id, color);
 		});
 
 		//Game message, delegate to the room

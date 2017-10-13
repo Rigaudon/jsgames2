@@ -43,6 +43,8 @@ var GameRoomListItem = Marionette.View.extend({
 		var self = this;
 		return _.template(fs.readFileSync("./app/templates/partials/gameRooms/gameRoomListItem.html", "utf8"), self.templateContext());
 	},
+	
+	statusCodes: ["Waiting for players", "Waiting to start", "Playing"],
 
 	tagName: "tr", 
 	templateContext: function(){
@@ -53,7 +55,7 @@ var GameRoomListItem = Marionette.View.extend({
 			name: options.roomName,
 			game: gameName,
 			players: this.model.get("players").length,
-			status: this.model.get("status"),
+			status: this.statusCodes[this.model.get("status")],
 			actions: this.getActions(),
 		};
 	}, 
@@ -70,7 +72,7 @@ var GameRoomListItem = Marionette.View.extend({
 		//Change me later, add spectate option
 		//Check if room full
 		var actions = "";
-		if(this.model.get("maxPlayers") > this.model.get("players").length){
+		if(this.model.get("maxPlayers") > this.model.get("players").length && this.model.get("status") == 0){
 			actions += "<button class='joinRoomBtn' id='joinRoom" + this.model.get("id") +"'>Join Room</button>";
 		}
 		//if can spectate...
@@ -79,7 +81,6 @@ var GameRoomListItem = Marionette.View.extend({
 		return actions;
 	},
 	
-
 });
 
 var EmptyGameRoomListItem = Marionette.View.extend({
