@@ -4,6 +4,7 @@ var ExplodingKittensClient = require("../../models/explodingKittensClient");
 var fs = require("fs");
 var EKCardView = require("./explodingKittensCardView");
 var Sortable = require("sortablejs");
+var common = require("../../common");
 
 var playerSeats = [
 	'.playerSeat',
@@ -69,23 +70,29 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 	},
 
 	modelEvents: {
-		"update:room": "render"
+		"update:room": "render",
+		"self:draw": "selfDraw",
+		"opponent:draw": "opponentDraw",
+		"update:player": "updatePlayer"
 	},
 
 	ui: {
 		"leaveBtn": ".leaveBtn",
-		"startBtn": ".startBtn"
+		"startBtn": ".startBtn",
+		"deck": ".deck",
+		"pile": ".pile",
 	},
 
 	regions: {
 		"hand": ".heldCards",
-		"pile": ".pile",
-		"deck": ".deck"
+		"choose": ".chooseOptions",
+		"table": ".playtable"
 	},
 
 	events: {
 		"click @ui.leaveBtn": "leaveRoom",
 		"click @ui.startBtn": "startRoom",
+		"click @ui.deck": "drawCard"
 	},
 
 	leaveRoom: function(){
@@ -103,6 +110,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		}
 		if(gameState && !_.isEmpty(gameState.hand)){
 			this.renderCards(gameState);
+			this.renderCardCounts();
 		}
 	},
 
@@ -118,7 +126,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			draggable: ".EKCard",
 			group: "hand"
 		});
-		$(self.regions.pile).sortable({
+		$(self.ui.pile).sortable({
 			animation: 150,
 			group: {
 				name: "pile",
@@ -127,12 +135,84 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 				}
 			},
 			onAdd: function(evt){
-				$draggedEl = $(evt.item);
+				var card = evt.item.card;
+				switch(card.type){
+					case "cat":
+						self.onPlayCat(card);
+						break;
+					case "stf":
+
+					break;
+					case "skip":
+					case "attack":
+					case "shuffle":
+					case "favor":
+
+					break;
+					case "nope":
+					break;
+					case "defuse":
+					break;
+					default:
+						throw new Error("Invalid Card Type!");
+				}
 			}
 		});
+	},
 
-		$(self.regions.deck).find(".numCards").text(gameState.deckCount);
-		$(self.regions.pile).find(".numCards").text(gameState.pileCount);
+	onPlayCat: function(card){
+		//TODO: check to see if the player has at least two
+		var self = this;
+		this.showPickPlayerModal(card, function(pid){
+			self.model.playCard({
+				card: card,
+				target: pid
+			});
+		});
+	},
+
+	drawCard: function(){
+		//TODO: check if can draw
+		this.model.drawCard();
+	},
+
+	showPickPlayerModal: function(card, callback){
+		var self = this;
+		var chooseEl = $(this.regions.choose);
+		chooseEl.find(".modal-header").text("Play " + card.name + " on:");
+		var bodyEl = chooseEl.find(".modal-body");
+		var playerRegions = $(".playtable > .player");
+		_.forEach(playerRegions, function(el){
+			var playerId = $(el).attr("data-id");
+			if(playerId == self.player.get("pid")){
+				return;
+			}
+			var playerEl = $(el).clone();
+			playerEl.click(function(){
+				chooseEl.modal("hide");
+				callback(playerId);
+			});
+			bodyEl.append(playerEl);
+		});
+
+		chooseEl.modal({
+			show: true,
+			backdrop: false,
+			keyboard: true
+		});
+	},
+
+	renderCardCounts: function(){
+		var gameState = this.model.get("gameState");
+		if(gameState){
+			$(this.ui.deck).find(".numCards").text(gameState.deckCount || "");
+			$(this.ui.pile).find(".numCards").text(gameState.pileCount || "");
+			this.model.get("players").forEach(function(player, i){
+				var playerEl = $(playerSeats[i]);
+				var handCountEl = playerEl.find(".numCards");
+				handCountEl.text(player.handSize);
+			});
+		}
 	},
 
 	renderPlayers: function(players){
@@ -143,14 +223,82 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 				"border-color": player.color,
 				"background-color": player.color
 			});
+			playerEl.attr("data-id", player.id);
 			var playerNameEl = playerEl.find(".playerName");
 			playerNameEl.html(player.name);
-			var gameState = self.model.get("gameState");
-			if(gameState){
-				var handCountEl = playerEl.find(".numCards");
-				handCountEl.text(self.model.get("players")[i].handSize);
+			player.el = playerEl;
+		});
+		this.updatePlayer();
+	},
+
+	selfDraw: function(card){
+		this.model.get("gameState").deckCount--;
+		var self = this;
+		var me = this.model.get("players").filter(function(player){
+			return player.id ==  self.player.get("pid");
+		})[0];
+		me.handSize++;
+		this.addCardToOwnHand(card.card);
+		this.renderCardCounts();
+		this.animateCardMove(this.ui.deck, ".playerSeat", card.image);
+	},
+
+	opponentDraw: function(options){
+		let gameState = this.model.get("gameState");
+		this.model.get("gameState").deckCount--;
+		var opponentId = options.playerId;
+		var opponent = this.model.get("players").filter(function(player){
+			return player.id == opponentId;
+		})[0];
+		opponent.handSize++;
+		this.renderCardCounts();
+		this.animateCardMove(this.ui.deck, opponent.el);
+	},
+
+	addCardToOwnHand: function(card){
+		this.model.get("gameState").hand.push(card);
+		let cardView = new EKCardView({card: card});
+		cardView.render();
+		$(this.regions.hand).prepend(cardView.$el);
+	},
+
+	animateCardMove: function(from, to, card){
+		var fromEl = $(this.regions.table).find(from);
+		var toEl = $(this.regions.table).find(to);
+		var cardEl = $("<img class='animatedCard'>");
+		cardEl.attr("src", "/static/images/assets/explodingKittens/" + (card || "back") + ".png");
+		cardEl.css({
+			left: (fromEl.position().left + (fromEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
+			top: (fromEl.position().top  + (fromEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
+		});
+		$(this.regions.table).append(cardEl);
+		cardEl.css({
+			left: (toEl.position().left + (toEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
+			top: (toEl.position().top  + (toEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
+		});
+
+		cardEl.css("opacity", 0);
+		cardEl.bind(common.finishTransition, function(){
+			if(cardEl.css("opacity") == 0){
+				cardEl.remove();	
 			}
 		});
+	},
+
+	updatePlayer: function(newPlayer){
+		var gameState = this.model.get("gameState");
+		if(gameState && gameState.turnPlayer){
+			if(newPlayer){
+				gameState.turnPlayer = newPlayer;
+			}
+			this.model.get("players").forEach(function(player, i){
+				if(player.id == gameState.turnPlayer){
+					player.el.addClass("active");
+				}else{
+					player.el.removeClass("active");
+				}
+			});
+		}
 	}
 });
 

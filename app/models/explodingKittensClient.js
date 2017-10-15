@@ -34,8 +34,40 @@ var ExplodingKitten = Backbone.Model.extend({
 	},
 
 	processGameMessage: function(message){
-//		switch(message.message){
-//		}
+		switch(message.message){
+			case "playerDraw":
+				if(message.playerId == this.socket.id && message.card){
+					this.trigger("self:draw", {
+						card: message.card
+					});
+				}else if(message.playerId != this.socket.id){
+					this.trigger("opponent:draw", {
+						playerId: message.playerId
+					});
+				}
+				break;
+			case "playerTurn":
+				this.trigger("update:player", message.player);
+			break;
+		}
+	},
+
+	playCard: function(options){
+		this.socket.emit("gameMessage", {
+			command: "playCard",
+			roomId: this.get("id"),
+			card: options.card,
+			target: options.target
+		});
+	},
+
+	drawCard: function(){
+		if(this.inProgress() && this.isMyTurn()){
+			this.socket.emit("gameMessage", {
+				command: "drawCard",
+				roomId: this.get("id")
+			});	
+		}
 	},
 
 	rotatePlayers: function(){
@@ -56,7 +88,11 @@ var ExplodingKitten = Backbone.Model.extend({
 
 	inProgress: function(){
 		return this.get("status") == 2;
-	} 
+	},
+
+	isMyTurn: function(){
+		return this.get("gameState") && this.get("gameState").turnPlayer == this.socket.id;
+	}
 
 });
 

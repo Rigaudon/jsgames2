@@ -5,7 +5,7 @@ var fs = require("fs");
 var ExplodingKittensCard = Marionette.View.extend({
 	initialize: function(options){
 		this.card = options.card;
-		this.$el.attr("data-id", this.card.id);
+		this.$el[0].card = this.card;
 	},
 
 	fullImagePath: function(){
@@ -18,7 +18,7 @@ var ExplodingKittensCard = Marionette.View.extend({
 
 	templateContext: function(){
 		return {
-			image: this.fullImagePath() 
+			image: this.fullImagePath()
 		};
 	},
 

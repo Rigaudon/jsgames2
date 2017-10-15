@@ -449,13 +449,13 @@ $create-room-bg-url: #222222;
 */
 .explodingKittensRoom { width: 100%; height: 100%; display: flex; flex-direction: column; transition: 1s; margin: auto; max-width: 1200px; min-height: 1200px; }
 
-.playtable { margin: 10px; max-height: 750px; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(5, 1fr); width: 98%; height: 60%; border-radius: 50%; border: 3px solid #003366; background-color: rgba(239, 238, 241, 0.8); }
+.playtable { margin: 10px; margin-top: 50px; max-height: 750px; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(5, 1fr); width: 98%; height: 60%; border-radius: 50%; border: 3px solid #003366; background-color: rgba(239, 238, 241, 0.8); }
 
-.playtable .handCount { width: 75px; padding-right: 5px; }
+.handCount { width: 75px; padding-right: 5px; }
 
-.playtable .handCount .glyphicon-card { width: 30px; transition: 0.25s; }
+.handCount .glyphicon-card { width: 30px; transition: 0.25s; }
 
-.playtable .handCount .numCards { font-weight: bold; font-size: 20px; color: white; text-shadow: 0px 0px 8px black; }
+.handCount .numCards { font-weight: bold; font-size: 20px; color: white; text-shadow: 0px 0px 8px black; }
 
 .heldCards { height: 30%; border: 3px solid #003366; color: #003366; margin: 10px; border-radius: 20px; background-color: rgba(239, 238, 241, 0.8); display: flex; flex-wrap: wrap; padding: 2px; }
 
@@ -475,27 +475,39 @@ $create-room-bg-url: #222222;
 
 .controls { height: 10%; display: flex; flex-wrap: nowrap; justify-content: space-evenly; }
 
-.player { border-radius: 50%; border-width: 4px; border-style: solid; background-color: #ffffff; width: 150px; height: 150px; margin: auto; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; background-image: url("/static/images/assets/explodingKittens/player.png"); background-size: cover; }
+.player { border-radius: 50%; border-width: 4px; border-style: solid; background-color: #ffffff; width: 155px; height: 155px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; background-image: url("/static/images/assets/explodingKittens/player.png"); background-size: cover; z-index: 1; }
 
 .player .playerName { font-size: 24px; max-width: inherit; width: inherit; word-wrap: break-word; padding: 6px; color: white; text-shadow: 0px 0px 8px black; }
 
+.player.active::before { position: absolute; width: 0; height: 0; top: -45px; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 35px solid #FFCC66; z-index: -1; content: " "; -webkit-filter: drop-shadow(0 0 5px #FFCC66); -moz-filter: drop-shadow(0 0 5px #FFCC66); -ms-filter: drop-shadow(0 0 5px #FFCC66); -o-filter: drop-shadow(0 0 5px #FFCC66); filter: drop-shadow(0 0 5px #FFCC66); }
+
 .pile { grid-column-start: 2; grid-row-start: 2; grid-column-end: 4; grid-row-end: 5; background-image: url("/static/images/assets/explodingKittens/blank.png"); }
 
-.pile .EKCard { position: absolute; top: 0; width: 100%; height: 100%; }
+.pile .EKCard { position: absolute; top: 0; height: 100%; }
 
-.pile .EKCard img { height: 100%; width: 100%; }
+.pile .EKCard img { height: 100%; }
 
 .deck { grid-column-start: 5; grid-column-end: 7; grid-row-start: 2; grid-row-end: 5; background-image: url("/static/images/assets/explodingKittens/back.png"); cursor: pointer; }
 
-.deck:hover { font-size: 26px; margin: 0; }
+.deck:hover { font-size: 26px; margin: 5%; }
 
 .deck:hover .glyphicon-card { width: 38px; }
 
 .status { grid-column-start: 4; grid-column-end: 5; grid-row-start: 3; grid-row-end: 3; display: flex; align-items: center; justify-content: center; }
 
-.pile, .deck { background-size: cover; background-repeat: no-repeat; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; color: white; text-shadow: 0px 0px 8px black; transition: 0.25s; margin: 10%; padding: 10%; position: relative; }
+.pile, .deck { background-size: contain; background-repeat: no-repeat; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; color: white; text-shadow: 0px 0px 8px black; transition: 0.25s; margin: 10%; padding: 10%; position: relative; }
 
 .playerSeat { grid-column-start: 4; grid-row-start: 5; }
+
+.chooseOptions .modal-header { font-size: 30px; }
+
+.chooseOptions .modal-body { display: flex; justify-content: center; align-items: center; }
+
+.chooseOptions .modal-body .player { transition: 0.1s; cursor: pointer; }
+
+.chooseOptions .modal-body .player:hover { width: 175px; height: 175px; }
+
+.animatedCard { position: absolute; width: 100px; height: 150px; transition: opacity 0.5s linear 1s, left 0.75s, top 0.75s; }
 
 .onePlayer .playerTwoSeat, .onePlayer .playerThreeSeat, .onePlayer .playerFourSeat, .onePlayer .playerFiveSeat { display: none; }
 

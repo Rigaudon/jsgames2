@@ -123,6 +123,26 @@ var Room = Backbone.Model.extend({
 	executeCommand: function(options, playerId){
 		//Overwrite me!
 		console.error("Execute command not implemented!");
+	},
+
+	emitGameMessage: function(message){
+		this.io.in(this.get("channel")).emit("gameMessage", message);
+	},
+
+	getSocketFromPID: function(playerId){
+		var player = this.get("players").get(playerId);
+		if(player){
+			return player.get("socket");
+		}else{
+			return null;
+		}
+	},
+
+	getRandomPlayer: function(){
+		var players = this.get("players");
+		if(players.length){
+			return players.at(Math.floor(players.length * Math.random()));
+		}
 	}
 
 

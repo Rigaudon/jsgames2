@@ -3,7 +3,7 @@ var _ = require("lodash");
 var EKcards = require("./ekcards.json");
 
 var hostCommands = ["startGame"];
-var commands = ["makeMove"];
+var commands = ["playCard", "drawCard"];
 
 var STARTING_HAND_CARDS = 5;
 
@@ -63,7 +63,17 @@ var ExplodingKittensRoom = Room.extend({
 		var command = options.command;
 		var players = self.get("players");
 		var gameState = self.get("gameState");
-		if(hostCommands.indexOf(command) > -1 && this.get("host").id == playerId){
+		if(commands.indexOf(command) > -1){
+			switch(command){
+				case "playCard":
+					self.playCard(playerId, options);
+					break;
+				case "drawCard":
+					self.drawCard(playerId);
+					break;
+
+			}
+		}else if(hostCommands.indexOf(command) > -1 && this.get("host").id == playerId){
 			switch(command){
 				case "startGame":
 					if(players.length >= 2){
@@ -71,13 +81,84 @@ var ExplodingKittensRoom = Room.extend({
 						gameState.turn = Math.floor(Math.random() * players.length); //Random player starts
 						gameState.deck = self.initializeDeck(players.length);
 						gameState.hands = self.initializeHands();
+						self.addExplodingKittens(gameState.deck, players.length);
 						gameState.pile = [];
+						gameState.exploded = [];
+						gameState.turnPlayer = players.at(Math.floor(Math.random() * players.length));
 						self.emitToAllExcept();
-						self.progressTurn();
 					}
-				break;
+					break;
 			}
 		}
+	},
+
+	playCard: function(playerId, options){
+		//if verify play card, continue with game logic
+		//otherwise send response to requester with failed
+		/*
+		[1] voT8bGaa-nJKzO_0AAAD
+		[1] { command: 'playCard',
+		[1]   roomId: 1,
+		[1]   card: { name: 'Cattermelon', type: 'cat', id: 'cat1', image: 'cat1' },
+		[1]   target: 'iW2X-MHU5881e-OVAAAC' }
+		*/
+		//create effect stack
+	},
+
+	drawCard: function(playerId){
+		//TODO: Check to see if it's exploding kitten
+		var gameState = this.get("gameState");
+		if(!this.inProgress() || gameState.turnPlayer.get("id") != playerId){
+			return;
+		}
+		var card = gameState.deck.pop(); //Assuming this is possible
+		gameState.hands[playerId].push(card);
+		this.emitGameMessage({
+			"message": "playerDraw",
+			"playerId": playerId
+		});
+		this.getSocketFromPID(playerId).emit("gameMessage", {
+			"message": "playerDraw",
+			"playerId": playerId,
+			"card": card
+		});
+		this.progressTurn();
+	},
+
+	progressTurn: function(){
+		if(!this.inProgress()){
+			return;
+		}
+		var players = this.get("players");
+		var gameState = this.get("gameState");
+		var currTurn = players.indexOf(gameState.turnPlayer);
+		if(currTurn > -1){
+			for(var i=0; i<players.length; i++){
+				currTurn = (currTurn + 1) % players.length;
+				var player = players.at(currTurn);
+				if(gameState.exploded.indexOf(player.id) == -1){
+					//not exploded, so valid
+					break;
+				}
+			}
+			gameState.turnPlayer = players.at(currTurn);
+			//emit
+			this.emitGameMessage({
+				message: "playerTurn",
+				player: gameState.turnPlayer.id
+			});
+		}
+	},
+
+	playerLeave: function(socket){
+		if(this.get("gameState") && this.get("gameState").turnPlayer.id == socket.id){
+			this.progressTurn();
+		}
+		Room.prototype.playerLeave.call(this, socket);
+	},
+
+	verifyPlayCard: function(hand, card){
+
 	},
 
 	initializeDeck: function(numPlayers){
@@ -91,10 +172,19 @@ var ExplodingKittensRoom = Room.extend({
 		for(var i=0; i<defuses; i++){
 			deck.push(new CardObj(EKcards.defuse, EKcards.defuse.num-i-1));
 		}
+		return _.shuffle(deck);
+	},
+
+	addExplodingKittens: function(deck, numPlayers){
 		for(var i=0; i<numPlayers-1; i++){
 			deck.push(new CardObj(EKcards.explodingKitten, i));
 		}
-		return _.shuffle(deck);
+		this.shuffleDeck();
+	},
+
+	shuffleDeck: function(){
+		var gameState = this.get("gameState");
+		gameState.deck = _.shuffle(gameState.deck);
 	},
 
 	initializeHands: function(){
@@ -124,6 +214,7 @@ var ExplodingKittensRoom = Room.extend({
 			allJson.players.forEach(function(player, i){
 				player.handSize = gameState.hands[player.id].length;
 			});
+			gameState.turnPlayer = gameState.turnPlayer.get("id");
 			delete gameState.hands;
 			delete gameState.deck;
 		}
@@ -133,14 +224,6 @@ var ExplodingKittensRoom = Room.extend({
 	inProgress: function(){
 		return this.get("status") == 2;
 	}, 
-
-	makeMove: function(playerId, col){
-
-	},
-
-	progressTurn: function(){
-
-	}
 
 });
 
