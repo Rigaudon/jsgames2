@@ -60,14 +60,6 @@ var ConnectFourRoom = Room.extend({
 		}
 		this.emitToAllExcept(playerModel.id);
 	},
-	
-	playerLeave: function(playerModel){
-		Room.prototype.playerLeave.call(this, playerModel);
-		if(this.get("players").length == 1){
-			this.set("status", 0);
-			this.emitToAllExcept();
-		}
-	},
 
 	executeCommand: function(options, playerId){
 		var self = this;

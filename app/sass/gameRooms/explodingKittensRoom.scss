@@ -213,6 +213,28 @@
 }
 
 .chooseOptions{
+	.closeModal{
+		position: absolute;
+		z-index: 1;
+		width: 30px;
+		height: 30px;
+		right: -10px;
+		top: -10px;
+		border-radius: 50%;
+		font-size: 15px;
+		border: 2px solid $primary-color;
+		color: $primary-color;
+		display: flex;
+		justify-content: center;
+		align-content: center;
+		background-color: $bg-color;
+		&:hover{
+			color: $bg-color;
+			border-color: $bg-color;
+			background-color: $primary-color;
+		}
+	}
+
 	.modal-header{
 		font-size: 30px;
 	}
@@ -221,6 +243,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		flex-wrap: wrap;
 		.player{
 			transition: 0.1s;
 			cursor: pointer;

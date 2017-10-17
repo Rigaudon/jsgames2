@@ -62,11 +62,15 @@ var Room = Backbone.Model.extend({
 		if(this.get("players").length == 0){
 			this.collection.remove(self);
 		}else{
+			if(this.get("players").length == 1){
+				this.set("status", 0);
+			}
 			if(this.get("host").id == playerId){
 				var randomPlayer = self.get("players").at(Math.floor(Math.random() * self.get("players").length));
 				this.set("host", randomPlayer.clientJSON());	
 			}
 		}
+		this.emitToAllExcept();
 	},
 
 	sendRoomInfo: function(socket){
@@ -143,8 +147,16 @@ var Room = Backbone.Model.extend({
 		if(players.length){
 			return players.at(Math.floor(players.length * Math.random()));
 		}
-	}
+	},
 
+	emitGameMessageToAllExcept: function(socketIds, message){
+		var self = this;
+		_.forEach(self.get("players").models, function(player){
+			if(socketIds.indexOf(player.get("id")) == -1){
+				player.get("socket").emit("gameMessage", message);
+			}
+		});
+	}
 
 });
 

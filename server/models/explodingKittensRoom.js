@@ -48,15 +48,6 @@ var ExplodingKittensRoom = Room.extend({
 		}
 		this.emitToAllExcept(playerModel.id);
 	},
-	
-	playerLeave: function(playerModel){
-		Room.prototype.playerLeave.call(this, playerModel);
-		if(this.get("players").length == 1){
-			this.set("status", 0);
-			this.resetDefaultGamestate();
-			this.emitToAllExcept();
-		}
-	},
 
 	executeCommand: function(options, playerId){
 		var self = this;
@@ -66,7 +57,8 @@ var ExplodingKittensRoom = Room.extend({
 		if(commands.indexOf(command) > -1){
 			switch(command){
 				case "playCard":
-					self.playCard(playerId, options);
+					options.source = playerId;
+					self.playCard(options);
 					break;
 				case "drawCard":
 					self.drawCard(playerId);
@@ -92,17 +84,51 @@ var ExplodingKittensRoom = Room.extend({
 		}
 	},
 
-	playCard: function(playerId, options){
+	playCard: function(options){
 		//if verify play card, continue with game logic
 		//otherwise send response to requester with failed
 		/*
-		[1] voT8bGaa-nJKzO_0AAAD
 		[1] { command: 'playCard',
 		[1]   roomId: 1,
 		[1]   card: { name: 'Cattermelon', type: 'cat', id: 'cat1', image: 'cat1' },
-		[1]   target: 'iW2X-MHU5881e-OVAAAC' }
+		[1]   target: 'iW2X-MHU5881e-OVAAAC',
+			  source: 'voT8bGaa-nJKzO_0AAAD' }
 		*/
-		//create effect stack
+		//TODO: create effect stack
+		this.emitGameMessage({
+			"message": "cardPlayed",
+			"from": options.source,
+			"card": options.card,
+			"target": options.target
+		});
+		this.performEffect(options);
+	},
+
+	performEffect: function(options){
+		//wrap this in try/catch?
+		var gameState = this.get("gameState");
+		switch(options.card.type){
+			case "cat":
+				var targetHand = gameState.hands[options.target];
+				var randomCard = targetHand.splice(Math.floor(targetHand.length * Math.random()), 1)[0];
+				gameState.hands[options.source].push(randomCard);
+				var response = {
+					"message": "moveCard",
+					"from": options.target,
+					"to": options.source,
+					"card": randomCard,
+					"remove": {
+						card: options.card,
+						amount: 2
+					}
+				};
+				this.getSocketFromPID(options.source).emit("gameMessage", response);
+				delete response.remove;
+				this.getSocketFromPID(options.target).emit("gameMessage", response);
+				delete response.card;
+				this.emitGameMessageToAllExcept([options.source, options.target], response);
+			break;
+		}
 	},
 
 	drawCard: function(playerId){
@@ -151,10 +177,14 @@ var ExplodingKittensRoom = Room.extend({
 	},
 
 	playerLeave: function(socket){
-		if(this.get("gameState") && this.get("gameState").turnPlayer.id == socket.id){
+		if(this.get("gameState").turnPlayer && this.get("gameState").turnPlayer.id == socket.id){
 			this.progressTurn();
 		}
 		Room.prototype.playerLeave.call(this, socket);
+		if(this.get("players").length == 1){
+			this.resetDefaultGamestate();
+			this.emitToAllExcept();
+		}
 	},
 
 	verifyPlayCard: function(hand, card){

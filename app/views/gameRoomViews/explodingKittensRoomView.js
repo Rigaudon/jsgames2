@@ -21,7 +21,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		this.player.gameClient = this.model;
 	},
 
-	statusCodes: ["Waiting for players", "Waiting to start", ""],
+	statusCodes: ["Waiting for players", "Waiting to start", "Game has started"],
 
 	className: "explodingKittensRoom",
 
@@ -73,7 +73,9 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"update:room": "render",
 		"self:draw": "selfDraw",
 		"opponent:draw": "opponentDraw",
-		"update:player": "updatePlayer"
+		"update:player": "updatePlayer",
+		"card:move": "moveCard",
+		"card:played": "cardPlayed"
 	},
 
 	ui: {
@@ -86,7 +88,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 	regions: {
 		"hand": ".heldCards",
 		"choose": ".chooseOptions",
-		"table": ".playtable"
+		"table": ".playtable",
+		"status": ".status"
 	},
 
 	events: {
@@ -130,8 +133,18 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			animation: 150,
 			group: {
 				name: "pile",
-				put: function(to){
-					return $(to.el).find(".EKCard").length == 0;
+				put: function(to, from, el){
+					var card = el.card;
+					switch(card.type){
+						case "cat":
+							var inHand = gameState.hand.filter(function(handCard){
+								return handCard.id == card.id;
+							});
+							return self.model.isMyTurn() && inHand.length >= 2;
+						default:
+							return self.model.isMyTurn() && $(to.el).find(".EKCard").length == 0;
+					}
+					
 				}
 			},
 			onAdd: function(evt){
@@ -163,24 +176,75 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 	onPlayCat: function(card){
 		//TODO: check to see if the player has at least two
 		var self = this;
-		this.showPickPlayerModal(card, function(pid){
-			self.model.playCard({
-				card: card,
-				target: pid
-			});
-		});
+		this.showPickPlayerModal(
+			card, 
+			function(pid){
+				//a player is picked
+				self.model.playCard({
+					card: card,
+					target: pid
+				});
+			},
+			function(){
+				//Modal was closed (cancelled or completed)
+				$(self.regions.hand).prepend($(self.ui.pile).find(".EKCard").detach());
+			}
+		);
 	},
 
 	drawCard: function(){
-		//TODO: check if can draw
 		this.model.drawCard();
 	},
 
-	showPickPlayerModal: function(card, callback){
+	cardPlayed: function(){
+		//Render card to top of pile, animate and show status
+		console.log("IMPLEMENT ME");
+	},
+
+	moveCard: function(options){
+		var from;
+		var to;
+		this.model.get("players").map(function(player){
+			if(player.id == options.from){
+				from = player;
+			}
+			if(player.id == options.to){
+				to = player;
+			}
+		});
+		if(from && to){
+			this.animateCardMove(from.el, to.el);
+			if(options.remove){
+				//remove options.remove.card x options.remove.amount from hand
+				this.removeCardFromHand(options.remove.card, options.remove.amount);
+			}
+			if(this.model.socket.id == options.from){
+				//remove options.card from hand
+				this.removeCardFromHand(options.card, 1);
+			}else if(this.model.socket.id == options.to){
+				//Add to options.card to hand
+				this.addCardToOwnHand(options.card);
+			}
+		}
+	},
+
+	removeCardFromHand: function(card, amount){
+		var removed = 0;
+		var cards = $(".EKCard");
+		_.forEach(cards, function(cardEl){
+			if(removed < amount && cardEl.card && cardEl.card.id == card.id && cardEl.card.image == card.image){
+				cardEl.remove();
+				removed++;
+			}
+		});
+	},
+
+	showPickPlayerModal: function(card, callback, onCancel){
 		var self = this;
 		var chooseEl = $(this.regions.choose);
 		chooseEl.find(".modal-header").text("Play " + card.name + " on:");
 		var bodyEl = chooseEl.find(".modal-body");
+		bodyEl.empty();
 		var playerRegions = $(".playtable > .player");
 		_.forEach(playerRegions, function(el){
 			var playerId = $(el).attr("data-id");
@@ -194,12 +258,12 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			});
 			bodyEl.append(playerEl);
 		});
-
 		chooseEl.modal({
 			show: true,
 			backdrop: false,
 			keyboard: true
 		});
+		chooseEl.on("hidden.bs.modal", onCancel.bind(false));
 	},
 
 	renderCardCounts: function(){
@@ -241,6 +305,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		this.addCardToOwnHand(card.card);
 		this.renderCardCounts();
 		this.animateCardMove(this.ui.deck, ".playerSeat", card.image);
+		$(this.regions.status).text("You drew a card");
 	},
 
 	opponentDraw: function(options){
@@ -253,12 +318,14 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		opponent.handSize++;
 		this.renderCardCounts();
 		this.animateCardMove(this.ui.deck, opponent.el);
+		$(this.regions.status).text(opponent.name + " drew a card");
 	},
 
 	addCardToOwnHand: function(card){
 		this.model.get("gameState").hand.push(card);
 		let cardView = new EKCardView({card: card});
 		cardView.render();
+		cardView.$el.card = card;
 		$(this.regions.hand).prepend(cardView.$el);
 	},
 

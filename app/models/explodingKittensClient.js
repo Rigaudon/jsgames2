@@ -48,11 +48,22 @@ var ExplodingKitten = Backbone.Model.extend({
 				break;
 			case "playerTurn":
 				this.trigger("update:player", message.player);
-			break;
+				break;
+			case "moveCard":
+				this.trigger("card:move", message);
+				break;
+			case "cardPlayed":
+				this.trigger("card:played", message);
+				break;
+			default:
+				console.log("Not implemented:");
+				console.log(message);
+				break;
 		}
 	},
 
 	playCard: function(options){
+		//TODO: validate
 		this.socket.emit("gameMessage", {
 			command: "playCard",
 			roomId: this.get("id"),
