@@ -40,7 +40,7 @@ var ExplodingKittensRoom = Room.extend({
 			turn: "undefined"
 		});
 	},
-	
+
 	playerJoin: function(playerModel){
 		Room.prototype.playerJoin.call(this, playerModel);
 		if(this.get("players").length == this.get("maxPlayers")){
@@ -115,7 +115,7 @@ var ExplodingKittensRoom = Room.extend({
 			//This will move
 			this.get("gameState").pile.push(options.card);
 		}
-		
+
 	},
 
 	performEffect: function(options){
@@ -151,6 +151,9 @@ var ExplodingKittensRoom = Room.extend({
 					this.get("gameState").isAttacked = true;
 				}
 				break;
+			case "stf":
+				this.getSocketFromPID(options.source).emit("gameMessage", this.seeTheFuture());
+				break;
 		}
 	},
 
@@ -177,13 +180,25 @@ var ExplodingKittensRoom = Room.extend({
 	removeCardsFromHand: function(playerId, options){
 		for(var i=0; i<options.amount; i++){
 			this.removeCardFromHand(playerId, options.card);
-		}		
+		}
+	},
+
+	seeTheFuture: function(){
+		var cardsToShow = 3;
+		var deck = this.get("gameState").deck;
+		var currCard = deck.length - 1;
+		var response = {
+			"message": "seeTheFuture",
+			"cards": []
+		};
+		while(currCard >= 0 && response.cards.length < cardsToShow){
+			response.cards.push(deck[currCard].toJSON());
+			currCard--;
+		}
+		return response;
 	},
 
 	removeCardFromHand: function(playerId, card){
-		if(!this.inProgress()){
-			return;
-		}
 		var hand = this.get("gameState").hands[playerId];
 		for(var i=0; i<hand.length; i++){
 			if(hand[i].id == card.id && hand[i].image == card.image){
@@ -238,7 +253,7 @@ var ExplodingKittensRoom = Room.extend({
 		if(!this.inProgress()){
 			return false;
 		}
-		
+
 		var gameState = this.get("gameState");
 		if(options.card.type != "defuse" && options.source != gameState.turnPlayer.id){
 			return false;
@@ -298,7 +313,7 @@ var ExplodingKittensRoom = Room.extend({
 			hands[player.id] = hand;
 			i++;
 		});
-		
+
 		return hands;
 	},
 
@@ -320,7 +335,7 @@ var ExplodingKittensRoom = Room.extend({
 
 	inProgress: function(){
 		return this.get("status") == 2;
-	}, 
+	},
 
 });
 

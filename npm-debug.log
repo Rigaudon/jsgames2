@@ -1,0 +1,49 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/mwu230/.nvm/versions/node/v6.9.5/bin/node',
+1 verbose cli   '/Users/mwu230/.nvm/versions/node/v6.9.5/bin/npm',
+1 verbose cli   'run',
+1 verbose cli   'server' ]
+2 info using npm@3.10.10
+3 info using node@v6.9.5
+4 verbose run-script [ 'preserver', 'server', 'postserver' ]
+5 info lifecycle jsgames2@1.0.0~preserver: jsgames2@1.0.0
+6 silly lifecycle jsgames2@1.0.0~preserver: no script for preserver, continuing
+7 info lifecycle jsgames2@1.0.0~server: jsgames2@1.0.0
+8 verbose lifecycle jsgames2@1.0.0~server: unsafe-perm in lifecycle true
+9 verbose lifecycle jsgames2@1.0.0~server: PATH: /Users/mwu230/.nvm/versions/node/v6.9.5/lib/node_modules/npm/bin/node-gyp-bin:/Users/mwu230/Documents/other/jsgames2/node_modules/.bin:/Users/mwu230/.nvm/versions/node/v6.9.5/bin:/Users/mwu230/.rvm/gems/ruby-2.2.5/bin:/Users/mwu230/.rvm/gems/ruby-2.2.5@global/bin:/Users/mwu230/.rvm/rubies/ruby-2.2.5/bin:./bin:/usr/local/bin:/usr/local/sbin:/Users/mwu230/.dotfiles/bin:/usr/local/opt/mysql@5.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Users/mwu230/.rvm/bin
+10 verbose lifecycle jsgames2@1.0.0~server: CWD: /Users/mwu230/Documents/other/jsgames2
+11 silly lifecycle jsgames2@1.0.0~server: Args: [ '-c',
+11 silly lifecycle   'concurrently --kill-others "gulp bundle" "node entry.js" "node-sass --output-style compact -w app/sass/main.scss static/css/main.css"' ]
+12 silly lifecycle jsgames2@1.0.0~server: Returned: code: 1  signal: null
+13 info lifecycle jsgames2@1.0.0~server: Failed to exec server script
+14 verbose stack Error: jsgames2@1.0.0 server: `concurrently --kill-others "gulp bundle" "node entry.js" "node-sass --output-style compact -w app/sass/main.scss static/css/main.css"`
+14 verbose stack Exit status 1
+14 verbose stack     at EventEmitter.<anonymous> (/Users/mwu230/.nvm/versions/node/v6.9.5/lib/node_modules/npm/lib/utils/lifecycle.js:255:16)
+14 verbose stack     at emitTwo (events.js:106:13)
+14 verbose stack     at EventEmitter.emit (events.js:191:7)
+14 verbose stack     at ChildProcess.<anonymous> (/Users/mwu230/.nvm/versions/node/v6.9.5/lib/node_modules/npm/lib/utils/spawn.js:40:14)
+14 verbose stack     at emitTwo (events.js:106:13)
+14 verbose stack     at ChildProcess.emit (events.js:191:7)
+14 verbose stack     at maybeClose (internal/child_process.js:877:16)
+14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:226:5)
+15 verbose pkgid jsgames2@1.0.0
+16 verbose cwd /Users/mwu230/Documents/other/jsgames2
+17 error Darwin 15.6.0
+18 error argv "/Users/mwu230/.nvm/versions/node/v6.9.5/bin/node" "/Users/mwu230/.nvm/versions/node/v6.9.5/bin/npm" "run" "server"
+19 error node v6.9.5
+20 error npm  v3.10.10
+21 error code ELIFECYCLE
+22 error jsgames2@1.0.0 server: `concurrently --kill-others "gulp bundle" "node entry.js" "node-sass --output-style compact -w app/sass/main.scss static/css/main.css"`
+22 error Exit status 1
+23 error Failed at the jsgames2@1.0.0 server script 'concurrently --kill-others "gulp bundle" "node entry.js" "node-sass --output-style compact -w app/sass/main.scss static/css/main.css"'.
+23 error Make sure you have the latest version of node.js and npm installed.
+23 error If you do, this is most likely a problem with the jsgames2 package,
+23 error not with npm itself.
+23 error Tell the author that this fails on your system:
+23 error     concurrently --kill-others "gulp bundle" "node entry.js" "node-sass --output-style compact -w app/sass/main.scss static/css/main.css"
+23 error You can get information on how to open an issue for this project with:
+23 error     npm bugs jsgames2
+23 error Or if that isn't available, you can get their info via:
+23 error     npm owner ls jsgames2
+23 error There is likely additional logging output above.
+24 verbose exit [ 1, true ]

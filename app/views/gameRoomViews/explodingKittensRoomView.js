@@ -44,13 +44,13 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		switch(num){
 			case 1:
 				return "onePlayer";
-			case 2: 
+			case 2:
 				return "twoPlayers";
 			case 3:
 				return "threePlayers";
 			case 4:
 				return "fourPlayers";
-			case 5: 
+			case 5:
 				return "fivePlayers";
 			default:
 				throw new Error("Invalid number of players in room");
@@ -63,7 +63,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			var players = this.model.get("players");
 			if(players.length >= 2 && !this.model.inProgress()){
 				//Add restart option
-				options += "<button class=\"startBtn btn-big\">Start Game</button>";		
+				options += "<button class=\"startBtn btn-big\">Start Game</button>";
 			}
 		}
 		options += "<button class='leaveBtn btn-big'>Leave Room</button>";
@@ -76,7 +76,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"opponent:draw": "opponentDraw",
 		"update:player": "updatePlayer",
 		"card:move": "moveCard",
-		"card:played": "cardPlayed"
+		"card:played": "cardPlayed",
+		"effect:stf": "seeTheFuture"
 	},
 
 	ui: {
@@ -150,7 +151,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 						default:
 							return self.model.isMyTurn() && $(to.el).find(".EKCard").length == 0;
 					}
-					
+
 				}
 			},
 			onAdd: function(evt){
@@ -191,7 +192,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		//TODO: check to see if the player has at least two
 		var self = this;
 		this.showPickPlayerModal(
-			card, 
+			card,
 			function(pid){
 				//a player is picked
 				self.model.playCard({
@@ -273,6 +274,24 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		});
 	},
 
+	seeTheFuture: function(future){
+		var chooseEl = $(this.regions.choose);
+		chooseEl.find(".modal-header").text("Seeing the future");
+		var bodyEl = chooseEl.find(".modal-body");
+		bodyEl.empty();
+		_.forEach(future.cards, function(card){
+			let cardView = new EKCardView({card: card});
+			cardView.render();
+			bodyEl.prepend(cardView.$el);
+		});
+		chooseEl.off("hidden.bs.modal");
+		chooseEl.modal({
+			show: true,
+			backdrop: false,
+			keyboard: true
+		});
+	},
+
 	showPickPlayerModal: function(card, callback, onCancel){
 		var self = this;
 		var chooseEl = $(this.regions.choose);
@@ -292,12 +311,12 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			});
 			bodyEl.append(playerEl);
 		});
+		chooseEl.off("hidden.bs.modal").on("hidden.bs.modal", onCancel.bind(false));
 		chooseEl.modal({
 			show: true,
 			backdrop: false,
 			keyboard: true
 		});
-		chooseEl.on("hidden.bs.modal", onCancel.bind(false));
 	},
 
 	renderCardCounts: function(){
@@ -307,7 +326,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 
 	renderDeckCount: function(){
 		var gameState = this.model.get("gameState");
-		if(gameState){;
+		if(gameState){
 			$(this.ui.deck).find(".numCards").text(gameState.deckCount || "");
 			$(this.ui.pile).find(".numCards").text(gameState.pile.length || "");
 		}
@@ -323,7 +342,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 
 	renderPlayers: function(players){
 		var self = this;
-		players.forEach(function(player, i){ 
+		players.forEach(function(player, i){
 			var playerEl = $(playerSeats[i]);
 			playerEl.css({
 				"border-color": player.color,
@@ -390,14 +409,13 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			cardEl.bind(common.finishTransition, function(){
 				resolve();
 				if(toPile){
-					cardEl.remove();	
+					cardEl.remove();
 				}else if(cardEl.css("opacity") == 0){
-					cardEl.remove();	
+					cardEl.remove();
 				}
 			});
 		})
 		.then(self.renderPlayerCardCounts.bind(self));
-		
 	},
 
 	updatePlayer: function(){

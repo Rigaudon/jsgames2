@@ -133,11 +133,11 @@
 .player.active{
 	&::before{
 		position: absolute;
-		width: 0; 
-		height: 0; 
+		width: 0;
+		height: 0;
 		top: -45px;
 		border-left: 30px solid transparent;
-		border-right: 30px solid transparent; 
+		border-right: 30px solid transparent;
 		border-top: 35px solid $tertiary-color;
 		z-index: -1;
 		content: " ";
@@ -188,7 +188,7 @@
 	grid-row-end: 3;
 	display: flex;
 	align-items: center;
-	justify-content: center; 
+	justify-content: center;
 }
 
 .pile, .deck {
@@ -251,7 +251,7 @@
 				width: 175px;
 				height: 175px;
 			}
-		}	
+		}
 	}
 }
 

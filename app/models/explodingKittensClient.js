@@ -75,6 +75,9 @@ var ExplodingKitten = Backbone.Model.extend({
 				this.onCardPlayed(message);
 				this.trigger("card:played", message);
 				break;
+			case "seeTheFuture":
+				this.trigger("effect:stf", message);
+				break;
 			default:
 				console.log("Not implemented:");
 				console.log(message);
@@ -90,7 +93,7 @@ var ExplodingKitten = Backbone.Model.extend({
 				card: options.card,
 				target: options.target
 			});
-		}		
+		}
 	},
 
 	validatePlayable: function(card){
@@ -175,7 +178,7 @@ var ExplodingKitten = Backbone.Model.extend({
 			this.socket.emit("gameMessage", {
 				command: "drawCard",
 				roomId: this.get("id")
-			});	
+			});
 		}
 	},
 
@@ -192,7 +195,7 @@ var ExplodingKitten = Backbone.Model.extend({
 		this.socket.emit("gameMessage", {
 			command: "startGame",
 			roomId: this.get("id")
-		}); 
+		});
 	},
 
 	inProgress: function(){
