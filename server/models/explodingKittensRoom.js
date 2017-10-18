@@ -76,6 +76,7 @@ var ExplodingKittensRoom = Room.extend({
 						self.addExplodingKittens(gameState.deck, players.length);
 						gameState.pile = [];
 						gameState.exploded = [];
+						gameState.isAttacked = false;
 						gameState.turnPlayer = players.at(Math.floor(Math.random() * players.length));
 						self.emitToAllExcept();
 					}
@@ -95,13 +96,26 @@ var ExplodingKittensRoom = Room.extend({
 			  source: 'voT8bGaa-nJKzO_0AAAD' }
 		*/
 		//TODO: create effect stack
-		this.emitGameMessage({
-			"message": "cardPlayed",
-			"from": options.source,
-			"card": options.card,
-			"target": options.target
-		});
-		this.performEffect(options);
+		if(this.verifyPlayable(options)){
+			var response = {
+				"message": "cardPlayed",
+				"from": options.source,
+				"card": options.card,
+				"to": options.target
+			};
+			this.emitGameMessageToAllExcept([options.source], response);
+			response.remove = {
+				card: options.card,
+				amount: options.card.type == "cat" ? 2 : 1
+			};
+			this.removeCardsFromHand(options.source, response.remove);
+			this.getSocketFromPID(options.source).emit("gameMessage", response);
+			this.performEffect(options);
+
+			//This will move
+			this.get("gameState").pile.push(options.card);
+		}
+		
 	},
 
 	performEffect: function(options){
@@ -116,18 +130,27 @@ var ExplodingKittensRoom = Room.extend({
 					"message": "moveCard",
 					"from": options.target,
 					"to": options.source,
-					"card": randomCard,
-					"remove": {
-						card: options.card,
-						amount: 2
-					}
 				};
-				this.getSocketFromPID(options.source).emit("gameMessage", response);
-				delete response.remove;
-				this.getSocketFromPID(options.target).emit("gameMessage", response);
-				delete response.card;
 				this.emitGameMessageToAllExcept([options.source, options.target], response);
-			break;
+				response.card = randomCard;
+				this.getSocketFromPID(options.source).emit("gameMessage", response);
+				this.getSocketFromPID(options.target).emit("gameMessage", response);
+				break;
+			case "skip":
+				this.progressTurn();
+				break;
+			case "shuffle":
+				this.shuffleDeck();
+				break;
+			case "attack":
+				if(gameState.isAttacked){
+					gameState.isAttacked = false;
+					this.progressTurn();
+				}else{
+					this.progressTurn();
+					this.get("gameState").isAttacked = true;
+				}
+				break;
 		}
 	},
 
@@ -151,6 +174,26 @@ var ExplodingKittensRoom = Room.extend({
 		this.progressTurn();
 	},
 
+	removeCardsFromHand: function(playerId, options){
+		for(var i=0; i<options.amount; i++){
+			this.removeCardFromHand(playerId, options.card);
+		}		
+	},
+
+	removeCardFromHand: function(playerId, card){
+		if(!this.inProgress()){
+			return;
+		}
+		var hand = this.get("gameState").hands[playerId];
+		for(var i=0; i<hand.length; i++){
+			if(hand[i].id == card.id && hand[i].image == card.image){
+				hand = hand.splice(i, 1);
+				return;
+			}
+		}
+		throw new Error("Tried to remove a nonexistant card");
+	},
+
 	progressTurn: function(){
 		if(!this.inProgress()){
 			return;
@@ -159,15 +202,19 @@ var ExplodingKittensRoom = Room.extend({
 		var gameState = this.get("gameState");
 		var currTurn = players.indexOf(gameState.turnPlayer);
 		if(currTurn > -1){
-			for(var i=0; i<players.length; i++){
-				currTurn = (currTurn + 1) % players.length;
-				var player = players.at(currTurn);
-				if(gameState.exploded.indexOf(player.id) == -1){
-					//not exploded, so valid
-					break;
+			if(gameState.isAttacked){
+				gameState.isAttacked = false;
+			}else{
+				for(var i=0; i<players.length; i++){
+					currTurn = (currTurn + 1) % players.length;
+					var player = players.at(currTurn);
+					if(gameState.exploded.indexOf(player.id) == -1){
+						//not exploded, so valid
+						break;
+					}
 				}
+				gameState.turnPlayer = players.at(currTurn);
 			}
-			gameState.turnPlayer = players.at(currTurn);
 			//emit
 			this.emitGameMessage({
 				message: "playerTurn",
@@ -187,8 +234,29 @@ var ExplodingKittensRoom = Room.extend({
 		}
 	},
 
-	verifyPlayCard: function(hand, card){
+	verifyPlayable: function(options){
+		if(!this.inProgress()){
+			return false;
+		}
+		
+		var gameState = this.get("gameState");
+		if(options.card.type != "defuse" && options.source != gameState.turnPlayer.id){
+			return false;
+		}
 
+		var hand = gameState.hands[options.source];
+		if(!hand){
+			return false;
+		}
+		var inHand = hand.filter(function(card){
+			return card.id == options.card.id && card.image == options.card.image;
+		});
+
+		if(options.card.type == "cat"){
+			return inHand.length > 1;
+		}else{
+			return inHand.length > 0;
+		}
 	},
 
 	initializeDeck: function(numPlayers){
@@ -240,7 +308,6 @@ var ExplodingKittensRoom = Room.extend({
 		if(gameState && !_.isEmpty(gameState.hands)){
 			gameState.hand = gameState.hands[socket.id];
 			gameState.deckCount = gameState.deck.length;
-			gameState.pileCount = gameState.pile.length;
 			allJson.players.forEach(function(player, i){
 				player.handSize = gameState.hands[player.id].length;
 			});

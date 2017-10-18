@@ -5,6 +5,7 @@ var fs = require("fs");
 var EKCardView = require("./explodingKittensCardView");
 var Sortable = require("sortablejs");
 var common = require("../../common");
+var Promise = require("bluebird");
 
 var playerSeats = [
 	'.playerSeat',
@@ -117,6 +118,11 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		}
 	},
 
+	pathForCard: function(card){
+		card = card.image ? card.image : card;
+		return "/static/images/assets/explodingKittens/" + card + ".png";
+	},
+
 	renderCards: function(gameState){
 		var self = this;
 		gameState.hand.forEach(function(card){
@@ -149,18 +155,19 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			},
 			onAdd: function(evt){
 				var card = evt.item.card;
+				$(self.regions.hand).prepend($(self.ui.pile).find(".EKCard").detach());
 				switch(card.type){
 					case "cat":
 						self.onPlayCat(card);
+						//put the card back
 						break;
 					case "stf":
-
-					break;
-					case "skip":
 					case "attack":
+					case "skip":
 					case "shuffle":
+						self.onPlay(card);
+						break;
 					case "favor":
-
 					break;
 					case "nope":
 					break;
@@ -170,6 +177,13 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 						throw new Error("Invalid Card Type!");
 				}
 			}
+		});
+	},
+
+	onPlay: function(card){
+		//No immediate response needed types of cards
+		this.model.playCard({
+			card: card
 		});
 	},
 
@@ -196,9 +210,25 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		this.model.drawCard();
 	},
 
-	cardPlayed: function(){
+	cardPlayed: function(options){
 		//Render card to top of pile, animate and show status
-		console.log("IMPLEMENT ME");
+		var fromEl = this.model.getPlayerById(options.from).el;
+		var self = this;
+		var player = self.model.getPlayerById(options.from);
+		var statusText = player.name + " played " + options.card.name;
+		if(options.to){
+			statusText += " on " + self.model.getPlayerById(options.to).name;
+		}
+		$(self.regions.status).text(statusText);
+		if(options.remove){
+			//remove options.remove.card x options.remove.amount from hand
+			self.removeCardFromHand(options.remove.card, options.remove.amount);
+		}
+		this.animateCardMove(fromEl, this.ui.pile, options.card.image)
+		.then(function(){
+			//show card image on pile bg
+			$(self.ui.pile).css("background-image", "url(" + self.pathForCard(options.card.image) + ")");
+		});
 	},
 
 	moveCard: function(options){
@@ -213,18 +243,22 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			}
 		});
 		if(from && to){
-			this.animateCardMove(from.el, to.el);
-			if(options.remove){
-				//remove options.remove.card x options.remove.amount from hand
-				this.removeCardFromHand(options.remove.card, options.remove.amount);
-			}
-			if(this.model.socket.id == options.from){
-				//remove options.card from hand
-				this.removeCardFromHand(options.card, 1);
-			}else if(this.model.socket.id == options.to){
-				//Add to options.card to hand
-				this.addCardToOwnHand(options.card);
-			}
+			var self = this;
+			return this.animateCardMove(from.el, to.el)
+			.then(function(){
+				if(self.model.socket.id == options.from){
+					//remove options.card from hand
+					self.removeCardFromHand(options.card, 1);
+					//statuses shouldnt be here
+					$(self.regions.status).text("You gave " + options.card.name + " to " + to.name + ".");
+				}else if(self.model.socket.id == options.to){
+					//Add to options.card to hand
+					self.addCardToOwnHand(options.card);
+					$(self.regions.status).text("You got " + options.card.name + " from " + from.name + ".");
+				}else{
+					$(self.regions.status).text(to.name + " got a card from " + from.name + ".");
+				}
+			});
 		}
 	},
 
@@ -267,16 +301,24 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 	},
 
 	renderCardCounts: function(){
+		this.renderDeckCount();
+		this.renderPlayerCardCounts();
+	},
+
+	renderDeckCount: function(){
 		var gameState = this.model.get("gameState");
-		if(gameState){
+		if(gameState){;
 			$(this.ui.deck).find(".numCards").text(gameState.deckCount || "");
-			$(this.ui.pile).find(".numCards").text(gameState.pileCount || "");
-			this.model.get("players").forEach(function(player, i){
-				var playerEl = $(playerSeats[i]);
-				var handCountEl = playerEl.find(".numCards");
-				handCountEl.text(player.handSize);
-			});
+			$(this.ui.pile).find(".numCards").text(gameState.pile.length || "");
 		}
+	},
+
+	renderPlayerCardCounts: function(){
+		this.model.get("players").forEach(function(player, i){
+			var playerEl = $(playerSeats[i]);
+			var handCountEl = playerEl.find(".numCards");
+			handCountEl.text(player.handSize);
+		});
 	},
 
 	renderPlayers: function(players){
@@ -296,68 +338,71 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 	},
 
 	selfDraw: function(card){
-		this.model.get("gameState").deckCount--;
 		var self = this;
-		var me = this.model.get("players").filter(function(player){
-			return player.id ==  self.player.get("pid");
-		})[0];
-		me.handSize++;
-		this.addCardToOwnHand(card.card);
-		this.renderCardCounts();
-		this.animateCardMove(this.ui.deck, ".playerSeat", card.image);
+		this.animateCardMove(this.ui.deck, ".playerSeat", card.card.image)
+		.then(function(){
+			self.addCardToOwnHand(card.card);
+		});
 		$(this.regions.status).text("You drew a card");
 	},
 
 	opponentDraw: function(options){
-		let gameState = this.model.get("gameState");
-		this.model.get("gameState").deckCount--;
 		var opponentId = options.playerId;
 		var opponent = this.model.get("players").filter(function(player){
 			return player.id == opponentId;
 		})[0];
-		opponent.handSize++;
-		this.renderCardCounts();
-		this.animateCardMove(this.ui.deck, opponent.el);
+		var self = this;
+		this.animateCardMove(this.ui.deck, opponent.el)
 		$(this.regions.status).text(opponent.name + " drew a card");
+		this.renderPlayerCardCounts();
 	},
 
 	addCardToOwnHand: function(card){
-		this.model.get("gameState").hand.push(card);
 		let cardView = new EKCardView({card: card});
 		cardView.render();
 		cardView.$el.card = card;
 		$(this.regions.hand).prepend(cardView.$el);
+		this.renderPlayerCardCounts();
 	},
 
 	animateCardMove: function(from, to, card){
-		var fromEl = $(this.regions.table).find(from);
-		var toEl = $(this.regions.table).find(to);
-		var cardEl = $("<img class='animatedCard'>");
-		cardEl.attr("src", "/static/images/assets/explodingKittens/" + (card || "back") + ".png");
-		cardEl.css({
-			left: (fromEl.position().left + (fromEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
-			top: (fromEl.position().top  + (fromEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
-		});
-		$(this.regions.table).append(cardEl);
-		cardEl.css({
-			left: (toEl.position().left + (toEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
-			top: (toEl.position().top  + (toEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
-		});
+		var self = this;
+		return new Promise(function(resolve, reject){
+			self.renderDeckCount();
+			var fromEl = $(self.regions.table).find(from);
+			var toEl = $(self.regions.table).find(to);
+			var cardEl = $("<img class='animatedCard'>");
+			cardEl.attr("src", self.pathForCard(card || "back"));
+			cardEl.css({
+				left: (fromEl.position().left + (fromEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
+				top: (fromEl.position().top  + (fromEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
+			});
+			$(self.regions.table).append(cardEl);
+			cardEl.css({
+				left: (toEl.position().left + (toEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
+				top: (toEl.position().top  + (toEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
+			});
 
-		cardEl.css("opacity", 0);
-		cardEl.bind(common.finishTransition, function(){
-			if(cardEl.css("opacity") == 0){
-				cardEl.remove();	
+			var toPile = to == self.ui.pile;
+			if(!toPile){
+				cardEl.css("opacity", 0);
 			}
-		});
+			cardEl.bind(common.finishTransition, function(){
+				resolve();
+				if(toPile){
+					cardEl.remove();	
+				}else if(cardEl.css("opacity") == 0){
+					cardEl.remove();	
+				}
+			});
+		})
+		.then(self.renderPlayerCardCounts.bind(self));
+		
 	},
 
-	updatePlayer: function(newPlayer){
+	updatePlayer: function(){
 		var gameState = this.model.get("gameState");
 		if(gameState && gameState.turnPlayer){
-			if(newPlayer){
-				gameState.turnPlayer = newPlayer;
-			}
 			this.model.get("players").forEach(function(player, i){
 				if(player.id == gameState.turnPlayer){
 					player.el.addClass("active");

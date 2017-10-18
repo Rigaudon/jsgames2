@@ -1,4 +1,5 @@
 var Backbone = require("backbone");
+var _ = require("lodash");
 var ExplodingKitten = Backbone.Model.extend({
 	initialize: function(options){
 		var self = this;
@@ -14,6 +15,20 @@ var ExplodingKitten = Backbone.Model.extend({
 		});
 		//We do this instead of the server side event because of the delay it takes to create the view
 		this.getRoomInfo();
+	},
+
+	onSelfDraw: function(card){
+		this.get("gameState").deckCount--;
+		this.addCardToHand(card);
+	},
+
+	onOpponentDraw: function(id){
+		this.get("gameState").deckCount--;
+		this.getPlayerById(id).handSize++;
+	},
+
+	onUpdatePlayer: function(newPlayer){
+		this.get("gameState").turnPlayer = newPlayer;
 	},
 
 	getRoomInfo: function(){
@@ -37,22 +52,27 @@ var ExplodingKitten = Backbone.Model.extend({
 		switch(message.message){
 			case "playerDraw":
 				if(message.playerId == this.socket.id && message.card){
+					this.onSelfDraw(message.card);
 					this.trigger("self:draw", {
 						card: message.card
 					});
 				}else if(message.playerId != this.socket.id){
+					this.onOpponentDraw(message.playerId);
 					this.trigger("opponent:draw", {
 						playerId: message.playerId
 					});
 				}
 				break;
 			case "playerTurn":
+				this.onUpdatePlayer(message.player);
 				this.trigger("update:player", message.player);
 				break;
 			case "moveCard":
+				this.onMoveCard(message);
 				this.trigger("card:move", message);
 				break;
 			case "cardPlayed":
+				this.onCardPlayed(message);
 				this.trigger("card:played", message);
 				break;
 			default:
@@ -63,13 +83,91 @@ var ExplodingKitten = Backbone.Model.extend({
 	},
 
 	playCard: function(options){
-		//TODO: validate
-		this.socket.emit("gameMessage", {
-			command: "playCard",
-			roomId: this.get("id"),
-			card: options.card,
-			target: options.target
-		});
+		if(options.card && this.validatePlayable(options.card)){
+			this.socket.emit("gameMessage", {
+				command: "playCard",
+				roomId: this.get("id"),
+				card: options.card,
+				target: options.target
+			});
+		}		
+	},
+
+	validatePlayable: function(card){
+		//validate that the current player can play this card
+		var gameState = this.get("gameState");
+		if(card.type != "defuse" && !this.isMyTurn()){
+			return false;
+		}
+
+		var inHand = this.getCardsInHand(card);
+		if(card.type == "cat"){
+			return inHand.length > 1;
+		}else{
+			return inHand.length > 0;
+		}
+	},
+
+	onCardPlayed: function(options){
+		if(options.from == this.socket.id){
+			this.removeCardFromHand(options.card);
+			if(options.card.type == "cat"){
+				this.removeCardFromHand(options.card);
+			}
+		}else{
+			var p = this.getPlayerById(options.from);
+			p.handSize--;
+			if(options.card.type == "cat"){
+				p.handSize--;
+			}
+		}
+		this.get("gameState").pile.push(options.card);
+	},
+
+	removeCardFromHand: function(card){
+		var hand = this.get("gameState").hand;
+		for(var i=0; i<hand.length; i++){
+			if(hand[i].id == card.id && hand[i].image == card.image){
+				hand = hand.splice(i, 1);
+				this.getPlayerById(this.socket.id).handSize--;
+				return;
+			}
+		}
+		console.error("Tried to remove a card that doesn't exist");
+	},
+
+	getPlayerById: function(id){
+		return this.get("players").filter(function(player){
+			return player.id == id;
+		})[0];
+	},
+
+	getCardsInHand: function(card){
+		var gameState = this.get("gameState");
+		if(gameState && gameState.hand){
+			return gameState.hand.filter(function(handCard){
+				return handCard.id == card.id && handCard.image == card.image;
+			});
+		}
+		return [];
+	},
+
+	addCardToHand: function(card){
+		this.get("gameState").hand.push(card);
+		this.getPlayerById(this.socket.id).handSize++;
+	},
+
+	onMoveCard: function(options){
+		if(options.to == this.socket.id){
+			this.addCardToHand(options.card);
+			this.getPlayerById(options.from).handSize--;
+		}else if(options.from == this.socket.id){
+			this.removeCardFromHand(options.card);
+			this.getPlayerById(options.to).handSize++;
+		}else{
+			this.getPlayerById(options.from).handSize--;
+			this.getPlayerById(options.to).handSize++;
+		}
 	},
 
 	drawCard: function(){
@@ -84,7 +182,7 @@ var ExplodingKitten = Backbone.Model.extend({
 	rotatePlayers: function(){
 		var players = this.get("players");
 		if(players && players.length){
-			while(players[0].id != this.player.get("pid")){
+			while(players[0].id != this.socket.id){
 				players.unshift(players.pop());
 			}
 		}
