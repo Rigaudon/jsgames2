@@ -1,3 +1,4 @@
 node_modules
 static/images/test/*
 *.sublime-workspace
+npm-debug.log
