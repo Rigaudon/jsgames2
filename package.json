@@ -4,9 +4,11 @@
   "description": "A more object oriented iteration of JSGames",
   "main": "entry.js",
   "scripts": {
-    "server": "concurrently --kill-others \"gulp bundle\" \"node entry.js\" \"node-sass --output-style compact -w app/sass/main.scss static/css/main.css\"",
+    "server": "concurrently --kill-others \"gulp watch\" \"node entry.js\" \"node-sass --output-style compact -w app/sass/main.scss static/css/main.css\"",
     "bundle-js": "gulp bundle",
-    "start": "node entry.js"
+    "start": "node entry.js",
+    "watch": "gulp watch",
+    "heroku-postbuild": "gulp bundle"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,7 @@
   },
   "homepage": "https://github.com/Rigaudon/jsgames2#readme",
   "dependencies": {
+    "babel-core": "^6.26.0",
     "backbone": "^1.3.3",
     "backbone.marionette": "^3.1.0",
     "bluebird": "^3.5.1",
@@ -39,17 +42,20 @@
     "ws": "^2.1.0"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^7.3.0",
+    "brfs": "^1.4.3",
+    "browserify": "^14.1.0",
     "concurrently": "^3.3.0",
     "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
     "gulp-sourcemaps": "^2.4.1",
     "gulp-uglify": "^2.0.1",
     "gulp-util": "^3.0.8",
-    "brfs": "^1.4.3",
-    "browserify": "^14.1.0",
+    "node-sass": "^4.5.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.9.0",
-    "node-sass": "^4.5.0"
+    "watchify": "^3.9.0"
   },
   "engines": {
     "node": "6.10.0"

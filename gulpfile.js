@@ -16,17 +16,29 @@ var customOpts = {
 };
 
 var opts = assign({}, watchify.args, customOpts);
-var b = watchify(browserify(opts).transform("brfs")); 
+var b = browserify(opts).transform("brfs").transform("babelify", {presets: ["es2015"]});
 
 gulp.task('bundle', bundle);
-b.on('update', bundle); 
-b.on('log', gutil.log); 
+gulp.task('watch', watch);
 
 function bundle() {
   return b.bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
     .pipe(source('static/js/jsgames.js'))
-    //.pipe(buffer())
-	//.pipe(uglify())
+    .pipe(buffer())
+	  .pipe(uglify())
+    .on('error', function(err){
+      gutil.log(gutil.colors.red('[Error]'), err.toString());
+    })
     .pipe(gulp.dest('./'));
+}
+
+function watch() {
+  var w = watchify(b);
+  w.on('update', bundle);
+  w.on('log', gutil.log);
+  return w.bundle()
+  .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+  .pipe(source('static/js/jsgames.js'))
+  .pipe(gulp.dest('./'));
 }

@@ -5,7 +5,7 @@ var User = require("./models/user");
 
 var App = Marionette.Application.extend({
 	region: "body",
-	
+
 	onStart: function(){
 		this.showView(new RootView({
 			model: new User()
@@ -26,4 +26,4 @@ $(document).on("keypress", function(e){
 			$(".consoleInput").focus();
 		}
 	}
-})
+});
