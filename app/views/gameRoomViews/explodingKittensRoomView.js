@@ -77,7 +77,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"update:player": "updatePlayer",
 		"card:move": "moveCard",
 		"card:played": "cardPlayed",
-		"effect:stf": "seeTheFuture"
+		"effect:stf": "seeTheFuture",
+		"do:favor": "showFavor"
 	},
 
 	ui: {
@@ -158,9 +159,9 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 				var card = evt.item.card;
 				$(self.regions.hand).prepend($(self.ui.pile).find(".EKCard").detach());
 				switch(card.type){
+					case "favor":
 					case "cat":
-						self.onPlayCat(card);
-						//put the card back
+						self.pickPlayer(card);
 						break;
 					case "stf":
 					case "attack":
@@ -168,7 +169,6 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 					case "shuffle":
 						self.onPlay(card);
 						break;
-					case "favor":
 					break;
 					case "nope":
 					break;
@@ -188,8 +188,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		});
 	},
 
-	onPlayCat: function(card){
-		//TODO: check to see if the player has at least two
+	pickPlayer: function(card){
 		var self = this;
 		this.showPickPlayerModal(
 			card,
@@ -202,6 +201,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			},
 			function(){
 				//Modal was closed (cancelled or completed)
+				//May not be necessary...
 				$(self.regions.hand).prepend($(self.ui.pile).find(".EKCard").detach());
 			}
 		);
@@ -275,20 +275,67 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 	},
 
 	seeTheFuture: function(future){
+		var texts = ["Next Card", "2<sup>nd</sup> Card", "3<sup>rd</sup> Card"];
 		var chooseEl = $(this.regions.choose);
 		chooseEl.find(".modal-header").text("Seeing the future");
 		var bodyEl = chooseEl.find(".modal-body");
 		bodyEl.empty();
-		_.forEach(future.cards, function(card){
-			let cardView = new EKCardView({card: card});
-			cardView.render();
-			bodyEl.prepend(cardView.$el);
-		});
+		var self = this;
+		if(!future.cards.length){
+			bodyEl.prepend($("<div>").text("There are no cards left!"));
+		}
+		while(future.cards.length){
+			let card = future.cards.pop();
+			let cardView = $("<div>");
+			cardView.addClass("card");
+			let cardImg = $("<img>");
+			cardImg.attr("src", self.pathForCard(card.image));
+			cardView.append(cardImg);
+			cardView.append($("<span>").html(texts.pop() || "..."));
+			bodyEl.prepend(cardView);
+		};
 		chooseEl.off("hidden.bs.modal");
 		chooseEl.modal({
 			show: true,
 			backdrop: false,
 			keyboard: true
+		});
+	},
+
+	showFavor: function(message){
+		var sourcePlayer = this.model.getPlayerById(message.source);
+		var targetPlayer = this.model.getPlayerById(message.target);
+		$(this.regions.status).text(targetPlayer.name + " is doing a favor for " + sourcePlayer.name);
+		if(message.target != this.model.socket.id){
+			return;
+		}
+		var chooseEl = $(this.regions.choose);
+		chooseEl.find(".modal-header").text("Pick a card to give " + sourcePlayer.name);
+		var closeBtn = chooseEl.find(".closeModal").detach();
+		var bodyEl = chooseEl.find(".modal-body");
+		bodyEl.empty();
+		var self = this;
+		_.forEach(this.model.get("gameState").hand, function(card){
+			let cardView = $("<div>");
+			cardView.addClass("smallCard");
+			let cardImg = $("<img>");
+			cardImg.attr("src", self.pathForCard(card.image));
+			cardView.append(cardImg);
+			cardView.on("click", function(){
+				chooseEl.modal("hide");
+				self.model.giveFavor({
+					card: card,
+					target: message.source
+				});
+			});
+			bodyEl.append(cardView);
+		});
+		chooseEl.off("hidden.bs.modal").on("hidden.bs.modal", function(){
+			chooseEl.find(".modal-dialog").prepend(closeBtn);
+		});
+		chooseEl.modal({
+			show: true,
+			backdrop: 'static',
 		});
 	},
 
@@ -301,7 +348,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		var playerRegions = $(".playtable > .player");
 		_.forEach(playerRegions, function(el){
 			var playerId = $(el).attr("data-id");
-			if(playerId == self.player.get("pid")){
+			if(playerId == self.player.get("pid") || $(el).css("display") == "none"){
 				return;
 			}
 			var playerEl = $(el).clone();

@@ -73,8 +73,12 @@ var socketEvents = function(io, mem){
 
 		//Game message, delegate to the room
 		socket.on("gameMessage", function(options){
-			if(options.roomId){
-				mem.rooms.executeCommand(options, socket.id);
+			try{
+				if(options.roomId){
+					mem.rooms.executeCommand(options, socket.id);
+				}
+			}catch(err){
+				console.error(err);
 			}
 		});
 

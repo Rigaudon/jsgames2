@@ -3,7 +3,7 @@ var _ = require("lodash");
 var EKcards = require("./ekcards.json");
 
 var hostCommands = ["startGame"];
-var commands = ["playCard", "drawCard"];
+var commands = ["playCard", "drawCard", "giveFavor"];
 
 var STARTING_HAND_CARDS = 5;
 
@@ -11,10 +11,14 @@ var CardObj = function(card, i) {
 	this.name = card.name;
 	this.type = card.type;
 	this.id = card.id;
-	if(card.variableImage){
-		this.image = card.id + i;
+	if(card.image){
+		this.image = card.image;
 	}else{
-		this.image = card.id;
+		if(card.variableImage){
+			this.image = card.id + i;
+		}else{
+			this.image = card.id;
+		}
 	}
 
 	this.toJSON = function(){
@@ -54,16 +58,21 @@ var ExplodingKittensRoom = Room.extend({
 		var command = options.command;
 		var players = self.get("players");
 		var gameState = self.get("gameState");
+		options.source = playerId;
 		if(commands.indexOf(command) > -1){
 			switch(command){
 				case "playCard":
-					options.source = playerId;
 					self.playCard(options);
 					break;
 				case "drawCard":
 					self.drawCard(playerId);
 					break;
-
+				case "giveFavor":
+					self.giveFavor(options);
+					break;
+				default:
+					console.error("Cannot find command " + command);
+					break;
 			}
 		}else if(hostCommands.indexOf(command) > -1 && this.get("host").id == playerId){
 			switch(command){
@@ -76,6 +85,7 @@ var ExplodingKittensRoom = Room.extend({
 						self.addExplodingKittens(gameState.deck, players.length);
 						gameState.pile = [];
 						gameState.exploded = [];
+						gameState.favor = {};
 						gameState.isAttacked = false;
 						gameState.turnPlayer = players.at(Math.floor(Math.random() * players.length));
 						self.emitToAllExcept();
@@ -114,6 +124,9 @@ var ExplodingKittensRoom = Room.extend({
 
 			//This will move
 			this.get("gameState").pile.push(options.card);
+			if(options.card.type == "cat"){
+				this.get("gameState").pile.push(options.card);
+			}
 		}
 
 	},
@@ -153,6 +166,20 @@ var ExplodingKittensRoom = Room.extend({
 				break;
 			case "stf":
 				this.getSocketFromPID(options.source).emit("gameMessage", this.seeTheFuture());
+				break;
+			case "favor":
+				gameState.favor = {
+					"source": options.source,
+					"target": options.target
+				};
+				this.emitGameMessage({
+					"message": "doFavor",
+					"source": options.source,
+					"target": options.target
+				});
+				break;
+			default:
+				console.error("Card type " + options.card.type + " not implemented!");
 				break;
 		}
 	},
@@ -198,13 +225,36 @@ var ExplodingKittensRoom = Room.extend({
 		return response;
 	},
 
+	giveFavor: function(options){
+		if(!this.inProgress()){
+			return;
+		}
+		var gameState = this.get("gameState");
+		if(!gameState || gameState.favor.source != options.target || gameState.favor.target != options.source){
+			return;
+		}
+		var removedCard = this.removeCardFromHand(options.source, options.card)[0];
+		gameState.hands[options.target].push(removedCard);
+		
+		var response = {
+			"message": "gaveFavor",
+			"from": options.source,
+			"to": options.target
+		};
+
+		this.emitGameMessageToAllExcept([options.source, options.target], response);
+		response.card = options.card;
+		this.getSocketFromPID(options.source).emit("gameMessage", response);
+		this.getSocketFromPID(options.target).emit("gameMessage", response);
+		gameState.favor = {};
+	},
+
 	removeCardFromHand: function(playerId, card){
 		var hand = this.get("gameState").hands[playerId];
 		for(var i=0; i<hand.length; i++){
 			if(hand[i].id == card.id && hand[i].image == card.image){
-				hand = hand.splice(i, 1);
-				return;
-			}
+				return hand.splice(i, 1);
+			} 
 		}
 		throw new Error("Tried to remove a nonexistant card");
 	},
@@ -318,6 +368,7 @@ var ExplodingKittensRoom = Room.extend({
 	},
 
 	sendRoomInfo: function(socket){
+		//TODO: change the clientJSON instead of this function
 		var allJson = _.cloneDeep(this.toJSON());
 		var gameState = allJson.gameState;
 		if(gameState && !_.isEmpty(gameState.hands)){
@@ -329,6 +380,8 @@ var ExplodingKittensRoom = Room.extend({
 			gameState.turnPlayer = gameState.turnPlayer.get("id");
 			delete gameState.hands;
 			delete gameState.deck;
+			delete gameState.isAttacked;
+			delete gameState.favor;
 		}
 		socket.emit("roomInfo", allJson);
 	},

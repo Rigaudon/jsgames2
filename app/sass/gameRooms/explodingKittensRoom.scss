@@ -41,7 +41,7 @@
 }
 
 .heldCards{
-	height: 30%;
+	min-height: 180px;
 	border: 3px solid $primary-color;
 	color: $primary-color;
 	margin: 10px;
@@ -50,13 +50,15 @@
 	display: flex;
 	flex-wrap: wrap;
 	padding: 2px;
+	padding-bottom: 13px;
+	padding-top: 13px;
 	.EKCard{
 		padding: 5px;
 		z-index: 4;
 		background-color: white;
 		height: 160px;
 		border-radius: 7px;
-		margin: 3px;
+		margin: 2px;
 		border: 1px solid black;
 		transition: $transition-very-fast;
 		position: relative;
@@ -241,7 +243,7 @@
 
 	.modal-body{
 		display: flex;
-		justify-content: center;
+		justify-content: space-around;
 		align-items: center;
 		flex-wrap: wrap;
 		.player{
@@ -250,6 +252,20 @@
 			&:hover{
 				width: 175px;
 				height: 175px;
+			}
+		}
+		.card{
+			display: flex;
+			flex-direction: column;
+			margin: 5px;
+			img{
+				width: 150px;
+			}
+		}
+		.smallCard{
+			img{
+				width: 100px;
+				cursor: pointer;
 			}
 		}
 	}

@@ -68,6 +68,7 @@ var ExplodingKitten = Backbone.Model.extend({
 				this.trigger("update:player", message.player);
 				break;
 			case "moveCard":
+			case "gaveFavor":
 				this.onMoveCard(message);
 				this.trigger("card:move", message);
 				break;
@@ -77,6 +78,9 @@ var ExplodingKitten = Backbone.Model.extend({
 				break;
 			case "seeTheFuture":
 				this.trigger("effect:stf", message);
+				break;
+			case "doFavor":
+				this.trigger("do:favor", message);
 				break;
 			default:
 				console.log("Not implemented:");
@@ -94,6 +98,15 @@ var ExplodingKitten = Backbone.Model.extend({
 				target: options.target
 			});
 		}
+	},
+
+	giveFavor: function(options){
+		this.socket.emit("gameMessage", {
+			command: "giveFavor",
+			roomId: this.get("id"),
+			card: options.card,
+			target: options.target
+		});
 	},
 
 	validatePlayable: function(card){
@@ -125,6 +138,9 @@ var ExplodingKitten = Backbone.Model.extend({
 			}
 		}
 		this.get("gameState").pile.push(options.card);
+		if(options.card.type == "cat"){
+			this.get("gameState").pile.push(options.card);
+		}
 	},
 
 	removeCardFromHand: function(card){
