@@ -78,7 +78,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"card:move": "moveCard",
 		"card:played": "cardPlayed",
 		"effect:stf": "seeTheFuture",
-		"do:favor": "showFavor"
+		"do:favor": "showFavor",
+		"ek:drawn": "onEKDrawn"
 	},
 
 	ui: {
@@ -143,14 +144,17 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 				name: "pile",
 				put: function(to, from, el){
 					var card = el.card;
+					var inHand = gameState.hand.filter(function(handCard){
+						return handCard.id == card.id;
+					});
+					if(self.model.isExploding){
+						return inHand.length && (card.type == "defuse" || card.type == "nope");
+					}
 					switch(card.type){
 						case "cat":
-							var inHand = gameState.hand.filter(function(handCard){
-								return handCard.id == card.id;
-							});
 							return self.model.isMyTurn() && inHand.length >= 2;
 						default:
-							return self.model.isMyTurn() && $(to.el).find(".EKCard").length == 0;
+							return self.model.isMyTurn() && $(to.el).find(".EKCard").length == 0 && inHand.length;
 					}
 
 				}
@@ -167,12 +171,11 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 					case "attack":
 					case "skip":
 					case "shuffle":
+					case "defuse":
 						self.onPlay(card);
 						break;
 					break;
 					case "nope":
-					break;
-					case "defuse":
 					break;
 					default:
 						throw new Error("Invalid Card Type!");
@@ -336,6 +339,16 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		chooseEl.modal({
 			show: true,
 			backdrop: 'static',
+		});
+	},
+
+	onEKDrawn: function(message){
+		var self = this;
+		var player = this.model.getPlayerById(message.player);
+		$(this.regions.status).text(player.name + " drew an Exploding Kitten!");
+		this.animateCardMove(this.ui.deck, this.ui.pile, message.card)
+		.then(function(){
+			$(self.ui.pile).css("background-image", "url(" + self.pathForCard(message.card.image) + ")");
 		});
 	},
 

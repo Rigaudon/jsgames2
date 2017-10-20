@@ -87,8 +87,12 @@ var ExplodingKittensRoom = Room.extend({
 						gameState.exploded = [];
 						gameState.favor = {};
 						gameState.isAttacked = false;
+						gameState.isExploding = undefined;
 						gameState.turnPlayer = players.at(Math.floor(Math.random() * players.length));
 						self.emitToAllExcept();
+						self.emitGameMessage({
+							"message": "gameStart"
+						});
 					}
 					break;
 			}
@@ -132,7 +136,6 @@ var ExplodingKittensRoom = Room.extend({
 	},
 
 	performEffect: function(options){
-		//wrap this in try/catch?
 		var gameState = this.get("gameState");
 		switch(options.card.type){
 			case "cat":
@@ -178,6 +181,20 @@ var ExplodingKittensRoom = Room.extend({
 					"target": options.target
 				});
 				break;
+			case "explode":
+				gameState.exploded.push(options.player);
+				gameState.isExploding = undefined;
+				this.emitGameMessage({
+					"message": "exploded",
+					"player": options.player
+				});
+				break;
+			case "defuse":
+				//put cat back into deck
+				//no longer gameState.isExploding
+				//progress turn
+				//remember to handle vars on client side too
+				break;
 			default:
 				console.error("Card type " + options.card.type + " not implemented!");
 				break;
@@ -185,23 +202,47 @@ var ExplodingKittensRoom = Room.extend({
 	},
 
 	drawCard: function(playerId){
-		//TODO: Check to see if it's exploding kitten
 		var gameState = this.get("gameState");
-		if(!this.inProgress() || gameState.turnPlayer.get("id") != playerId){
+		if(!this.inProgress() || gameState.turnPlayer.get("id") != playerId || this.isExploded(playerId) || gameState.isExploding){
 			return;
 		}
-		var card = gameState.deck.pop(); //Assuming this is possible
-		gameState.hands[playerId].push(card);
+		var card = gameState.deck.pop();
+		if(!card){
+			console.error("Tried to draw when the deck was empty");
+			return;
+		}
+		if(card.type == "explode"){
+			this.onDrawExplodingKitten(card);
+		}else{
+			gameState.hands[playerId].push(card);
+			this.emitGameMessage({
+				"message": "playerDraw",
+				"playerId": playerId
+			});
+			this.getSocketFromPID(playerId).emit("gameMessage", {
+				"message": "playerDraw",
+				"playerId": playerId,
+				"card": card
+			});
+			this.progressTurn();
+		}
+	},
+
+	onDrawExplodingKitten: function(card){
+		var gameState = this.get("gameState");
+		var playerId =  gameState.turnPlayer.get("id");
 		this.emitGameMessage({
-			"message": "playerDraw",
-			"playerId": playerId
-		});
-		this.getSocketFromPID(playerId).emit("gameMessage", {
-			"message": "playerDraw",
-			"playerId": playerId,
+			"message": "drewExplodingKitten",
+			"player": playerId,
 			"card": card
 		});
-		this.progressTurn();
+		gameState.isExploding = playerId;
+		if(!this.handContainsType(playerId, "defuse").length){
+			this.performEffect({
+				card: card,
+				player: playerId
+			});
+		}
 	},
 
 	removeCardsFromHand: function(playerId, options){
@@ -230,7 +271,7 @@ var ExplodingKittensRoom = Room.extend({
 			return;
 		}
 		var gameState = this.get("gameState");
-		if(!gameState || gameState.favor.source != options.target || gameState.favor.target != options.source){
+		if(!gameState || gameState.favor.source != options.target || gameState.favor.target != options.source || this.isExploded(options.source) || gameState.isExploding){
 			return;
 		}
 		var removedCard = this.removeCardFromHand(options.source, options.card)[0];
@@ -249,6 +290,14 @@ var ExplodingKittensRoom = Room.extend({
 		gameState.favor = {};
 	},
 
+	isExploded: function(playerId){
+		var gameState = this.get("gameState");
+		if(gameState){
+			return gameState.exploded.indexOf(playerId) > -1;
+		}
+		return false;
+	},
+
 	removeCardFromHand: function(playerId, card){
 		var hand = this.get("gameState").hands[playerId];
 		for(var i=0; i<hand.length; i++){
@@ -265,6 +314,9 @@ var ExplodingKittensRoom = Room.extend({
 		}
 		var players = this.get("players");
 		var gameState = this.get("gameState");
+		if(gameState.isExploding){
+			return false;
+		}
 		var currTurn = players.indexOf(gameState.turnPlayer);
 		if(currTurn > -1){
 			if(gameState.isAttacked){
@@ -273,7 +325,7 @@ var ExplodingKittensRoom = Room.extend({
 				for(var i=0; i<players.length; i++){
 					currTurn = (currTurn + 1) % players.length;
 					var player = players.at(currTurn);
-					if(gameState.exploded.indexOf(player.id) == -1){
+					if(!this.isExploded(player.id)){
 						//not exploded, so valid
 						break;
 					}
@@ -290,6 +342,7 @@ var ExplodingKittensRoom = Room.extend({
 
 	playerLeave: function(socket){
 		if(this.get("gameState").turnPlayer && this.get("gameState").turnPlayer.id == socket.id){
+			this.verifyDeck();
 			this.progressTurn();
 		}
 		Room.prototype.playerLeave.call(this, socket);
@@ -299,24 +352,28 @@ var ExplodingKittensRoom = Room.extend({
 		}
 	},
 
+	verifyDeck: function(){
+		//verify that the appropriate amount of exploding kittens are still in the deck
+		console.log("IMPLEMENT ME");
+	},
+
 	verifyPlayable: function(options){
 		if(!this.inProgress()){
 			return false;
 		}
-
 		var gameState = this.get("gameState");
-		if(options.card.type != "defuse" && options.source != gameState.turnPlayer.id){
+		if(options.card.type != "nope" && options.source != gameState.turnPlayer.id){
+			return false;
+		}
+		if(this.isExploded(options.source)){
 			return false;
 		}
 
-		var hand = gameState.hands[options.source];
-		if(!hand){
-			return false;
-		}
-		var inHand = hand.filter(function(card){
-			return card.id == options.card.id && card.image == options.card.image;
-		});
+		var inHand = this.handContains(options.source, options.card);
 
+		if(gameState.isExploding){
+			return inHand.length > 0 && (options.card.type == "defuse" || options.card.type == "nope");
+		}
 		if(options.card.type == "cat"){
 			return inHand.length > 1;
 		}else{
@@ -324,6 +381,42 @@ var ExplodingKittensRoom = Room.extend({
 		}
 	},
 
+	handContains: function(playerId, card){
+		//todo: consolidate this with handContainsType
+		var hand = this.get("gameState").hands[playerId];
+		if(!hand){
+			return false;
+		}
+		return hand.filter(function(c){
+			return card.id == c.id && card.image == c.image;
+		});
+	},
+
+	handContainsType: function(playerId, type){
+		var hand = this.get("gameState").hands[playerId];
+		if(!hand){
+			return false;
+		}
+		return hand.filter(function(card){
+			return card.type == type;
+		});
+	},
+/*	TODO: test me
+	handContains: function(playerId, keys){
+		var hand = this.get("gameState").hands[playerId];
+		if(!hand){
+			return false;
+		}
+		return hand.filter(function(card){
+			Object.keys(keys).forEach(function(key){
+				if(card[key] != keys[key]){
+					return false;
+				}
+			});
+			return true;
+		});
+	}
+*/
 	initializeDeck: function(numPlayers){
 		var deck = [];
 		EKcards.cards.forEach(function(card){
@@ -382,6 +475,7 @@ var ExplodingKittensRoom = Room.extend({
 			delete gameState.deck;
 			delete gameState.isAttacked;
 			delete gameState.favor;
+			delete gameState.isExploding;
 		}
 		socket.emit("roomInfo", allJson);
 	},

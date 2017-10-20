@@ -447,7 +447,7 @@ $passive-color: #282828;
 $bg-url: url(../../static/images/bg-dark.jpg);
 $create-room-bg-url: #222222;
 */
-.explodingKittensRoom { width: 100%; height: 100%; display: flex; flex-direction: column; transition: 1s; margin: auto; max-width: 1200px; min-height: 1200px; }
+.explodingKittensRoom { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: 1s; margin: auto; max-width: 1200px; min-height: 1200px; }
 
 .playtable { margin: 10px; margin-top: 50px; max-height: 750px; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(5, 1fr); width: 98%; height: 60%; border-radius: 50%; border: 3px solid #003366; background-color: rgba(239, 238, 241, 0.8); }
 
@@ -457,19 +457,19 @@ $create-room-bg-url: #222222;
 
 .handCount .numCards { font-weight: bold; font-size: 20px; color: white; text-shadow: 0px 0px 8px black; }
 
-.heldCards { min-height: 180px; border: 3px solid #003366; color: #003366; margin: 10px; border-radius: 20px; background-color: rgba(239, 238, 241, 0.8); display: flex; flex-wrap: wrap; padding: 2px; padding-bottom: 13px; padding-top: 13px; }
+img.preview { display: none; position: absolute; width: 300px; bottom: 160px; z-index: 5; }
 
-.heldCards .EKCard { padding: 5px; z-index: 4; background-color: white; height: 160px; border-radius: 7px; margin: 2px; border: 1px solid black; transition: 0.2s; position: relative; }
+.heldCards { min-height: 180px; border: 3px solid #003366; color: #003366; margin: 10px; border-radius: 10px; background-color: rgba(239, 238, 241, 0.8); display: flex; flex-wrap: wrap; padding: 2px; max-height: 350px; overflow-y: scroll; overflow-x: hidden; align-items: center; }
+
+.heldCards .EKCard { padding: 5px; z-index: 4; background-color: white; height: 160px; border-radius: 7px; margin: 2px; border: 1px solid black; transition: 0.2s; }
 
 .heldCards .EKCard img.hand { cursor: pointer; width: 100px; height: 150px; }
-
-.heldCards .EKCard img.preview { display: none; position: absolute; width: 300px; bottom: 160px; }
 
 .heldCards .EKCard:hover { background-color: #FFCC66; }
 
 .heldCards .sortable-ghost { opacity: 0; }
 
-.heldCards .invis { position: absolute; right: 0; visibility: hidden; }
+.heldCards .invis { position: absolute; right: -100%; bottom: -100%; visibility: hidden; }
 
 .cardPreview { display: none; position: absolute; left: 10px; top: calc(60% - 600px); max-width: 25%; }
 
@@ -495,7 +495,7 @@ $create-room-bg-url: #222222;
 
 .status { grid-column-start: 4; grid-column-end: 5; grid-row-start: 3; grid-row-end: 3; display: flex; align-items: center; justify-content: center; }
 
-.pile, .deck { background-size: contain; background-repeat: no-repeat; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; color: white; text-shadow: 0px 0px 8px black; transition: 0.25s; margin: 10%; padding: 10%; position: relative; }
+.pile, .deck { background-size: contain; background-repeat: no-repeat; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; color: white; text-shadow: 0px 0px 8px black; transition: 0.25s; margin: 10%; padding: 13%; position: relative; }
 
 .playerSeat { grid-column-start: 4; grid-row-start: 5; }
 

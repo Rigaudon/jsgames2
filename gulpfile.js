@@ -33,10 +33,10 @@ function bundle() {
     .pipe(gulp.dest('./'));
 }
 
+var w = watchify(b);
+w.on('update', watch);
+w.on('log', gutil.log);
 function watch() {
-  var w = watchify(b);
-  w.on('update', bundle);
-  w.on('log', gutil.log);
   return w.bundle()
   .on('error', gutil.log.bind(gutil, 'Browserify Error'))
   .pipe(source('static/js/jsgames.js'))

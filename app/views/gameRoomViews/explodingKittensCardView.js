@@ -32,24 +32,25 @@ var ExplodingKittensCard = Marionette.View.extend({
 
 	ui: {
 		"hand": ".hand",
-		"preview": ".preview"
 	},
 
 	showPreview: function(){
 		if(!this.$el.parent().hasClass("heldCards")){
 			return;
 		}
-		var preview = this.$el.find(this.ui.preview);
+		var preview = $(".preview");
+		preview.attr("src", this.fullImagePath());
 		var hand = this.$el.find(this.ui.hand);
 		preview.show();
-		preview.css("left", "-" + Math.round((preview.width() - hand.width()) / 2) + "px");
+		preview.css("left", (hand.offset().left - Math.round((preview.width() - hand.width()) / 2)) + "px");
+		preview.css("top", (hand.offset().top - preview.height() - 20) + "px");
 		if(preview.offset().left < 0){
 			preview.css("left", "10px");
 		}
 	},
 
 	hidePreview: function(){
-		var preview = this.$el.find(this.ui.preview);
+		var preview = $(".preview");
 		preview.hide();
 	}
 });

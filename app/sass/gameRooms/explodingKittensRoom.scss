@@ -5,6 +5,7 @@
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	transition: 1s;
 	margin: auto;
 	max-width: 1200px;
@@ -40,18 +41,28 @@
 	}
 }
 
+img.preview{
+	display: none;
+	position: absolute;
+	width: 300px;
+	bottom: 160px;
+	z-index: 5;
+}
+
 .heldCards{
 	min-height: 180px;
 	border: 3px solid $primary-color;
 	color: $primary-color;
 	margin: 10px;
-	border-radius: 20px;
+	border-radius: 10px;
 	background-color: $passive-color-transparent;
 	display: flex;
 	flex-wrap: wrap;
 	padding: 2px;
-	padding-bottom: 13px;
-	padding-top: 13px;
+	max-height: 350px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	align-items: center;
 	.EKCard{
 		padding: 5px;
 		z-index: 4;
@@ -61,18 +72,10 @@
 		margin: 2px;
 		border: 1px solid black;
 		transition: $transition-very-fast;
-		position: relative;
 		img.hand{
 			cursor: pointer;
 			width: 100px;
 			height: 150px;
-		}
-
-		img.preview{
-			display: none;
-			position: absolute;
-			width: 300px;
-			bottom: 160px;
 		}
 
 		&:hover {
@@ -86,7 +89,8 @@
 
 	.invis{
 		position: absolute;
-		right: 0;
+		right: -100%;
+		bottom: -100%;
 		visibility: hidden;
 	}
 }
@@ -205,7 +209,7 @@
 	text-shadow: 0px 0px 8px black;
 	transition: 0.25s;
 	margin: 10%;
-	padding: 10%;
+	padding: 13%;
 	position: relative;
 }
 
