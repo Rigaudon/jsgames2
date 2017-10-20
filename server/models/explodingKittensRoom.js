@@ -41,7 +41,7 @@ var ExplodingKittensRoom = Room.extend({
 		this.set("gameState", {
 			deck: {},
 			hands: {},
-			turn: "undefined"
+			turnPlayer: "undefined"
 		});
 	},
 
@@ -56,8 +56,6 @@ var ExplodingKittensRoom = Room.extend({
 	executeCommand: function(options, playerId){
 		var self = this;
 		var command = options.command;
-		var players = self.get("players");
-		var gameState = self.get("gameState");
 		options.source = playerId;
 		if(commands.indexOf(command) > -1){
 			switch(command){
@@ -77,26 +75,33 @@ var ExplodingKittensRoom = Room.extend({
 		}else if(hostCommands.indexOf(command) > -1 && this.get("host").id == playerId){
 			switch(command){
 				case "startGame":
-					if(players.length >= 2){
-						self.set("status", 2);
-						gameState.turn = Math.floor(Math.random() * players.length); //Random player starts
-						gameState.deck = self.initializeDeck(players.length);
-						gameState.hands = self.initializeHands();
-						self.addExplodingKittens(gameState.deck, players.length);
-						gameState.pile = [];
-						gameState.exploded = [];
-						gameState.favor = {};
-						gameState.isAttacked = false;
-						gameState.isExploding = undefined;
-						gameState.turnPlayer = players.at(Math.floor(Math.random() * players.length));
-						self.emitToAllExcept();
-						self.emitGameMessage({
-							"message": "gameStart"
-						});
-					}
+					self.startGame();
 					break;
 			}
 		}
+	},
+
+	startGame: function(){
+		var self = this;
+		var players = self.get("players");
+		var gameState = self.get("gameState");
+		if(players.length >= 2){
+				self.set("status", 2);
+				gameState.deck = self.initializeDeck(players.length);
+				gameState.hands = self.initializeHands();
+				self.addExplodingKittens(gameState.deck, players.length);
+				gameState.pile = [];
+				gameState.exploded = [];
+				gameState.turnPlayer = players.at(self.randomIndex(players.length));
+				//TODO: move these to stack format
+				gameState.favor = {};
+				gameState.isAttacked = false;
+				gameState.isExploding = undefined;
+				self.emitToAllExcept();
+				self.emitGameMessage({
+					"message": "gameStart"
+				});
+			}
 	},
 
 	playCard: function(options){
@@ -124,9 +129,9 @@ var ExplodingKittensRoom = Room.extend({
 			};
 			this.removeCardsFromHand(options.source, response.remove);
 			this.getSocketFromPID(options.source).emit("gameMessage", response);
-			this.performEffect(options);
 
 			//This will move
+			this.performEffect(options);
 			this.get("gameState").pile.push(options.card);
 			if(options.card.type == "cat"){
 				this.get("gameState").pile.push(options.card);
@@ -140,7 +145,7 @@ var ExplodingKittensRoom = Room.extend({
 		switch(options.card.type){
 			case "cat":
 				var targetHand = gameState.hands[options.target];
-				var randomCard = targetHand.splice(Math.floor(targetHand.length * Math.random()), 1)[0];
+				var randomCard = targetHand.splice(this.randomIndex(targetHand.length) ,1)[0];
 				gameState.hands[options.source].push(randomCard);
 				var response = {
 					"message": "moveCard",
@@ -188,12 +193,19 @@ var ExplodingKittensRoom = Room.extend({
 					"message": "exploded",
 					"player": options.player
 				});
+				this.checkWin();
 				break;
 			case "defuse":
-				//put cat back into deck
-				//no longer gameState.isExploding
-				//progress turn
-				//remember to handle vars on client side too
+				if(gameState.isExploding != options.source){
+					return;
+				}
+				this.verifyDeck();
+				gameState.isExploding = undefined;
+				this.emitGameMessage({
+					"message": "defusedExplodingKitten",
+					"player": gameState.turnPlayer.get("id")
+				});
+				this.progressTurn();
 				break;
 			default:
 				console.error("Card type " + options.card.type + " not implemented!");
@@ -203,7 +215,10 @@ var ExplodingKittensRoom = Room.extend({
 
 	drawCard: function(playerId){
 		var gameState = this.get("gameState");
-		if(!this.inProgress() || gameState.turnPlayer.get("id") != playerId || this.isExploded(playerId) || gameState.isExploding){
+		if(	!this.inProgress() ||
+				gameState.turnPlayer.get("id") != playerId ||
+				this.isExploded(playerId) ||
+				gameState.isExploding){
 			return;
 		}
 		var card = gameState.deck.pop();
@@ -271,12 +286,16 @@ var ExplodingKittensRoom = Room.extend({
 			return;
 		}
 		var gameState = this.get("gameState");
-		if(!gameState || gameState.favor.source != options.target || gameState.favor.target != options.source || this.isExploded(options.source) || gameState.isExploding){
+		if(	!gameState ||
+				gameState.favor.source != options.target ||
+				gameState.favor.target != options.source ||
+				this.isExploded(options.source) ||
+				gameState.isExploding){
 			return;
 		}
 		var removedCard = this.removeCardFromHand(options.source, options.card)[0];
 		gameState.hands[options.target].push(removedCard);
-		
+
 		var response = {
 			"message": "gaveFavor",
 			"from": options.source,
@@ -303,7 +322,7 @@ var ExplodingKittensRoom = Room.extend({
 		for(var i=0; i<hand.length; i++){
 			if(hand[i].id == card.id && hand[i].image == card.image){
 				return hand.splice(i, 1);
-			} 
+			}
 		}
 		throw new Error("Tried to remove a nonexistant card");
 	},
@@ -354,7 +373,48 @@ var ExplodingKittensRoom = Room.extend({
 
 	verifyDeck: function(){
 		//verify that the appropriate amount of exploding kittens are still in the deck
-		console.log("IMPLEMENT ME");
+		if(!this.inProgress()){
+			return;
+		}
+		var deck = this.get("gameState").deck;
+		var inDeck = deck.filter(function(card){
+			return card.type == "explode";
+		}).length;
+		var requiredAmount = this.get("players").length - this.get("gameState").exploded.length - 1;
+		while(inDeck < requiredAmount){
+			deck.splice(this.randomIndex(deck.length), 0,
+				new CardObj(EKcards.explodingKitten, this.randomIndex(EKcards.explodingKitten.num)));
+			inDeck++;
+		}
+	},
+
+	checkWin: function(){
+		var gameState = this.get("gameState");
+		var nonExploded = this.get("players").filter(function(player){
+			return gameState.exploded.indexOf(player.id) > -1;
+		});
+		if(nonExploded.length == 1){
+			this.playerWin(nonExploded[0]);
+		}
+	},
+
+	playerWin: function(player){
+		this.emitGameMessage({
+			"message": "playerWin",
+			"player": player.id
+		});
+		this.resetDefaultGamestate();
+		//Maybe below should be extracted to own fn
+		if(this.get("players").length == this.get("maxPlayers")){
+			this.set("status", 1);
+		}else{
+			this.set("status", 0);
+		}
+	},
+
+	randomIndex: function(max){
+		//Should this be in a utils file?
+		return Math.floor(Math.random() * max);
 	},
 
 	verifyPlayable: function(options){
@@ -478,10 +538,6 @@ var ExplodingKittensRoom = Room.extend({
 			delete gameState.isExploding;
 		}
 		socket.emit("roomInfo", allJson);
-	},
-
-	inProgress: function(){
-		return this.get("status") == 2;
 	},
 
 });

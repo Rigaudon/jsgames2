@@ -22,7 +22,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		this.player.gameClient = this.model;
 	},
 
-	statusCodes: ["Waiting for players", "Waiting to start", "Game has started"],
+	statusCodes: ["Waiting for players", "Waiting to start", "Game has started", "Game has ended"],
 
 	className: "explodingKittensRoom",
 
@@ -79,7 +79,10 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"card:played": "cardPlayed",
 		"effect:stf": "seeTheFuture",
 		"do:favor": "showFavor",
-		"ek:drawn": "onEKDrawn"
+		"ek:drawn": "onEKDrawn",
+		"ek:defused": "onEKDefused",
+		"player:exploded": "onPlayerExploded",
+		"player:win", "onPlayerWin"
 	},
 
 	ui: {
@@ -350,6 +353,18 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		.then(function(){
 			$(self.ui.pile).css("background-image", "url(" + self.pathForCard(message.card.image) + ")");
 		});
+	},
+
+	onEKDefused: function(message){
+		console.log("IMPLEMENT ME - onEKDefused");
+	},
+
+	onPlayerExploded: function(message){
+		console.log("IMPLEMENT ME - onPlayerExploded");
+	},
+
+	onPlayerWin: function(message){
+		console.log("IMPLEMENT ME - onPlayerWin");
 	},
 
 	showPickPlayerModal: function(card, callback, onCancel){

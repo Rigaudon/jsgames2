@@ -38,7 +38,7 @@ var ExplodingKitten = Backbone.Model.extend({
 	},
 
 	isHost: function(){
-		return this.get("host") && this.get("host").id == this.socket.id;
+		return this.get("host") && this.isMe(this.get("host").id);
 	},
 
 	processRoomInfo: function(roomInfo){
@@ -53,12 +53,12 @@ var ExplodingKitten = Backbone.Model.extend({
 	processGameMessage: function(message){
 		switch(message.message){
 			case "playerDraw":
-				if(message.playerId == this.socket.id && message.card){
+				if(this.isMe(message.playerId) && message.card){
 					this.onSelfDraw(message.card);
 					this.trigger("self:draw", {
 						card: message.card
 					});
-				}else if(message.playerId != this.socket.id){
+				}else if(!this.isMe(message.playerId)){
 					this.onOpponentDraw(message.playerId);
 					this.trigger("opponent:draw", {
 						playerId: message.playerId
@@ -88,9 +88,21 @@ var ExplodingKitten = Backbone.Model.extend({
 				this.onEKDrawn(message);
 				this.trigger("ek:drawn", message);
 				break;
+			case "defusedExplodingKitten":
+				this.onEKDefuse(message);
+				this.trigger("ek:defused", message);
+				break;
+			case "exploded":
+				this.onPlayerExploded(message);
+				this.trigger("player:exploded", message);
+				break;
 			case "gameStart":
 				this.onGameStart();
 				this.trigger("game:start");
+				break;
+			case "playerWin":
+				this.onPlayerWin(message);
+				this.trigger("player:win", message);
 				break;
 			default:
 				console.log("Not implemented:");
@@ -125,6 +137,9 @@ var ExplodingKitten = Backbone.Model.extend({
 
 	validatePlayable: function(card){
 		//validate that the current player can play this card
+		if(!this.inProgress()){
+			return false;
+		}
 		var gameState = this.get("gameState");
 		if(card.type != "nope" && !this.isMyTurn()){
 			return false;
@@ -140,8 +155,22 @@ var ExplodingKitten = Backbone.Model.extend({
 		}
 	},
 
+	onEKDefuse: function(options){
+		this.isExploding = false;
+
+		//The kitten was placed back into deck
+		this.get("gameState").deckCount++;
+	},
+
+	onPlayerExploded: function(message){
+		if(this.isMe(message.player)){
+			//gray out and disable ui
+			console.log("IMPLEMENT ME - onPlayerExploded");
+		}
+	},
+
 	onCardPlayed: function(options){
-		if(options.from == this.socket.id){
+		if(this.isMe(options.from)){
 			this.removeCardFromHand(options.card);
 			if(options.card.type == "cat"){
 				this.removeCardFromHand(options.card);
@@ -161,9 +190,15 @@ var ExplodingKitten = Backbone.Model.extend({
 
 	onEKDrawn: function(message){
 		this.get("gameState").deckCount--;
-		if(message.player == this.socket.id){
+		if(this.isMe(message.player)){
 			this.isExploding = true;
 		}
+	},
+
+	onPlayerWin: function(message){
+		this.isExploding = false;
+		this.set("status", 3);
+
 	},
 
 	removeCardFromHand: function(card){
@@ -200,10 +235,10 @@ var ExplodingKitten = Backbone.Model.extend({
 	},
 
 	onMoveCard: function(options){
-		if(options.to == this.socket.id){
+		if(this.isMe(options.to)){
 			this.addCardToHand(options.card);
 			this.getPlayerById(options.from).handSize--;
-		}else if(options.from == this.socket.id){
+		}else if(this.isMe(options.from)){
 			this.removeCardFromHand(options.card);
 			this.getPlayerById(options.to).handSize++;
 		}else{
@@ -224,7 +259,7 @@ var ExplodingKitten = Backbone.Model.extend({
 	rotatePlayers: function(){
 		var players = this.get("players");
 		if(players && players.length){
-			while(players[0].id != this.socket.id){
+			while(!this.isMe(players[0].id)){
 				players.unshift(players.pop());
 			}
 		}
@@ -242,7 +277,11 @@ var ExplodingKitten = Backbone.Model.extend({
 	},
 
 	isMyTurn: function(){
-		return this.get("gameState") && this.get("gameState").turnPlayer == this.socket.id;
+		return this.get("gameState") && this.isMe(this.get("gameState").turnPlayer);
+	},
+
+	isMe: function(id){
+		return this.socket.id == id;
 	}
 
 });

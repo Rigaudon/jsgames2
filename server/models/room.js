@@ -2,7 +2,7 @@ var Backbone = require("backbone");
 var _  = require("lodash");
 
 var Room = Backbone.Model.extend({
-	
+
 	initialize: function(options){
 		this.io = options.io;
 		this.set("options", options.options);
@@ -30,11 +30,11 @@ var Room = Backbone.Model.extend({
 
 	playerJoin: function(playerModel){
 		var self = this;
-		self.switchChannel(	playerModel.get("socket"), 
-							playerModel.get("name"), 
+		self.switchChannel(	playerModel.get("socket"),
+							playerModel.get("name"),
 							{ channel: "global",
 							  display: "global chat"
-							}, 
+							},
 							{ channel: self.get("channel"),
 							  display: self.get("options").roomName
 							});
@@ -49,12 +49,12 @@ var Room = Backbone.Model.extend({
 		var self = this;
 		var playerId = socket.id;
 
-		self.switchChannel( socket, 
-							self.get("players").get(socket.id).get("name"), 
+		self.switchChannel( socket,
+							self.get("players").get(socket.id).get("name"),
 							{ channel: self.get("channel"),
 							  display: self.get("options").roomName
 							},
-							{ channel: "global", 
+							{ channel: "global",
 							  display: "global chat"
 							});
 
@@ -67,7 +67,7 @@ var Room = Backbone.Model.extend({
 			}
 			if(this.get("host").id == playerId){
 				var randomPlayer = self.get("players").at(Math.floor(Math.random() * self.get("players").length));
-				this.set("host", randomPlayer.clientJSON());	
+				this.set("host", randomPlayer.clientJSON());
 			}
 		}
 		this.emitToAllExcept();
@@ -156,7 +156,11 @@ var Room = Backbone.Model.extend({
 				player.get("socket").emit("gameMessage", message);
 			}
 		});
-	}
+	},
+
+	inProgress: function(){
+		return this.get("status") == 2;
+	},
 
 });
 
