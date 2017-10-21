@@ -12,6 +12,7 @@
 	color: $primary-color;
 	background-color: $primary-color; /*this is reset in code for transition*/
 	background: linear-gradient($primary-color, $gradient-color);
+	overflow: auto;
 
 	.logo, .content{
 		width: 100%;

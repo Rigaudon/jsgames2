@@ -136,8 +136,8 @@ var ChatView = Marionette.View.extend({
 			.toggleClass("closed");
 
 		this.$(this.ui.collapse).find("span")
-			.toggleClass("glyphicon-chevron-right")
-			.toggleClass("glyphicon-chevron-left");
+			.toggleClass("glyphicon-comment")
+			.toggleClass("glyphicon-chevron-right");
 	}
 
 });
