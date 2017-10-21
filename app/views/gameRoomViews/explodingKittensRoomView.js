@@ -372,6 +372,9 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		$(this.regions.status).text(player.name + " exploded!");
 		player.el.css("background-image", "url(\"/static/images/assets/explodingKittens/exploded.png\")");
 		this.renderCardCounts();
+		if(this.model.isMe(message.player)){
+			$(this.regions.hand).find(".EKCard:not(.invis)").remove();
+		}
 	},
 
 	onPlayerWin: function(message){

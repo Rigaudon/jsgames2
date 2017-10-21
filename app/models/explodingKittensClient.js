@@ -164,9 +164,9 @@ var ExplodingKitten = Backbone.Model.extend({
 
 	onPlayerExploded: function(message){
 		if(this.isMe(message.player)){
-			//gray out and disable ui
-			console.log("IMPLEMENT ME - onPlayerExploded");
+			this.get("gameState").hand = [];
 		}
+		this.getPlayerById(message.player).handSize = 0;
 	},
 
 	onCardPlayed: function(options){
