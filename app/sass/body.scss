@@ -28,3 +28,8 @@ html, body, .root{
 	height: 100%;
 }
 
+#overlayCanvas{
+	position: absolute;
+	top: 0;
+	display: none;
+}

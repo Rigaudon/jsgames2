@@ -7,23 +7,27 @@
 	height: 100%;
 	position: relative;
 	z-index: 3;
+	box-shadow: 1px 1px 3px $inset-color;
 
 	.collapseSideBar{
 		position: absolute;
-		right: -25px;
-		top: 0;
+		right: -31px;
+		top: 3px;
 		height: 30px;
 		line-height: 38px;
-		width: 25px;
-		background-color: $menu-color;
-		color: $passive-color;
-		border-radius: 0px 5px 5px 0px;
+		width: auto;
+		background-color: $bg-color;
+		border: 1px solid $primary-color;
+		color: $primary-color;
 		cursor: pointer;
-		padding-right: 2px;
+		padding-right: 3px;
+		padding-left: 3px;
+		opacity: 0.8;
 	}
 
 	.collapseSideBar:hover{
-		background-color: $fourth-color;
+		background-color: $primary-color;
+		color: $bg-color;
 	}
 
 	.sideBarItems{
@@ -48,7 +52,6 @@
 			color: $primary-color;
 			background-color: $bg-color;
 			font-size: 25px;
-			border-radius: 0px 0px 30px 30px;
 		}
 
 		.sideBarItem:last-child{

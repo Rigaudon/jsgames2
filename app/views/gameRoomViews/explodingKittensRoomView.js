@@ -82,7 +82,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"ek:drawn": "onEKDrawn",
 		"ek:defused": "onEKDefused",
 		"player:exploded": "onPlayerExploded",
-		"player:win", "onPlayerWin"
+		"player:win": "onPlayerWin"
 	},
 
 	ui: {
@@ -251,7 +251,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		});
 		if(from && to){
 			var self = this;
-			return this.animateCardMove(from.el, to.el)
+			return this.animateCardMove(from.el, to.el, options.card)
 			.then(function(){
 				if(self.model.socket.id == options.from){
 					//remove options.card from hand
@@ -353,18 +353,27 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		.then(function(){
 			$(self.ui.pile).css("background-image", "url(" + self.pathForCard(message.card.image) + ")");
 		});
+		this.renderCardCounts();
 	},
 
 	onEKDefused: function(message){
-		console.log("IMPLEMENT ME - onEKDefused");
+		var player = this.model.getPlayerById(message.player);
+		$(this.regions.status).text(player.name + " defused the exploding kitten. It was placed back into the deck.");
+		this.renderCardCounts();
 	},
 
 	onPlayerExploded: function(message){
-		console.log("IMPLEMENT ME - onPlayerExploded");
+		var player = this.model.getPlayerById(message.player);
+		$(this.regions.status).text(player.name + " exploded!");
+		player.el.css("background-image", "url(\"/static/images/assets/explodingKittens/exploded.png\")");
+		this.renderCardCounts();
 	},
 
 	onPlayerWin: function(message){
-		console.log("IMPLEMENT ME - onPlayerWin");
+		var player = this.model.getPlayerById(message.player);
+		$(this.regions.status).text(player.name + " won!");
+		window.startConfetti();
+		setTimeout(window.stopConfetti, 5000);
 	},
 
 	showPickPlayerModal: function(card, callback, onCancel){

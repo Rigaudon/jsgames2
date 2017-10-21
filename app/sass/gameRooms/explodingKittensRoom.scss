@@ -9,13 +9,13 @@
 	transition: 1s;
 	margin: auto;
 	max-width: 1200px;
-	min-height: 1200px;
 }
 
 .playtable{
 	margin: 10px;
 	margin-top: 50px;
 	max-height: 750px;
+	min-height: 600px;
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
 	grid-template-rows: repeat(5, 1fr);
@@ -50,6 +50,7 @@ img.preview{
 }
 
 .heldCards{
+	position: relative;
 	min-height: 180px;
 	border: 3px solid $primary-color;
 	color: $primary-color;
@@ -90,7 +91,6 @@ img.preview{
 	.invis{
 		position: absolute;
 		right: -100%;
-		bottom: -100%;
 		visibility: hidden;
 	}
 }
@@ -180,7 +180,7 @@ img.preview{
 	cursor: pointer;
 	&:hover{
 		font-size: 26px;
-		margin: 5%;
+		margin: 0%;
 		.glyphicon-card{
 			width: 38px;
 		}
@@ -208,8 +208,8 @@ img.preview{
 	color: white;
 	text-shadow: 0px 0px 8px black;
 	transition: 0.25s;
-	margin: 10%;
-	padding: 13%;
+	padding: 5%;
+	margin: 5%;
 	position: relative;
 }
 

@@ -26,6 +26,8 @@ html, body, .root { width: 100%; height: 100%; font-family: "adobe clean"; margi
 
 .fullHeight { height: 100%; }
 
+#overlayCanvas { position: absolute; top: 0; display: none; }
+
 /*
 primary-color: text color
 secondary-color: differing shade of primary (gradient in welcome)
@@ -147,7 +149,7 @@ $passive-color: #282828;
 $bg-url: url(../../static/images/bg-dark.jpg);
 $create-room-bg-url: #222222;
 */
-.mainView { width: 100%; height: 100%; min-width: 1000px; transition: 1s; position: relative; cursor: default; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+.mainView { width: 100%; height: 100%; min-width: 1050px; transition: 1s; position: relative; cursor: default; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
 .mainView .topView { font-size: 50px; border-radius: 80px 80px 0 0; overflow: hidden; margin-left: auto; margin-right: auto; background-color: #003366; color: #ffffff; width: 50%; border: 2px solid #003366; border-bottom: none; }
 
@@ -229,7 +231,7 @@ $passive-color: #282828;
 $bg-url: url(../../static/images/bg-dark.jpg);
 $create-room-bg-url: #222222;
 */
-.chatView { height: 100%; background-color: #efeef1; }
+.chatView { height: 100%; background-color: #efeef1; z-index: 1; border-left: 1px solid #dad8de; }
 
 .chatView .chatViewContainer { width: 100%; height: 100%; position: relative; }
 
@@ -241,9 +243,9 @@ $create-room-bg-url: #222222;
 
 .chatView .chatViewContainer .chatHeader { height: 50px; min-height: 50px; width: 100%; box-shadow: inset 0 -1px 0 0 #dad8de; font-family: "Helvetica"; font-size: 15px; padding-top: 10px; padding-bottom: 10px; }
 
-.chatView .chatViewContainer .collapseChat { position: absolute; left: -25px; top: 0; height: 30px; line-height: 38px; width: 25px; background-color: #003366; color: #efeef1; border-radius: 5px 0px 0px 5px; cursor: pointer; }
+.chatView .chatViewContainer .collapseChat { position: absolute; left: -30px; top: 3px; height: 30px; line-height: 38px; width: 25px; background-color: #ffffff; border: 1px solid #003366; color: #003366; cursor: pointer; opacity: 0.8; }
 
-.chatView .chatViewContainer .collapseChat:hover { background-color: #bb171a; }
+.chatView .chatViewContainer .collapseChat:hover { background-color: #003366; color: #ffffff; }
 
 .chatView .chatViewContainer .messageList { height: 100%; overflow-x: hidden; overflow-y: auto; }
 
@@ -295,11 +297,11 @@ $passive-color: #282828;
 $bg-url: url(../../static/images/bg-dark.jpg);
 $create-room-bg-url: #222222;
 */
-.sideBar { background-color: #003366; background: linear-gradient(#003366, #0B3F5C); color: #ffffff; height: 100%; position: relative; z-index: 3; }
+.sideBar { background-color: #003366; background: linear-gradient(#003366, #0B3F5C); color: #ffffff; height: 100%; position: relative; z-index: 3; box-shadow: 1px 1px 3px #dad8de; }
 
-.sideBar .collapseSideBar { position: absolute; right: -25px; top: 0; height: 30px; line-height: 38px; width: 25px; background-color: #003366; color: #efeef1; border-radius: 0px 5px 5px 0px; cursor: pointer; padding-right: 2px; }
+.sideBar .collapseSideBar { position: absolute; right: -31px; top: 3px; height: 30px; line-height: 38px; width: auto; background-color: #ffffff; border: 1px solid #003366; color: #003366; cursor: pointer; padding-right: 3px; padding-left: 3px; opacity: 0.8; }
 
-.sideBar .collapseSideBar:hover { background-color: #bb171a; }
+.sideBar .collapseSideBar:hover { background-color: #003366; color: #ffffff; }
 
 .sideBar .sideBarItems { display: flex; flex-wrap: nowrap; justify-content: flex-start; flex-direction: column; height: 100%; width: auto; }
 
@@ -307,7 +309,7 @@ $create-room-bg-url: #222222;
 
 .sideBar .sideBarItems .sideBarItem input[type=color] { background-color: transparent; border: none; cursor: pointer; height: 25px; }
 
-.sideBar .sideBarItems .sideBarItem:first-child { color: #003366; background-color: #ffffff; font-size: 25px; border-radius: 0px 0px 30px 30px; }
+.sideBar .sideBarItems .sideBarItem:first-child { color: #003366; background-color: #ffffff; font-size: 25px; }
 
 .sideBar .sideBarItems .sideBarItem:last-child { position: absolute; bottom: 0; left: 0; width: 100%; font-size: 16px; color: #003366; display: flex; flex-direction: column; }
 
@@ -447,9 +449,9 @@ $passive-color: #282828;
 $bg-url: url(../../static/images/bg-dark.jpg);
 $create-room-bg-url: #222222;
 */
-.explodingKittensRoom { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: 1s; margin: auto; max-width: 1200px; min-height: 1200px; }
+.explodingKittensRoom { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: 1s; margin: auto; max-width: 1200px; }
 
-.playtable { margin: 10px; margin-top: 50px; max-height: 750px; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(5, 1fr); width: 98%; height: 60%; border-radius: 50%; border: 3px solid #003366; background-color: rgba(239, 238, 241, 0.8); }
+.playtable { margin: 10px; margin-top: 50px; max-height: 750px; min-height: 600px; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(5, 1fr); width: 98%; height: 60%; border-radius: 50%; border: 3px solid #003366; background-color: rgba(239, 238, 241, 0.8); }
 
 .handCount { width: 75px; padding-right: 5px; }
 
@@ -459,7 +461,7 @@ $create-room-bg-url: #222222;
 
 img.preview { display: none; position: absolute; width: 300px; bottom: 160px; z-index: 5; }
 
-.heldCards { min-height: 180px; border: 3px solid #003366; color: #003366; margin: 10px; border-radius: 10px; background-color: rgba(239, 238, 241, 0.8); display: flex; flex-wrap: wrap; padding: 2px; max-height: 350px; overflow-y: scroll; overflow-x: hidden; align-items: center; }
+.heldCards { position: relative; min-height: 180px; border: 3px solid #003366; color: #003366; margin: 10px; border-radius: 10px; background-color: rgba(239, 238, 241, 0.8); display: flex; flex-wrap: wrap; padding: 2px; max-height: 350px; overflow-y: scroll; overflow-x: hidden; align-items: center; }
 
 .heldCards .EKCard { padding: 5px; z-index: 4; background-color: white; height: 160px; border-radius: 7px; margin: 2px; border: 1px solid black; transition: 0.2s; }
 
@@ -469,7 +471,7 @@ img.preview { display: none; position: absolute; width: 300px; bottom: 160px; z-
 
 .heldCards .sortable-ghost { opacity: 0; }
 
-.heldCards .invis { position: absolute; right: -100%; bottom: -100%; visibility: hidden; }
+.heldCards .invis { position: absolute; right: -100%; visibility: hidden; }
 
 .cardPreview { display: none; position: absolute; left: 10px; top: calc(60% - 600px); max-width: 25%; }
 
@@ -489,13 +491,13 @@ img.preview { display: none; position: absolute; width: 300px; bottom: 160px; z-
 
 .deck { grid-column-start: 5; grid-column-end: 7; grid-row-start: 2; grid-row-end: 5; background-image: url("/static/images/assets/explodingKittens/back.png"); cursor: pointer; }
 
-.deck:hover { font-size: 26px; margin: 5%; }
+.deck:hover { font-size: 26px; margin: 0%; }
 
 .deck:hover .glyphicon-card { width: 38px; }
 
 .status { grid-column-start: 4; grid-column-end: 5; grid-row-start: 3; grid-row-end: 3; display: flex; align-items: center; justify-content: center; }
 
-.pile, .deck { background-size: contain; background-repeat: no-repeat; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; color: white; text-shadow: 0px 0px 8px black; transition: 0.25s; margin: 10%; padding: 13%; position: relative; }
+.pile, .deck { background-size: contain; background-repeat: no-repeat; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; color: white; text-shadow: 0px 0px 8px black; transition: 0.25s; padding: 5%; margin: 5%; position: relative; }
 
 .playerSeat { grid-column-start: 4; grid-row-start: 5; }
 

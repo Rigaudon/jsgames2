@@ -3,7 +3,8 @@
 .chatView{
 	height: 100%;
 	background-color: $passive-color;
-
+	z-index: 1;
+	border-left: 1px solid $inset-color;
 	.chatViewContainer{
 		width:100%;
 		height:100%;
@@ -42,19 +43,21 @@
 
 		.collapseChat{
 			position: absolute;
-			left: -25px;
-			top: 0;
+			left: -30px;
+			top: 3px;
 			height: 30px;
 			line-height: 38px;
 			width: 25px;
-			background-color: $primary-color;
-			color: $passive-color;
-			border-radius: 5px 0px 0px 5px;
+			background-color: $bg-color;
+			border: 1px solid $primary-color;
+			color: $primary-color;
 			cursor: pointer;
+			opacity: 0.8;
 		}
 
 		.collapseChat:hover{
-			background-color: $fourth-color;
+			background-color: $primary-color;
+			color: $bg-color;
 		}
 
 		.messageList{

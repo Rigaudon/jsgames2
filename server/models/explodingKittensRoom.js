@@ -164,13 +164,9 @@ var ExplodingKittensRoom = Room.extend({
 				this.shuffleDeck();
 				break;
 			case "attack":
-				if(gameState.isAttacked){
-					gameState.isAttacked = false;
-					this.progressTurn();
-				}else{
-					this.progressTurn();
-					this.get("gameState").isAttacked = true;
-				}
+				gameState.isAttacked = false;
+				this.progressTurn();
+				gameState.isAttacked = true;
 				break;
 			case "stf":
 				this.getSocketFromPID(options.source).emit("gameMessage", this.seeTheFuture());
@@ -193,7 +189,9 @@ var ExplodingKittensRoom = Room.extend({
 					"message": "exploded",
 					"player": options.player
 				});
-				this.checkWin();
+				if(!this.checkWin()){
+					this.progressTurn();
+				}
 				break;
 			case "defuse":
 				if(gameState.isExploding != options.source){
@@ -391,10 +389,13 @@ var ExplodingKittensRoom = Room.extend({
 	checkWin: function(){
 		var gameState = this.get("gameState");
 		var nonExploded = this.get("players").filter(function(player){
-			return gameState.exploded.indexOf(player.id) > -1;
+			return gameState.exploded.indexOf(player.id) == -1;
 		});
 		if(nonExploded.length == 1){
 			this.playerWin(nonExploded[0]);
+			return true;
+		}else{
+			return false;
 		}
 	},
 
