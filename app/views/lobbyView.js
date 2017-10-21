@@ -3,7 +3,7 @@ var Marionette = require("backbone.marionette");
 var fs = require("fs");
 var common = require("../common");
 var ChatView = require("./chatView");
-var SideBarView = require("./sideBarview");
+var SideBarView = require("./sideBarView");
 var GameRoomsView = require("./gameRoomsView");
 
 var ConnectFourRoomView = require("./gameRoomViews/connectFourRoomView");

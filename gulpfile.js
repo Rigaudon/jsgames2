@@ -24,13 +24,17 @@ gulp.task('watch', watch);
 function bundle() {
   return b.bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-    .pipe(source('static/js/jsgames.js'))
+    .pipe(source('jsgames.js'))
     .pipe(buffer())
 	  .pipe(uglify())
     .on('error', function(err){
       gutil.log(gutil.colors.red('[Error]'), err.toString());
     })
-    .pipe(gulp.dest('./'));
+    .pipe(gulp.dest('./dist'))
+    .once('end', function(){
+      console.log("Done");
+      process.exit(0);
+    });
 }
 
 var w = watchify(b);
@@ -39,6 +43,6 @@ w.on('log', gutil.log);
 function watch() {
   return w.bundle()
   .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-  .pipe(source('static/js/jsgames.js'))
-  .pipe(gulp.dest('./'));
+  .pipe(source('jsgames.js'))
+  .pipe(gulp.dest('./dist'));
 }

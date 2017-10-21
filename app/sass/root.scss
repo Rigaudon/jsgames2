@@ -72,7 +72,7 @@
 
 		.loading{
 			transition: $transition-speed;
-			background:url(../images/ripple.svg) no-repeat center center;
+			background:url("/static/images/ripple.svg") no-repeat center center;
 			background-size: contain;
 			color: $bg-color;
 			font-size: 35px;

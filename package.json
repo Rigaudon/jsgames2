@@ -4,11 +4,12 @@
   "description": "A more object oriented iteration of JSGames",
   "main": "entry.js",
   "scripts": {
-    "server": "concurrently --kill-others \"gulp watch\" \"node entry.js\" \"node-sass --output-style compact -w app/sass/main.scss static/css/main.css\"",
+    "server": "concurrently --kill-others \"gulp watch\" \"node entry.js\" \"node-sass --output-style compact -w app/sass/main.scss dist/main.css\"",
     "bundle-js": "gulp bundle",
+    "bundle-css": "node-sass --output-style compact app/sass/main.scss dist/main.css",
     "start": "node entry.js",
     "watch": "gulp watch",
-    "heroku-postbuild": "gulp bundle"
+    "postinstall": "gulp bundle && node-sass --output-style compact app/sass/main.scss dist/main.css"
   },
   "repository": {
     "type": "git",
@@ -58,6 +59,7 @@
     "watchify": "^3.9.0"
   },
   "engines": {
-    "node": "6.10.0"
+    "node": "6.10.0",
+    "npm": "4.3.0"
   }
 }
