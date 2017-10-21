@@ -36,7 +36,7 @@ var SideBarView = Marionette.View.extend({
 			.toggleClass("closed");
 
 		this.$(this.ui.collapse).find("span")
-			.toggleClass("glyphicon-cog")
+			.toggleClass("glyphicon-chevron-right")
 			.toggleClass("glyphicon-chevron-left");
 	},
 

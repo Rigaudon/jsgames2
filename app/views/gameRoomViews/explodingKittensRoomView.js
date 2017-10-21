@@ -96,7 +96,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"hand": ".heldCards",
 		"choose": ".chooseOptions",
 		"table": ".playtable",
-		"status": ".status"
+		"status": ".status",
+		"controls": ".controls"
 	},
 
 	events: {
@@ -122,6 +123,10 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			this.renderCards(gameState);
 			this.renderCardCounts();
 		}
+	},
+
+	renderControls: function(){
+		$(this.regions.controls).html(this.getOptions());
 	},
 
 	pathForCard: function(card){
@@ -374,6 +379,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		$(this.regions.status).text(player.name + " won!");
 		window.startConfetti();
 		setTimeout(window.stopConfetti, 5000);
+		this.renderControls();
 	},
 
 	showPickPlayerModal: function(card, callback, onCancel){
