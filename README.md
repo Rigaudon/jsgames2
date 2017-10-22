@@ -2,20 +2,16 @@
 
 # JSGames v2
 A stateless Nodejs game server using Socket.io and Backbone/Marionette.
+Currently, Connect Four and Exploding Kittens are implemented.
 
 # Local Setup
 Developed in node `6.10.0`, npm `4.3.0`.
 Run `npm install`, then `npm start`.
+For development, run `npm run server`.
 
 # To do
 - Implement games
-	- Connect Four: 
-		- Auto size the box on render
-		- Host to pick color of self and opponent
-	- Uno:
-		- Everything...
-- Spectate mode
+	- Uno
+	- Pictionary
+- Add Spectate mode
 - Add who's online list to chat
-- More dynamic templates
-- Add player color selection to settings
-- Add theme selection to settings
