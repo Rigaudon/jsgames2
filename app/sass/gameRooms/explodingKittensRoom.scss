@@ -15,7 +15,6 @@
 	margin: 10px;
 	margin-top: 50px;
 	max-height: 750px;
-	min-height: 600px;
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
 	grid-template-rows: repeat(5, 1fr);
@@ -53,7 +52,7 @@ img.preview{
 
 .heldCards{
 	position: relative;
-	min-height: 15%;
+	min-height: 17%;
 	border: 3px solid $primary-color;
 	color: $primary-color;
 	margin: 10px;

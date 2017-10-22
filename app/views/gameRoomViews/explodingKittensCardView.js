@@ -44,7 +44,7 @@ var ExplodingKittensCard = Marionette.View.extend({
 		preview.show();
 		preview.css("left", (hand.offset().left - Math.round((preview.width() - hand.width()) / 2) - preview.parent().offset().left) + "px");
 		preview.css("top", (hand.offset().top - preview.height() - 20) + "px");
-		if(preview.offset().left < 0){
+		if(preview.offset().left < preview.parent().offset().left){
 			preview.css("left", "10px");
 		}
 	},
