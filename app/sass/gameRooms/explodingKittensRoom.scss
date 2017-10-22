@@ -13,6 +13,7 @@
 
 .playtable{
 	margin: 10px;
+	margin-top: 50px;
 	max-height: 750px;
 	min-height: 600px;
 	display: grid;
@@ -52,7 +53,7 @@ img.preview{
 
 .heldCards{
 	position: relative;
-	min-height: 180px;
+	min-height: 15%;
 	border: 3px solid $primary-color;
 	color: $primary-color;
 	margin: 10px;
@@ -64,7 +65,7 @@ img.preview{
 	max-height: 350px;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	align-items: center;
+	align-items: flex-start;
 	margin-top: 0;
 	margin-bottom: 0;
 	.EKCard{
@@ -178,6 +179,22 @@ img.preview{
 			height: 100%;
 		}
 	}
+	.invalidCard{
+		color: red;
+		opacity: 0;
+		text-shadow: none;
+		background-color: $passive-color-transparent;
+		border: 1px solid red;
+		border-radius: 5px;
+		padding: 3px;
+		font-size: 18px;
+	}
+	.invalidCard:not(.active){
+		transition: opacity 3s linear 2s;
+	}
+	.invalidCard.active{
+		opacity: 1;
+	}
 }
 
 .deck{
@@ -208,7 +225,6 @@ img.preview{
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: 2px solid $primary-color;
 	background-color: $passive-color-transparent;
 	border-radius: 10px;
 	margin: auto;
@@ -224,7 +240,7 @@ img.preview{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
 	color: white;
 	text-shadow: 0px 0px 8px black;
 	transition: 0.25s;

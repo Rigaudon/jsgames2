@@ -82,8 +82,6 @@ var ExplodingKittensRoom = Room.extend({
 	},
 
 	playCard: function(options){
-		//if verify play card, continue with game logic
-		//otherwise send response to requester with failed
 		/*
 		[1] { command: 'playCard',
 		[1]   roomId: 1,
@@ -91,7 +89,6 @@ var ExplodingKittensRoom = Room.extend({
 		[1]   target: 'iW2X-MHU5881e-OVAAAC',
 			  source: 'voT8bGaa-nJKzO_0AAAD' }
 		*/
-		//TODO: create effect stack
 		if(this.verifyPlayable(options)){
 			var response = {
 				"message": "cardPlayed",
@@ -121,8 +118,11 @@ var ExplodingKittensRoom = Room.extend({
 			}else{
 				gameState.effectStack.push(options.card, this.performEffect.bind(this, options));
 			}
+		}else{
+			this.getSocketFromPID(options.source).emit("gameMessage", {
+				"message": "invalidCard"
+			});
 		}
-
 	},
 
 	setTimer: function(length){
@@ -427,6 +427,9 @@ var ExplodingKittensRoom = Room.extend({
 		if(!this.inProgress()){
 			return false;
 		}
+		if(this.isExploded(options.source)){
+			return false;
+		}
 		var gameState = this.get("gameState");
 		if(options.card.type != "nope" && options.source != gameState.turnPlayer.id){
 			return false;
@@ -440,10 +443,7 @@ var ExplodingKittensRoom = Room.extend({
 			}
 			return options.card.type == "nope";
 		}
-		if(options.card.type == "nope"){
-			return false;
-		}
-		if(this.isExploded(options.source)){
+		if(options.card.type == "nope" || options.card.type == "defuse"){
 			return false;
 		}
 		var inHand = this.handContains(options.source, options.card);

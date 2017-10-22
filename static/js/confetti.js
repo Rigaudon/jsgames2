@@ -81,6 +81,11 @@
                 $(canvas).css("display", "none");
             }, 5000);
         };
+
+        window.showConfetti = function(length){
+            window.startConfetti();
+            setTimeout(window.stopConfetti, length || 5000);
+        };
     });
 
     function SetGlobals() {

@@ -36,7 +36,8 @@
 	</div>
 	<div class="timer"></div>
 	<div class="pile">
-		<label>Drag from Hand</label>
+		<label>Drag or click from Hand</label>
+		<span class="invalidCard">You can't play that right now.</span>
 		<span class="handCount">
 			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
 			<span class="numCards"></span>
@@ -52,9 +53,7 @@
 </div>
 <img class="preview" />
 <div class="status"><%= status %></div>
-<div class="heldCards">
-	<div class="EKCard invis"></div>
-</div>
+<div class="heldCards"></div>
 <div class="controls">
 	<%= controls %>
 </div>

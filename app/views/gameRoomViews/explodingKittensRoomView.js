@@ -84,7 +84,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"ek:defused": "onEKDefused",
 		"player:exploded": "onPlayerExploded",
 		"player:win": "onPlayerWin",
-		"timer:set": "onSetTimer"
+		"timer:set": "onSetTimer",
+		"card:invalid": "onPlayInvalid"
 	},
 
 	ui: {
@@ -92,6 +93,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"startBtn": ".startBtn",
 		"deck": ".deck",
 		"pile": ".pile",
+		"card": ".EKCard",
+		"invalid": ".invalidCard"
 	},
 
 	regions: {
@@ -100,13 +103,13 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"table": ".playtable",
 		"status": ".status",
 		"controls": ".controls",
-		"timer": ".timer"
-	},
+		"timer": ".timer",	},
 
 	events: {
 		"click @ui.leaveBtn": "leaveRoom",
 		"click @ui.startBtn": "startRoom",
-		"click @ui.deck": "drawCard"
+		"click @ui.deck": "drawCard",
+		"click @ui.card": "onClickCard"
 	},
 
 	leaveRoom: function(){
@@ -155,46 +158,64 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 				name: "pile",
 				put: function(to, from, el){
 					var card = el.card;
-					var inHand = gameState.hand.filter(function(handCard){
-						return handCard.id == card.id;
-					});
-					if(self.model.isExploding){
-						return inHand.length && (card.type == "defuse" || card.type == "nope");
-					}
-					switch(card.type){
-						case "cat":
-							return self.model.isMyTurn() && inHand.length >= 2;
-						case "nope":
-							return inHand.length > 0;
-						default:
-							return self.model.isMyTurn() && $(to.el).find(".EKCard").length == 0 && inHand.length;
-					}
-
-				}
+					return self.onPut(card);
+				}	
 			},
 			onAdd: function(evt){
 				var card = evt.item.card;
-				$(self.regions.hand).prepend($(self.ui.pile).find(".EKCard").detach());
-				switch(card.type){
-					case "favor":
-					case "cat":
-						self.pickPlayer(card);
-						break;
-					case "stf":
-					case "attack":
-					case "skip":
-					case "shuffle":
-					case "defuse":
-					case "nope":
-						self.onPlay(card);
-						break;
-					break;
-					break;
-					default:
-						throw new Error("Invalid Card Type!");
-				}
+				self.onCardSelected(card);
 			}
 		});
+	},
+
+	onPut: function(card){
+		var gameState = this.model.get("gameState");
+		var inHand = gameState.hand.filter(function(handCard){
+			return handCard.id == card.id;
+		});
+		if(this.model.isExploding){
+			return inHand.length && (card.type == "defuse" || card.type == "nope");
+		}
+		switch(card.type){
+			case "cat":
+				return this.model.isMyTurn() && inHand.length >= 2;
+			case "nope":
+				return inHand.length > 0;
+			default:
+				return this.model.isMyTurn() && inHand.length;
+		}
+		return true;
+	},
+
+	onClickCard: function(evt){
+		var card = evt.currentTarget.card;
+		this.onCardSelected(card);
+	},
+
+	onCardSelected: function(card){
+		if(!this.onPut(card)){
+			this.onPlayInvalid();
+			return;
+		}
+		$(this.regions.hand).prepend($(this.ui.pile).find(".EKCard").detach());
+		switch(card.type){
+			case "favor":
+			case "cat":
+				this.pickPlayer(card);
+				break;
+			case "stf":
+			case "attack":
+			case "skip":
+			case "shuffle":
+			case "defuse":
+			case "nope":
+				this.onPlay(card);
+				break;
+			break;
+			break;
+			default:
+				throw new Error("Invalid Card Type!");
+		}
 	},
 
 	onPlay: function(card){
@@ -366,6 +387,14 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		this.renderCardCounts();
 	},
 
+	onPlayInvalid: function(message){
+		var el = $(this.ui.invalid);
+		el.addClass("active");
+		setTimeout(function(){
+			el.removeClass("active");
+		}, 100);
+	},
+
 	timer: undefined,
 	onSetTimer: function(message){
 		if(this.timer){
@@ -374,7 +403,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		this.timer = new ProgressBar.Circle(this.regions.timer, {
 			color: "red",
 			duration: message.length,
-			strokeWidth: 5,
+			strokeWidth: 8,
 		});
 		this.timer.set(1);
 		var self = this;
@@ -396,15 +425,14 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		player.el.css("background-image", "url(\"/static/images/assets/explodingKittens/exploded.png\")");
 		this.renderCardCounts();
 		if(this.model.isMe(message.player)){
-			$(this.regions.hand).find(".EKCard:not(.invis)").remove();
+			$(this.regions.hand).find(".EKCard").remove();
 		}
 	},
 
 	onPlayerWin: function(message){
 		var player = this.model.getPlayerById(message.player);
 		$(this.regions.status).text(player.name + " won!");
-		window.startConfetti();
-		setTimeout(window.stopConfetti, 5000);
+		window.showConfetti();
 		this.renderControls();
 	},
 

@@ -107,6 +107,9 @@ var ExplodingKitten = Backbone.Model.extend({
 			case "setTimer":
 				this.trigger("timer:set", message);
 				break;
+			case "invalidCard":
+				this.trigger("card:invalid");
+				break;
 			default:
 				console.log("Not implemented:");
 				console.log(message);
@@ -125,6 +128,10 @@ var ExplodingKitten = Backbone.Model.extend({
 				roomId: this.get("id"),
 				card: options.card,
 				target: options.target
+			});
+		}else{
+			this.trigger("card:invalid", {
+				card: options.card
 			});
 		}
 	},

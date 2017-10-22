@@ -35,7 +35,8 @@ var ConnectFourRoomView = Marionette.View.extend({
 	modelEvents: {
 		"update:room": "render",
 		"change:myTurn": "changeTurn",
-		"animate:preview": "animatePreview"
+		"animate:preview": "animatePreview",
+		"victory": "onVictory"
 	},
 
 	ui: {
@@ -120,6 +121,10 @@ var ConnectFourRoomView = Marionette.View.extend({
 			var col = $elem.index();
 			this.model.makeMove(col);
 		}
+	},
+
+	onVictory: function(){
+		window.showConfetti();
 	},
 
 	showPreviewOnCol: function(left, width){

@@ -83,6 +83,7 @@ var ConnectFourClient = Backbone.Model.extend({
 				});
 				this.set("inProgress", false);
 				this.set("myTurn", null);
+				this.trigger("victory");
 			break;
 		}
 	},

@@ -34,7 +34,7 @@ var ExplodingKittensCard = Marionette.View.extend({
 		"hand": ".hand",
 	},
 
-	showPreview: function(){
+	showPreview: function(evt){
 		if(!this.$el.parent().hasClass("heldCards")){
 			return;
 		}
@@ -42,7 +42,7 @@ var ExplodingKittensCard = Marionette.View.extend({
 		preview.attr("src", this.fullImagePath());
 		var hand = this.$el.find(this.ui.hand);
 		preview.show();
-		preview.css("left", (hand.offset().left - Math.round((preview.width() - hand.width()) / 2)) + "px");
+		preview.css("left", (hand.offset().left - Math.round((preview.width() - hand.width()) / 2) - preview.parent().offset().left) + "px");
 		preview.css("top", (hand.offset().top - preview.height() - 20) + "px");
 		if(preview.offset().left < 0){
 			preview.css("left", "10px");

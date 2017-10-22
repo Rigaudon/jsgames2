@@ -60,14 +60,11 @@
 		}
 
 		.connectFourBoard{
-			width: 60%;
-			padding-top: 51.5%;
 			position: relative;
 			opacity: 0.85;
-			/*
-			min-height: 600px;
-			min-width: 700px;
-			*/
+			width: 50vmax;
+			height: 42.85vmax;
+		
 			.square{
 				border: 1px solid $primary-color;
 				top: 0;
