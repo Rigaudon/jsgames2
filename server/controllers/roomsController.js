@@ -3,9 +3,8 @@ var _ = require("lodash");
 var games = require("../../games.json");
 var gamesCollection = new Backbone.Collection(games);
 
-//var Room = require("../models/room");
-var ConnectFourRoom = require("../models/connectFourRoom");
-var ExplodingKittensRoom = require("../models/explodingKittensRoom");
+var ConnectFourRoom = require("../gameRooms/connectFour/connectFourRoom");
+var ExplodingKittensRoom = require("../gameRooms/explodingKittens/explodingKittensRoom");
 
 var nextGameRoomId = 0;
 var RoomsController = Backbone.Collection.extend({	

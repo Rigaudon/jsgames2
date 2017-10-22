@@ -1,6 +1,6 @@
 var _ = require("lodash");
 var Backbone = require("backbone");
-var User = require("../models/user");
+var User = require("../user");
 
 var UsersController = Backbone.Collection.extend({
 	addPlayer: function(options){

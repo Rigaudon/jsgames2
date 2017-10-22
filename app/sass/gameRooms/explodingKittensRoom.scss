@@ -13,17 +13,18 @@
 
 .playtable{
 	margin: 10px;
-	margin-top: 50px;
 	max-height: 750px;
 	min-height: 600px;
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
 	grid-template-rows: repeat(5, 1fr);
 	width: 98%;
-	height: 60%;
+	height: 65%;
 	border-radius: 50%;
 	border: 3px solid $primary-color;
 	background-color: $passive-color-transparent;
+	margin-bottom: 0;
+
 }
 
 .handCount{
@@ -64,19 +65,20 @@ img.preview{
 	overflow-y: scroll;
 	overflow-x: hidden;
 	align-items: center;
+	margin-top: 0;
+	margin-bottom: 0;
 	.EKCard{
 		padding: 5px;
 		z-index: 4;
 		background-color: white;
-		height: 160px;
+		width: 9.5%;
 		border-radius: 7px;
 		margin: 2px;
 		border: 1px solid black;
 		transition: $transition-very-fast;
 		img.hand{
 			cursor: pointer;
-			width: 100px;
-			height: 150px;
+			width: 100%;
 		}
 
 		&:hover {
@@ -117,6 +119,13 @@ img.preview{
 	background-color: $bg-color;
 	width: 155px;
 	height: 155px;
+	width: 15vh;
+	height: 15vh;
+	min-width: 120px;
+	min-height: 120px;
+	max-width: 155px;
+	max-height: 155px;
+	margin: auto;
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -179,15 +188,11 @@ img.preview{
 	background-image: url("/static/images/assets/explodingKittens/back.png");
 	cursor: pointer;
 	&:hover{
-		font-size: 26px;
 		margin: 0%;
-		.glyphicon-card{
-			width: 38px;
-		}
 	}
 }
 
-.status{
+.timer{
 	grid-column-start: 4;
 	grid-column-end: 5;
 	grid-row-start: 3;
@@ -195,6 +200,21 @@ img.preview{
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.status{
+	width: 65%;
+	min-height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 2px solid $primary-color;
+	background-color: $passive-color-transparent;
+	border-radius: 10px;
+	margin: auto;
+	padding: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 .pile, .deck {
@@ -211,6 +231,14 @@ img.preview{
 	padding: 5%;
 	margin: 5%;
 	position: relative;
+	label{
+		position: absolute;
+		top: -35px;
+	}
+	.handCount{
+		position: absolute;
+		bottom: -35px;
+	}
 }
 
 .playerSeat{

@@ -1,4 +1,4 @@
-var Room = require("./room");
+var Room = require("../room");
 var _ = require("lodash");
 
 var hostCommands = ["startGame", "kickOpponent"];

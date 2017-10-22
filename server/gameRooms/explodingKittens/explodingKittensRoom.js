@@ -1,35 +1,12 @@
-var Room = require("./room");
+var Room = require("../room");
 var _ = require("lodash");
 var EKcards = require("./ekcards.json");
+var CardObj = require("./card");
+var EffectStack = require("./effectStack");
 
 var hostCommands = ["startGame"];
 var commands = ["playCard", "drawCard", "giveFavor"];
-
 var STARTING_HAND_CARDS = 5;
-
-var CardObj = function(card, i) {
-	this.name = card.name;
-	this.type = card.type;
-	this.id = card.id;
-	if(card.image){
-		this.image = card.image;
-	}else{
-		if(card.variableImage){
-			this.image = card.id + i;
-		}else{
-			this.image = card.id;
-		}
-	}
-
-	this.toJSON = function(){
-		return {
-			name: this.name,
-			type: this.type,
-			id: this.id,
-			image: this.image
-		}
-	}
-};
 
 var ExplodingKittensRoom = Room.extend({
 	initialize: function(options){
@@ -130,14 +107,29 @@ var ExplodingKittensRoom = Room.extend({
 			this.removeCardsFromHand(options.source, response.remove);
 			this.getSocketFromPID(options.source).emit("gameMessage", response);
 
-			//This will move
-			this.performEffect(options);
-			this.get("gameState").pile.push(options.card);
+			var gameState = this.get("gameState");
+			gameState.pile.push(options.card);
 			if(options.card.type == "cat"){
-				this.get("gameState").pile.push(options.card);
+				gameState.pile.push(options.card);
+			}
+
+			if(!gameState.effectStack){
+				gameState.effectStack = new EffectStack(options.card, this.performEffect.bind(this, options), {
+					gameState: gameState,
+					setTimer: this.setTimer.bind(this)
+				});
+			}else{
+				gameState.effectStack.push(options.card, this.performEffect.bind(this, options));
 			}
 		}
 
+	},
+
+	setTimer: function(length){
+		this.emitGameMessage({
+			"message": "setTimer",
+			"length": length
+		});
 	},
 
 	performEffect: function(options){
@@ -216,7 +208,8 @@ var ExplodingKittensRoom = Room.extend({
 		if(	!this.inProgress() ||
 				gameState.turnPlayer.get("id") != playerId ||
 				this.isExploded(playerId) ||
-				gameState.isExploding){
+				gameState.isExploding ||
+				!!gameState.effectStack){
 			return;
 		}
 		var card = gameState.deck.pop();
@@ -254,6 +247,18 @@ var ExplodingKittensRoom = Room.extend({
 			this.performEffect({
 				card: card,
 				player: playerId
+			});
+		}else{
+			var doExplosion = this.performEffect.bind(this, {
+				card: card,
+				player: playerId
+			});
+			var self = this;
+			gameState.effectStack = new EffectStack(card, doExplosion, {
+				gameState: gameState,
+				initialDelay: false,
+				delay: 5000,
+				setTimer: this.setTimer.bind(this)
 			});
 		}
 	},
@@ -426,10 +431,21 @@ var ExplodingKittensRoom = Room.extend({
 		if(options.card.type != "nope" && options.source != gameState.turnPlayer.id){
 			return false;
 		}
+		if(!!gameState.effectStack){
+			if(gameState.effectStack.top().type == "explode"){
+				return options.card.type == "defuse";
+			}
+			if(options.card.type == "defuse"){
+				return gameState.effectStack.bottom().type == "explode";
+			}
+			return options.card.type == "nope";
+		}
+		if(options.card.type == "nope"){
+			return false;
+		}
 		if(this.isExploded(options.source)){
 			return false;
 		}
-
 		var inHand = this.handContains(options.source, options.card);
 
 		if(gameState.isExploding){
@@ -437,9 +453,9 @@ var ExplodingKittensRoom = Room.extend({
 		}
 		if(options.card.type == "cat"){
 			return inHand.length > 1;
-		}else{
-			return inHand.length > 0;
 		}
+			
+		return inHand.length > 0;
 	},
 
 	handContains: function(playerId, card){
@@ -537,6 +553,7 @@ var ExplodingKittensRoom = Room.extend({
 			delete gameState.isAttacked;
 			delete gameState.favor;
 			delete gameState.isExploding;
+			delete gameState.effectStack;
 		}
 		socket.emit("roomInfo", allJson);
 	},

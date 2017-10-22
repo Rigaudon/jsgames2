@@ -104,6 +104,9 @@ var ExplodingKitten = Backbone.Model.extend({
 				this.onPlayerWin(message);
 				this.trigger("player:win", message);
 				break;
+			case "setTimer":
+				this.trigger("timer:set", message);
+				break;
 			default:
 				console.log("Not implemented:");
 				console.log(message);

@@ -6,6 +6,7 @@ var EKCardView = require("./explodingKittensCardView");
 var Sortable = require("sortablejs");
 var common = require("../../common");
 var Promise = require("bluebird");
+var ProgressBar = require("progressbar.js");
 
 var playerSeats = [
 	'.playerSeat',
@@ -82,7 +83,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"ek:drawn": "onEKDrawn",
 		"ek:defused": "onEKDefused",
 		"player:exploded": "onPlayerExploded",
-		"player:win": "onPlayerWin"
+		"player:win": "onPlayerWin",
+		"timer:set": "onSetTimer"
 	},
 
 	ui: {
@@ -97,7 +99,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"choose": ".chooseOptions",
 		"table": ".playtable",
 		"status": ".status",
-		"controls": ".controls"
+		"controls": ".controls",
+		"timer": ".timer"
 	},
 
 	events: {
@@ -161,6 +164,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 					switch(card.type){
 						case "cat":
 							return self.model.isMyTurn() && inHand.length >= 2;
+						case "nope":
+							return inHand.length > 0;
 						default:
 							return self.model.isMyTurn() && $(to.el).find(".EKCard").length == 0 && inHand.length;
 					}
@@ -180,10 +185,10 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 					case "skip":
 					case "shuffle":
 					case "defuse":
+					case "nope":
 						self.onPlay(card);
 						break;
 					break;
-					case "nope":
 					break;
 					default:
 						throw new Error("Invalid Card Type!");
@@ -359,6 +364,24 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			$(self.ui.pile).css("background-image", "url(" + self.pathForCard(message.card.image) + ")");
 		});
 		this.renderCardCounts();
+	},
+
+	timer: undefined,
+	onSetTimer: function(message){
+		if(this.timer){
+			this.timer.destroy();
+		}
+		this.timer = new ProgressBar.Circle(this.regions.timer, {
+			color: "red",
+			duration: message.length,
+			strokeWidth: 5,
+		});
+		this.timer.set(1);
+		var self = this;
+		this.timer.animate(0, function(){
+			self.timer.destroy();
+			self.timer = undefined;
+		});
 	},
 
 	onEKDefused: function(message){
