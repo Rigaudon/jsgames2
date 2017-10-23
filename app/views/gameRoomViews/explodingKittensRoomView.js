@@ -166,6 +166,10 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 				self.onCardSelected(card);
 			}
 		});
+		if(gameState.pile && gameState.pile.length){
+			var topCard = gameState.pile[gameState.pile.length - 1];
+			$(this.ui.pile).css("background-image", "url(" + this.pathForCard(topCard) + ")");
+		}
 	},
 
 	onPut: function(card){

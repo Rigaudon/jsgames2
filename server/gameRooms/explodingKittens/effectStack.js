@@ -20,6 +20,7 @@ var EffectStack = function(card, resolve, options){
 		this.setResolveTimeout();
 	}
 	this.resolveStack = function(){
+		clearTimeout(this._resolveTimeout);
 		var topCard;
 		while(this.stack.length){
 			topCard = this.stack.pop();

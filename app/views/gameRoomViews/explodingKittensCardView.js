@@ -42,11 +42,15 @@ var ExplodingKittensCard = Marionette.View.extend({
 		preview.attr("src", this.fullImagePath());
 		var hand = this.$el.find(this.ui.hand);
 		preview.show();
-		preview.css("left", (hand.offset().left - Math.round((preview.width() - hand.width()) / 2) - preview.parent().offset().left) + "px");
+		preview.css("left", (hand.offset().left - Math.round((preview.width() - hand.width()) / 2) - this.totalLeftOffset(preview.parent())) + "px");
 		preview.css("top", (hand.offset().top - preview.height() - 20) + "px");
-		if(preview.offset().left < preview.parent().offset().left){
+		if(preview.offset().left < this.totalLeftOffset(preview.parent())){
 			preview.css("left", "10px");
 		}
+	},
+
+	totalLeftOffset: function(el){
+		return el.offset().left - parseInt(el.css("margin-left")) - parseInt(el.css("padding-left"));
 	},
 
 	hidePreview: function(){

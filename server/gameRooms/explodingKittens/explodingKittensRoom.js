@@ -364,13 +364,12 @@ var ExplodingKittensRoom = Room.extend({
 		var gameState = this.get("gameState");
 		if(gameState.turnPlayer && gameState.turnPlayer.id == socket.id){
 			if(!!gameState.effectStack){
-				gameState.effectStack.cancel();
+				gameState.effectStack.resolveStack();
 			}
-			this.verifyDeck();
 			gameState.isAttacked = false;
 			gameState.isExploding = false;
 			gameState.favor = {};
-			this.progressTurn();
+			this.verifyDeck();
 		}
 		if(gameState.favor && gameState.favor.target == socket.id){
 			gameState.favor = {};
@@ -387,11 +386,15 @@ var ExplodingKittensRoom = Room.extend({
 		if(!this.inProgress()){
 			return;
 		}
+		var self = this;
 		var deck = this.get("gameState").deck;
 		var inDeck = deck.filter(function(card){
 			return card.type == "explode";
 		}).length;
-		var requiredAmount = this.get("players").length - this.get("gameState").exploded.length - 1;
+		var activePlayers = this.get("players").filter(function(player){
+			return self.get("gameState").exploded.indexOf(player.id) == -1;
+		});
+		var requiredAmount = activePlayers.length - 1;
 		while(inDeck < requiredAmount){
 			deck.splice(this.randomIndex(deck.length), 0,
 				new CardObj(EKcards.explodingKitten, this.randomIndex(EKcards.explodingKitten.num)));
