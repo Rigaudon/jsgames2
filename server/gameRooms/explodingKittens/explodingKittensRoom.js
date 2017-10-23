@@ -372,7 +372,7 @@ var ExplodingKittensRoom = Room.extend({
 			gameState.favor = {};
 			this.progressTurn();
 		}
-		if(gameState.favor.target == socket.id){
+		if(gameState.favor && gameState.favor.target == socket.id){
 			gameState.favor = {};
 		}
 		Room.prototype.playerLeave.call(this, socket);
@@ -541,6 +541,7 @@ var ExplodingKittensRoom = Room.extend({
 			json.hand = gameState.hands[socketId];
 			json.pile = gameState.pile;
 			json.turnPlayer = gameState.turnPlayer.get("id");
+			json.exploded = gameState.exploded;
 		}
 		return json;
 	},

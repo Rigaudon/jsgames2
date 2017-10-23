@@ -177,6 +177,14 @@ var ExplodingKitten = Backbone.Model.extend({
 			this.get("gameState").hand = [];
 		}
 		this.getPlayerById(message.player).handSize = 0;
+		if(!this.get("gameState").exploded){
+			this.get("gameState").exploded = [];
+		}
+		this.get("gameState").exploded.push(message.player);
+	},
+
+	isExploded: function(player){
+		return this.get("gameState").exploded && this.get("gameState").exploded.indexOf(player) > -1;
 	},
 
 	onCardPlayed: function(options){

@@ -445,7 +445,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		var playerRegions = $(".playtable > .player");
 		_.forEach(playerRegions, function(el){
 			var playerId = $(el).attr("data-id");
-			if(playerId == self.player.get("pid") || $(el).css("display") == "none"){
+			if(playerId == self.player.get("pid") || $(el).css("display") == "none" || self.model.isExploded(playerId)){
 				return;
 			}
 			var playerEl = $(el).clone();
