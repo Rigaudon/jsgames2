@@ -46,6 +46,10 @@ var EffectStack = function(card, resolve, options){
 		this.setTimer(this.delay);
 		this._resolveTimeout = setTimeout(this.resolveStack.bind(this), this.delay);
 	}
+	this.cancel = function(){
+		clearTimeout(this._resolveTimeout);
+		options.gameState.effectStack = undefined;
+	}
 	if(!(options.initialDelay === false)){
 		this.setResolveTimeout();
 	}

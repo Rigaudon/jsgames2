@@ -181,6 +181,7 @@ var ExplodingKittensRoom = Room.extend({
 					"player": options.player
 				});
 				if(!this.checkWin()){
+					gameState.isAttacked = false;
 					this.progressTurn();
 				}
 				break;
@@ -360,9 +361,19 @@ var ExplodingKittensRoom = Room.extend({
 	},
 
 	playerLeave: function(socket){
-		if(this.get("gameState").turnPlayer && this.get("gameState").turnPlayer.id == socket.id){
+		var gameState = this.get("gameState");
+		if(gameState.turnPlayer && gameState.turnPlayer.id == socket.id){
+			if(!!gameState.effectStack){
+				gameState.effectStack.cancel();
+			}
 			this.verifyDeck();
+			gameState.isAttacked = false;
+			gameState.isExploding = false;
+			gameState.favor = {};
 			this.progressTurn();
+		}
+		if(gameState.favor.target == socket.id){
+			gameState.favor = {};
 		}
 		Room.prototype.playerLeave.call(this, socket);
 		if(this.get("players").length == 1){
