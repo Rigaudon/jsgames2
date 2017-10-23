@@ -320,19 +320,10 @@ img.preview{
 	transition: opacity 0.5s linear 1s, left 0.75s, top 0.75s;
 }
 
-.onePlayer{
-	.playerTwoSeat, .playerThreeSeat, .playerFourSeat, .playerFiveSeat{
-		display: none;
-	}
-}
-
 .twoPlayers{
 	.playerTwoSeat{
 		grid-column-start: 4;
 		grid-row-start: 1;
-	}
-	.playerThreeSeat, .playerFourSeat, .playerFiveSeat{
-		display: none;
 	}
 }
 
@@ -345,9 +336,6 @@ img.preview{
 		grid-column-start: 6;
 		grid-row-start: 1;
 	}
-	.playerFourSeat, .playerFiveSeat{
-		display: none;
-	}
 }
 
 .fourPlayers{
@@ -355,19 +343,13 @@ img.preview{
 		grid-column-start: 1;
 		grid-row-start: 3;
 	}
-
 	.playerThreeSeat{
 		grid-column-start: 4;
 		grid-row-start: 1;
 	}
-
 	.playerFourSeat{
 		grid-column-start: 7;
 		grid-row-start: 3;
-	}
-
-	.playerFiveSeat{
-		display: none;
 	}
 }
 
@@ -376,19 +358,133 @@ img.preview{
 		grid-column-start: 1;
 		grid-row-start: 3;
 	}
-
 	.playerThreeSeat{
 		grid-column-start: 2;
 		grid-row-start: 1;
 	}
-
 	.playerFourSeat{
 		grid-column-start: 6;
 		grid-row-start: 1;
 	}
-
 	.playerFiveSeat{
 		grid-column-start: 7;
 		grid-row-start: 3;
+	}
+}
+
+.sixPlayers{
+	.playerTwoSeat{
+		grid-column-start: 1;
+		grid-row-start: 4;
+	}
+	.playerThreeSeat{
+		grid-column-start: 1;
+		grid-row-start: 2;
+	}
+	.playerFourSeat{
+		grid-column-start: 4;
+		grid-row-start: 1;
+	}
+	.playerFiveSeat{
+		grid-column-start: 7;
+		grid-row-start: 2;
+	}
+	.playerSixSeat{
+		grid-column-start: 7;
+		grid-row-start: 4;
+	}
+
+}
+
+.sevenPlayers{
+	.playerTwoSeat{
+		grid-column-start: 1;
+		grid-row-start: 4;
+	}
+	.playerThreeSeat{
+		grid-column-start: 1;
+		grid-row-start: 2;
+	}
+	.playerFourSeat{
+		grid-column-start: 3;
+		grid-row-start: 1;
+	}
+	.playerFiveSeat{
+		grid-column-start: 5;
+		grid-row-start: 1;
+	}
+	.playerSixSeat{
+		grid-column-start: 7;
+		grid-row-start: 2;
+	}
+	.playerSevenSeat{
+		grid-column-start: 7;
+		grid-row-start: 4;
+	}
+}
+
+.eightPlayers{
+	.playerTwoSeat{
+		grid-column-start: 1;
+		grid-row-start: 4;
+	}
+	.playerThreeSeat{
+		grid-column-start: 1;
+		grid-row-start: 2;
+	}
+	.playerFourSeat{
+		grid-column-start: 2;
+		grid-row-start: 1;
+	}
+	.playerFiveSeat{
+		grid-column-start: 4;
+		grid-row-start: 1;
+	}
+	.playerSixSeat{
+		grid-column-start: 6;
+		grid-row-start: 1;
+	}
+	.playerSevenSeat{
+		grid-column-start: 7;
+		grid-row-start: 2;
+	}
+	.playerEightSeat{
+		grid-column-start: 7;
+		grid-row-start: 4;
+	}
+}
+
+.ninePlayers{
+	.playerTwoSeat{
+		grid-column-start: 2;
+		grid-row-start: 5;
+	}
+	.playerThreeSeat{
+		grid-column-start: 1;
+		grid-row-start: 4;
+	}
+	.playerFourSeat{
+		grid-column-start: 1;
+		grid-row-start: 2;
+	}
+	.playerFiveSeat{
+		grid-column-start: 3;
+		grid-row-start: 1;
+	}
+	.playerSixSeat{
+		grid-column-start: 5;
+		grid-row-start: 1;
+	}
+	.playerSevenSeat{
+		grid-column-start: 7;
+		grid-row-start: 2;
+	}
+	.playerEightSeat{
+		grid-column-start: 7;
+		grid-row-start: 4;
+	}
+	.playerNineSeat{
+		grid-column-start: 6;
+		grid-row-start: 5;
 	}
 }

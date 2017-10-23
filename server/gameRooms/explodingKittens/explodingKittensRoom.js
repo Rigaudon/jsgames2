@@ -347,13 +347,11 @@ var ExplodingKittensRoom = Room.extend({
 					currTurn = (currTurn + 1) % players.length;
 					var player = players.at(currTurn);
 					if(!this.isExploded(player.id)){
-						//not exploded, so valid
 						break;
 					}
 				}
 				gameState.turnPlayer = players.at(currTurn);
 			}
-			//emit
 			this.emitGameMessage({
 				message: "playerTurn",
 				player: gameState.turnPlayer.id

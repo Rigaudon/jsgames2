@@ -13,7 +13,24 @@ var playerSeats = [
 	'.playerTwoSeat',
 	'.playerThreeSeat',
 	'.playerFourSeat',
-	'.playerFiveSeat'
+	'.playerFiveSeat',
+	'.playerSixSeat',
+	'.playerSevenSeat',
+	'.playerEightSeat',
+	'.playerNineSeat'
+];
+
+var playerClass = [
+	'',
+	'onePlayer',
+	'twoPlayers',
+	'threePlayers',
+	'fourPlayers',
+	'fivePlayers',
+	'sixPlayers',
+	'sevenPlayers',
+	'eightPlayers',
+	'ninePlayers'
 ];
 
 var ExplodingKittensRoomView = Marionette.View.extend({
@@ -34,28 +51,11 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 	templateContext: function(){
 		var numPlayers = this.model && this.model.get("players") ? this.model.get("players").length : 1;
 		return {
-			playerNum: this.playerClass(numPlayers),
+			playerNum: playerClass[numPlayers],
 			isHost: this.model.isHost(),
 			controls: this.getOptions(),
 			status: this.statusCodes[this.model.get("status")],
 		};
-	},
-
-	playerClass: function(num) {
-		switch(num){
-			case 1:
-				return "onePlayer";
-			case 2:
-				return "twoPlayers";
-			case 3:
-				return "threePlayers";
-			case 4:
-				return "fourPlayers";
-			case 5:
-				return "fivePlayers";
-			default:
-				throw new Error("Invalid number of players in room");
-		}
 	},
 
 	getOptions: function() {
@@ -488,6 +488,11 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		var self = this;
 		players.forEach(function(player, i){
 			var playerEl = $(playerSeats[i]);
+			if(!playerEl.length){
+				playerEl = $(fs.readFileSync("./app/templates/partials/explodingKittens/player.html", "utf8"));
+				playerEl.addClass(playerSeats[i].replace(".", ""));
+				$(self.regions.table).prepend(playerEl);
+			}
 			playerEl.css({
 				"border-color": player.color,
 				"background-color": player.color
