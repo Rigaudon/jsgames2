@@ -248,7 +248,7 @@ img.preview{
 	position: relative;
 	label{
 		position: absolute;
-		top: -35px;
+		top: -15px;
 	}
 	.handCount{
 		position: absolute;
@@ -294,12 +294,7 @@ img.preview{
 		align-items: center;
 		flex-wrap: wrap;
 		.player{
-			transition: 0.1s;
 			cursor: pointer;
-			&:hover{
-				width: 175px;
-				height: 175px;
-			}
 		}
 		.card{
 			display: flex;

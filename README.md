@@ -11,7 +11,11 @@ For development, run `npm run server`.
 
 # To do
 - Implement games
+	- Exploding Kittens expansion
 	- Uno
-	- Pictionary
+	- Pictionary ?
+	- Dominion 
+	- Othello ?
+	- Cards against humanity ?
 - Add Spectate mode
 - Add who's online list to chat

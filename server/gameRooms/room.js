@@ -75,10 +75,10 @@ var Room = Backbone.Model.extend({
 
 	sendRoomInfo: function(socket){
 		//Overwrite me!
-		socket.emit("roomInfo", this.toJSON());
+		socket.emit("roomInfo", this.toJSON(socket.id));
 	},
 
-	clientJSON: function(){
+	clientJSON: function(socketId){
 		//Overwrite me if necessary!
 		var returnObj = {};
 		returnObj.hasPassword = this.get("hasPassword");
@@ -96,11 +96,19 @@ var Room = Backbone.Model.extend({
 		var myPlayers = this.get("players").models;
 		var players = [];
 		for(var i=0; i<myPlayers.length; i++){
-			players.push(myPlayers[i].clientJSON());
+			players.push(this.transformPlayerJson(myPlayers[i].clientJSON()));
 		}
 		returnObj.players = players;
-		returnObj.gameState = this.get("gameState");
+		returnObj.gameState = this.gameStateJson(this.get("gameState"), socketId);
 		return returnObj;
+	},
+
+	gameStateJson: function(gameState, socketId){
+		return gameState;
+	},
+
+	transformPlayerJson: function(player){
+		return player;
 	},
 
 	prettifyGameState: function(){
@@ -108,9 +116,9 @@ var Room = Backbone.Model.extend({
 		return this.get("gameState");
 	},
 
-	toJSON: function(){
+	toJSON: function(socketId){
 		//Overwrite me if necessary!
-		var clientJSON = this.clientJSON();
+		var clientJSON = this.clientJSON(socketId);
 		clientJSON.options.roomPassword = this.get("options").roomPassword;
 		return clientJSON;
 	},

@@ -70,7 +70,6 @@ var ExplodingKittensRoom = Room.extend({
 				gameState.pile = [];
 				gameState.exploded = [];
 				gameState.turnPlayer = players.at(self.randomIndex(players.length));
-				//TODO: move these to stack format
 				gameState.favor = {};
 				gameState.isAttacked = false;
 				gameState.isExploding = undefined;
@@ -243,7 +242,7 @@ var ExplodingKittensRoom = Room.extend({
 			"card": card
 		});
 		gameState.isExploding = playerId;
-		if(!this.handContainsType(playerId, "defuse").length){
+		if(!this.handContains(playerId, {type: "defuse"}).length){
 			this.performEffect({
 				card: card,
 				player: playerId
@@ -446,7 +445,10 @@ var ExplodingKittensRoom = Room.extend({
 		if(options.card.type == "nope" || options.card.type == "defuse"){
 			return false;
 		}
-		var inHand = this.handContains(options.source, options.card);
+		var inHand = this.handContains(options.source, {
+			id: options.card.id,
+			image: options.card.image
+		});
 
 		if(gameState.isExploding){
 			return inHand.length > 0 && (options.card.type == "defuse" || options.card.type == "nope");
@@ -458,52 +460,37 @@ var ExplodingKittensRoom = Room.extend({
 		return inHand.length > 0;
 	},
 
-	handContains: function(playerId, card){
-		//todo: consolidate this with handContainsType
-		var hand = this.get("gameState").hands[playerId];
-		if(!hand){
-			return false;
-		}
-		return hand.filter(function(c){
-			return card.id == c.id && card.image == c.image;
-		});
-	},
-
-	handContainsType: function(playerId, type){
-		var hand = this.get("gameState").hands[playerId];
-		if(!hand){
-			return false;
-		}
-		return hand.filter(function(card){
-			return card.type == type;
-		});
-	},
-/*	TODO: test me
 	handContains: function(playerId, keys){
 		var hand = this.get("gameState").hands[playerId];
 		if(!hand){
 			return false;
 		}
 		return hand.filter(function(card){
+			var keepCard = true;
 			Object.keys(keys).forEach(function(key){
 				if(card[key] != keys[key]){
-					return false;
+					keepCard = false;
 				}
 			});
-			return true;
+			return keepCard;
 		});
-	}
-*/
+	},
+
 	initializeDeck: function(numPlayers){
 		var deck = [];
+		var multiplier = numPlayers > 5 ? 2 : 1;
 		EKcards.cards.forEach(function(card){
 			for(var i=0; i<card.num; i++){
-				deck.push(new CardObj(card, i));
+				for(var j=0; j<multiplier; j++){
+					deck.push(new CardObj(card, i));
+				}
 			}
 		});
-		var defuses = numPlayers == 2 ? 2 : EKcards.defuse.num - numPlayers;
+		var defuses = numPlayers == 2 ? 2 : EKcards.defuse.num * multiplier - numPlayers;
 		for(var i=0; i<defuses; i++){
-			deck.push(new CardObj(EKcards.defuse, EKcards.defuse.num-i-1));
+			for(var j=0; j<multiplier; j++){
+				deck.push(new CardObj(EKcards.defuse, EKcards.defuse.num-i-1));
+			}
 		}
 		return _.shuffle(deck);
 	},
@@ -537,27 +524,26 @@ var ExplodingKittensRoom = Room.extend({
 		return hands;
 	},
 
-	sendRoomInfo: function(socket){
-		//TODO: change the clientJSON instead of this function
-		var allJson = _.cloneDeep(this.toJSON());
-		var gameState = allJson.gameState;
+	gameStateJson: function(gameState, socketId){
+		var json = {};
 		if(gameState && !_.isEmpty(gameState.hands)){
-			gameState.hand = gameState.hands[socket.id];
-			gameState.deckCount = gameState.deck.length;
-			allJson.players.forEach(function(player, i){
-				player.handSize = gameState.hands[player.id].length;
-			});
-			gameState.turnPlayer = gameState.turnPlayer.get("id");
-			delete gameState.hands;
-			delete gameState.deck;
-			delete gameState.isAttacked;
-			delete gameState.favor;
-			delete gameState.isExploding;
-			delete gameState.effectStack;
+			json.deckCount = gameState.deck.length;
+			json.exploded = gameState.exploded;
+			json.hand = gameState.hands[socketId];
+			json.pile = gameState.pile;
+			json.turnPlayer = gameState.turnPlayer.get("id");
 		}
-		socket.emit("roomInfo", allJson);
+		return json;
 	},
 
+	transformPlayerJson: function(player){
+		var gameState = this.get("gameState");
+		if(_.get(gameState, "hands[" + player.id + "]")){
+			player.handSize = gameState.hands[player.id].length;
+		}
+		return player;
+	}
+	
 });
 
 module.exports = ExplodingKittensRoom;
