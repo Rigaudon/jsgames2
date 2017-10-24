@@ -1,6 +1,5 @@
 var _ = require("lodash");
 var Marionette = require("backbone.marionette");
-var fs = require("fs");
 var common = require("../../common");
 var Promise = require("bluebird");
 
