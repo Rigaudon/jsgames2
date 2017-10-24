@@ -11,7 +11,6 @@ var CardGameView = require("./cardGameView");
 var ExplodingKittensRoomView = CardGameView.extend({
   gameClient: ExplodingKittensClient,
   cardView: EKCardView,
-  statusCodes: ["Waiting for players", "Waiting to start", "Game has started", "Game has ended"],
   viewTemplate: fs.readFileSync("./app/templates/gameRooms/explodingKittens.html", "utf8"),
   playerTemplate: fs.readFileSync("./app/templates/partials/explodingKittens/player.html", "utf8"),
   className: "explodingKittensRoom",
@@ -31,14 +30,15 @@ var ExplodingKittensRoomView = CardGameView.extend({
     "choose": ".chooseOptions",
   }),
 
+  ui: _.extend(CardGameView.prototype.ui, {
+    "card": ".EKCard"
+  }),
+
   events: _.extend(CardGameView.prototype.events, {
     "click @ui.deck": "drawCard",
     "click @ui.card": "onClickCard"
   }),
 
-  ui: _.extend(CardGameView.prototype.ui, {
-    "card": ".EKClass"
-  }),
 
   cardPathRoot: "/static/images/assets/explodingKittens/",
 
@@ -89,7 +89,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
       this.onPlayInvalid();
       return;
     }
-    $(this.regions.hand).prepend($(this.ui.pile).find(".EKCard").detach());
+    $(this.regions.hand).prepend($(this.ui.pile).find(this.cardClass).detach());
     switch(card.type){
       case "favor":
       case "cat":
@@ -124,7 +124,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
       function(){
         //Modal was closed (cancelled or completed)
         //May not be necessary...
-        $(self.regions.hand).prepend($(self.ui.pile).find(".EKCard").detach());
+        $(self.regions.hand).prepend($(self.ui.pile).find(this.cardClass).detach());
       }
     );
   },
@@ -269,7 +269,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
     player.el.addClass("exploded");
     this.renderCardCounts();
     if(this.model.isMe(message.player)){
-      $(this.regions.hand).find(".EKCard").remove();
+      $(this.regions.hand).find(this.cardClass).remove();
       $(".preview").css("display", "none");
     }
     window.playSound("explode");

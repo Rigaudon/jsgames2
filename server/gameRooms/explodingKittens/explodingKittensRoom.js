@@ -116,7 +116,7 @@ var ExplodingKittensRoom = Room.extend({
 
 			if(!gameState.effectStack){
 				gameState.effectStack = new EffectStack(options.card, this.performEffect.bind(this, options), {
-					gameState: gameState,
+					onComplete: function(){ gameState.effectStack = undefined; },
 					setTimer: this.setTimer.bind(this)
 				});
 			}else{
@@ -260,7 +260,7 @@ var ExplodingKittensRoom = Room.extend({
 			});
 			var self = this;
 			gameState.effectStack = new EffectStack(card, doExplosion, {
-				gameState: gameState,
+				onComplete: function(){ gameState.effectStack = undefined; },
 				initialDelay: false,
 				delay: 5000,
 				setTimer: this.setTimer.bind(this)
@@ -491,7 +491,7 @@ var ExplodingKittensRoom = Room.extend({
 		if(options.card.type == "cat"){
 			return inHand.length > 1;
 		}
-			
+
 		return inHand.length > 0;
 	},
 
@@ -584,7 +584,7 @@ var ExplodingKittensRoom = Room.extend({
 		}
 		return player;
 	}
-	
+
 });
 
 module.exports = ExplodingKittensRoom;

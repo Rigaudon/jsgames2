@@ -1,4 +1,4 @@
-//@params 
+//@params
 //card: initial card in the stack (when initialized)
 //resolve: function to be called when stack finishes
 var DELAY = 3000;
@@ -35,7 +35,9 @@ var EffectStack = function(card, resolve, options){
 				break;
 			}
 		}
-		options.gameState.effectStack = undefined;
+		if(options.onComplete){
+			options.onComplete();
+		}
 	}
 	this.top = function(){
 		return this.stack[this.stack.length-1].card;
@@ -49,7 +51,9 @@ var EffectStack = function(card, resolve, options){
 	}
 	this.cancel = function(){
 		clearTimeout(this._resolveTimeout);
-		options.gameState.effectStack = undefined;
+		if(options.onComplete){
+			options.onComplete();
+		}
 	}
 	if(!(options.initialDelay === false)){
 		this.setResolveTimeout();
