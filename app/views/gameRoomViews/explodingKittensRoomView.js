@@ -10,7 +10,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
   cardView: EKCardView,
   viewTemplate: fs.readFileSync("./app/templates/gameRooms/explodingKittens.html", "utf8"),
   playerTemplate: fs.readFileSync("./app/templates/partials/explodingKittens/player.html", "utf8"),
-  className: "explodingKittensRoom",
+  className: CardGameView.prototype.className + " explodingKittensRoom",
   modelEvents: _.extend(CardGameView.prototype.modelEvents, {
     "effect:stf": "seeTheFuture",
     "do:favor": "showFavor",

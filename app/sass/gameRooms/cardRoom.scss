@@ -1,0 +1,469 @@
+@import "../variables";
+
+.cardGameRoom{
+
+  .playtable{
+    margin: 10px;
+    margin-top: 50px;
+    max-height: 750px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    width: 98%;
+    height: 65%;
+    border-radius: 50%;
+    border: 3px solid $primary-color;
+    background-color: $passive-color-transparent;
+    margin-bottom: 0;
+
+  }
+
+  .handCount{
+    width: 75px;
+    padding-right: 5px;
+    .glyphicon-card{
+      width: 30px;
+      transition: 0.25s;
+    }
+    .numCards{
+      font-weight: bold;
+      font-size: 20px;
+      color: white;
+      text-shadow: 0px 0px 8px black;
+    }
+  }
+
+  img.preview{
+    display: none;
+    position: absolute;
+    width: 300px;
+    bottom: 160px;
+    z-index: 5;
+  }
+
+  .heldCards{
+    position: relative;
+    min-height: 17%;
+    border: 3px solid $primary-color;
+    color: $primary-color;
+    margin: 10px;
+    border-radius: 10px;
+    background-color: $passive-color-transparent;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2px;
+    max-height: 350px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    align-items: flex-start;
+    margin-top: 0;
+    margin-bottom: 0;
+    .card{
+      padding: 5px;
+      z-index: 4;
+      background-color: white;
+      width: 9.5%;
+      border-radius: 7px;
+      margin: 2px;
+      border: 1px solid black;
+      transition: $transition-very-fast;
+      img.hand{
+        cursor: pointer;
+        width: 100%;
+      }
+
+      &:hover {
+        background-color: $tertiary-color;
+      }
+    }
+
+    .sortable-ghost{
+      opacity: 0;
+    }
+
+    .invis{
+      position: absolute;
+      right: -100%;
+      visibility: hidden;
+    }
+  }
+
+  .cardPreview{
+    display: none;
+    position: absolute;
+    left: 10px;
+    top: calc(60% - 600px);
+    max-width: 25%;
+  }
+
+  .controls{
+    height: 10%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+  }
+
+  .player{
+    border-radius: 50%;
+    border-width: 4px;
+    border-style: solid;
+    background-color: $bg-color;
+    width: 155px;
+    height: 155px;
+    width: 15vh;
+    height: 15vh;
+    min-width: 120px;
+    min-height: 120px;
+    max-width: 155px;
+    max-height: 155px;
+    margin: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-size: cover;
+    z-index: 1;
+    .playerName{
+      font-size: 24px;
+      max-width: inherit;
+      width: inherit;
+      word-wrap: break-word;
+      padding: 6px;
+        color: white;
+        text-shadow: 0px 0px 8px black;
+    }
+  }
+
+  .player.active{
+    &::before{
+      position: absolute;
+      width: 0;
+      height: 0;
+      top: -45px;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-top: 35px solid $tertiary-color;
+      z-index: -1;
+      content: " ";
+      -webkit-filter: drop-shadow(0 0 5px $tertiary-color);
+      -moz-filter: drop-shadow(0 0 5px $tertiary-color);
+      -ms-filter: drop-shadow(0 0 5px $tertiary-color);
+      -o-filter: drop-shadow(0 0 5px $tertiary-color);
+      filter: drop-shadow(0 0 5px $tertiary-color);
+    }
+  }
+
+  .pile{
+    grid-column-start: 2;
+    grid-row-start: 2;
+    grid-column-end: 4;
+    grid-row-end: 5;
+    .card{
+      position: absolute;
+      top: 0;
+      height: 100%;
+      img{
+        height: 100%;
+      }
+    }
+    .invalidCard{
+      color: red;
+      opacity: 0;
+      text-shadow: none;
+      background-color: $passive-color-transparent;
+      border: 1px solid red;
+      border-radius: 5px;
+      padding: 3px;
+      font-size: 18px;
+    }
+    .invalidCard:not(.active){
+      transition: opacity 3s linear 2s;
+    }
+    .invalidCard.active{
+      opacity: 1;
+    }
+  }
+
+  .deck{
+    grid-column-start: 5;
+    grid-column-end: 7;
+    grid-row-start: 2;
+    grid-row-end: 5;
+    cursor: pointer;
+    &:hover{
+      margin: 0%;
+    }
+  }
+
+  .status{
+    width: 65%;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $passive-color-transparent;
+    border-radius: 10px;
+    margin: auto;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .pile, .deck {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow: 0px 0px 8px black;
+    transition: 0.25s;
+    padding: 5%;
+    margin: 5%;
+    position: relative;
+    label{
+      position: absolute;
+      top: -15px;
+    }
+    .handCount{
+      position: absolute;
+      bottom: -35px;
+    }
+  }
+
+  .playerSeat{
+    grid-column-start: 4;
+    grid-row-start: 5;
+  }
+
+  .chooseOptions{
+    .closeModal{
+      position: absolute;
+      z-index: 1;
+      width: 30px;
+      height: 30px;
+      right: -10px;
+      top: -10px;
+      border-radius: 50%;
+      font-size: 15px;
+      border: 2px solid $primary-color;
+      color: $primary-color;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      background-color: $bg-color;
+      &:hover{
+        color: $bg-color;
+        border-color: $bg-color;
+        background-color: $primary-color;
+      }
+    }
+
+    .modal-header{
+      font-size: 30px;
+    }
+
+    .modal-body{
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      .player{
+        cursor: pointer;
+      }
+      .card{
+        display: flex;
+        flex-direction: column;
+        margin: 5px;
+        img{
+          width: 150px;
+        }
+      }
+      .smallCard{
+        img{
+          width: 100px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .animatedCard{
+    position: absolute;
+    width: 100px;
+    height: 150px;
+    transition: opacity 0.5s linear 1s, left 0.75s, top 0.75s;
+  }
+
+  .twoPlayers{
+    .playerTwoSeat{
+      grid-column-start: 4;
+      grid-row-start: 1;
+    }
+  }
+
+  .threePlayers{
+    .playerTwoSeat{
+      grid-column-start: 2;
+      grid-row-start: 1;
+    }
+    .playerThreeSeat{
+      grid-column-start: 6;
+      grid-row-start: 1;
+    }
+  }
+
+  .fourPlayers{
+    .playerTwoSeat{
+      grid-column-start: 1;
+      grid-row-start: 3;
+    }
+    .playerThreeSeat{
+      grid-column-start: 4;
+      grid-row-start: 1;
+    }
+    .playerFourSeat{
+      grid-column-start: 7;
+      grid-row-start: 3;
+    }
+  }
+
+  .fivePlayers{
+    .playerTwoSeat{
+      grid-column-start: 1;
+      grid-row-start: 3;
+    }
+    .playerThreeSeat{
+      grid-column-start: 2;
+      grid-row-start: 1;
+    }
+    .playerFourSeat{
+      grid-column-start: 6;
+      grid-row-start: 1;
+    }
+    .playerFiveSeat{
+      grid-column-start: 7;
+      grid-row-start: 3;
+    }
+  }
+
+  .sixPlayers{
+    .playerTwoSeat{
+      grid-column-start: 1;
+      grid-row-start: 4;
+    }
+    .playerThreeSeat{
+      grid-column-start: 1;
+      grid-row-start: 2;
+    }
+    .playerFourSeat{
+      grid-column-start: 4;
+      grid-row-start: 1;
+    }
+    .playerFiveSeat{
+      grid-column-start: 7;
+      grid-row-start: 2;
+    }
+    .playerSixSeat{
+      grid-column-start: 7;
+      grid-row-start: 4;
+    }
+
+  }
+
+  .sevenPlayers{
+    .playerTwoSeat{
+      grid-column-start: 1;
+      grid-row-start: 4;
+    }
+    .playerThreeSeat{
+      grid-column-start: 1;
+      grid-row-start: 2;
+    }
+    .playerFourSeat{
+      grid-column-start: 3;
+      grid-row-start: 1;
+    }
+    .playerFiveSeat{
+      grid-column-start: 5;
+      grid-row-start: 1;
+    }
+    .playerSixSeat{
+      grid-column-start: 7;
+      grid-row-start: 2;
+    }
+    .playerSevenSeat{
+      grid-column-start: 7;
+      grid-row-start: 4;
+    }
+  }
+
+  .eightPlayers{
+    .playerTwoSeat{
+      grid-column-start: 1;
+      grid-row-start: 4;
+    }
+    .playerThreeSeat{
+      grid-column-start: 1;
+      grid-row-start: 2;
+    }
+    .playerFourSeat{
+      grid-column-start: 2;
+      grid-row-start: 1;
+    }
+    .playerFiveSeat{
+      grid-column-start: 4;
+      grid-row-start: 1;
+    }
+    .playerSixSeat{
+      grid-column-start: 6;
+      grid-row-start: 1;
+    }
+    .playerSevenSeat{
+      grid-column-start: 7;
+      grid-row-start: 2;
+    }
+    .playerEightSeat{
+      grid-column-start: 7;
+      grid-row-start: 4;
+    }
+  }
+
+  .ninePlayers{
+    .playerTwoSeat{
+      grid-column-start: 2;
+      grid-row-start: 5;
+    }
+    .playerThreeSeat{
+      grid-column-start: 1;
+      grid-row-start: 4;
+    }
+    .playerFourSeat{
+      grid-column-start: 1;
+      grid-row-start: 2;
+    }
+    .playerFiveSeat{
+      grid-column-start: 3;
+      grid-row-start: 1;
+    }
+    .playerSixSeat{
+      grid-column-start: 5;
+      grid-row-start: 1;
+    }
+    .playerSevenSeat{
+      grid-column-start: 7;
+      grid-row-start: 2;
+    }
+    .playerEightSeat{
+      grid-column-start: 7;
+      grid-row-start: 4;
+    }
+    .playerNineSeat{
+      grid-column-start: 6;
+      grid-row-start: 5;
+    }
+  }
+}

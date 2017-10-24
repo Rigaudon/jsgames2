@@ -41,6 +41,8 @@ var CardGameView = Marionette.View.extend({
     return _.template(this.viewTemplate, this.templateContext());
   },
 
+  className: "cardGameRoom",
+
   templateContext: function(){
     var numPlayers = this.model && this.model.get("players") ? this.model.get("players").length : 1;
     return {
