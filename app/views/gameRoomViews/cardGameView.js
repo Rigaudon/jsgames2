@@ -79,7 +79,8 @@ var CardGameView = Marionette.View.extend({
     "startBtn": ".startBtn",
     "deck": ".deck",
     "pile": ".pile",
-    "invalid": ".invalidCard"
+    "invalid": ".invalidCard",
+    "card": ".card"
   },
 
   regions: {
@@ -134,7 +135,7 @@ var CardGameView = Marionette.View.extend({
     });
     $(self.regions.hand).sortable({
       animation: 150,
-      draggable: this.cardClass,
+      draggable: this.ui.card,
       group: "hand"
     });
   },
@@ -198,7 +199,7 @@ var CardGameView = Marionette.View.extend({
 
   removeCardFromHand: function(card, amount){
     var removed = 0;
-    var cards = $(this.cardClass);
+    var cards = $(this.ui.card);
     _.forEach(cards, function(cardEl){
       if(removed < amount && cardEl.card && cardEl.card.id == card.id && cardEl.card.image == card.image){
         cardEl.remove();

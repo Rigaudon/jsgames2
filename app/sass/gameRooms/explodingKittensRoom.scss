@@ -67,7 +67,7 @@ img.preview{
 	align-items: flex-start;
 	margin-top: 0;
 	margin-bottom: 0;
-	.EKCard{
+	.card{
 		padding: 5px;
 		z-index: 4;
 		background-color: white;
@@ -174,7 +174,7 @@ img.preview{
 	grid-column-end: 4;
 	grid-row-end: 5;
 	background-image: url("/static/images/assets/explodingKittens/blank.png");
-	.EKCard{
+	.card{
 		position: absolute;
 		top: 0;
 		height: 100%;

@@ -22,7 +22,7 @@ var ExplodingKittensCard = Marionette.View.extend({
 		};
 	},
 
-	className: "EKCard",
+	className: "card",
 
 	events: {
 		"mouseover @ui.hand": "showPreview",

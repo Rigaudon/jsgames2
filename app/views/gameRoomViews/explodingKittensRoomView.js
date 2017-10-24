@@ -20,15 +20,9 @@ var ExplodingKittensRoomView = CardGameView.extend({
     "timer:set": "onSetTimer",
   }),
 
-  cardClass: ".EKCard",
-
   regions: _.extend(CardGameView.prototype.regions, {
     "timer": ".timer",
     "choose": ".chooseOptions",
-  }),
-
-  ui: _.extend(CardGameView.prototype.ui, {
-    "card": ".EKCard"
   }),
 
   events: _.extend(CardGameView.prototype.events, {
@@ -86,7 +80,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
       this.onPlayInvalid();
       return;
     }
-    $(this.regions.hand).prepend($(this.ui.pile).find(this.cardClass).detach());
+    $(this.regions.hand).prepend($(this.ui.pile).find(this.ui.card).detach());
     switch(card.type){
       case "favor":
       case "cat":
@@ -121,7 +115,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
       function(){
         //Modal was closed (cancelled or completed)
         //May not be necessary...
-        $(self.regions.hand).prepend($(self.ui.pile).find(this.cardClass).detach());
+        $(self.regions.hand).prepend($(self.ui.pile).find(this.ui.card).detach());
       }
     );
   },
@@ -266,7 +260,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
     player.el.addClass("exploded");
     this.renderCardCounts();
     if(this.model.isMe(message.player)){
-      $(this.regions.hand).find(this.cardClass).remove();
+      $(this.regions.hand).find(this.ui.card).remove();
       $(".preview").css("display", "none");
     }
     window.playSound("explode");
