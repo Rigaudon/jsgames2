@@ -22,12 +22,14 @@ var SideBarView = Marionette.View.extend({
 
 	ui: {
 		"collapse": ".collapseSideBar",
-		"colorPicker": ".colorPicker"
+		"colorPicker": ".colorPicker",
+		"sound": ".volumeControl"
 	},
 
 	events: {
 		"click @ui.collapse": "collapseSideBar",
-		"blur @ui.colorPicker": "pickColor"
+		"blur @ui.colorPicker": "pickColor",
+		"click @ui.sound": "toggleSound"
 	},
 
 	collapseSideBar: function(){
@@ -46,6 +48,11 @@ var SideBarView = Marionette.View.extend({
 			this.model.pickColor(newColor);
 		}
 	},
+
+	toggleSound: function(){
+		window.soundsEnabled = !window.soundsEnabled;
+		$(this.ui.sound).toggleClass("glyphicon-volume-up").toggleClass("glyphicon-volume-off");
+	}
 });
 
 module.exports = SideBarView;

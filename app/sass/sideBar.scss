@@ -51,6 +51,14 @@
 				width: 40px;
 				height: 40px;
 			}
+
+			.volumeControl{
+				cursor: pointer;
+				font-size: 30px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
 		}
 
 		.sideBarItem:first-child{
