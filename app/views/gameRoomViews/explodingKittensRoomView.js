@@ -271,8 +271,20 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			//show card image on pile bg
 			$(self.ui.pile).css("background-image", "url(" + self.pathForCard(options.card.image) + ")");
 		});
+		window.playSound(["card1", "card2"]);
+		this.playCardSound(options.card);
 	},
 
+	playCardSound: function(card){
+		switch(card.type){
+			case "nope":
+				window.playSound("nope");
+				break;
+			default:
+				break;
+		}
+	},
+	
 	moveCard: function(options){
 		var from;
 		var to;
@@ -426,11 +438,13 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 	onPlayerExploded: function(message){
 		var player = this.model.getPlayerById(message.player);
 		$(this.regions.status).text(player.name + " exploded!");
-		player.el.css("background-image", "url(\"/static/images/assets/explodingKittens/exploded.png\")");
+		player.el.addClass("exploded");
 		this.renderCardCounts();
 		if(this.model.isMe(message.player)){
 			$(this.regions.hand).find(".EKCard").remove();
+			$(".preview").css("display", "none");
 		}
+		window.playSound("explode");
 	},
 
 	onPlayerWin: function(message){
@@ -502,9 +516,13 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 				"background-color": player.color
 			});
 			playerEl.attr("data-id", player.id);
+			if(self.model.isExploded(player.id)){
+				playerEl.addClass("exploded");
+			}
 			var playerNameEl = playerEl.find(".playerName");
 			playerNameEl.html(player.name);
 			player.el = playerEl;
+
 		});
 		this.updatePlayer();
 	},
@@ -581,6 +599,9 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 					player.el.removeClass("active");
 				}
 			});
+			if(this.model.isMe(gameState.turnPlayer)){
+				window.playSound("ding");
+			}
 		}
 	}
 });

@@ -145,6 +145,10 @@ img.preview{
 	}
 }
 
+.player.exploded{
+	background-image: url("/static/images/assets/explodingKittens/exploded.png");
+}
+
 .player.active{
 	&::before{
 		position: absolute;
