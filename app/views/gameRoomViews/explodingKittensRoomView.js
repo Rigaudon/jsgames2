@@ -103,7 +103,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"table": ".playtable",
 		"status": ".status",
 		"controls": ".controls",
-		"timer": ".timer",	},
+		"timer": ".timer",	
+	},
 
 	events: {
 		"click @ui.leaveBtn": "leaveRoom",
@@ -111,6 +112,8 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		"click @ui.deck": "drawCard",
 		"click @ui.card": "onClickCard"
 	},
+
+	cardSounds: ["card1", "card2"],
 
 	leaveRoom: function(){
 		this.player.leaveRoom();
@@ -271,7 +274,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			//show card image on pile bg
 			$(self.ui.pile).css("background-image", "url(" + self.pathForCard(options.card.image) + ")");
 		});
-		window.playSound(["card1", "card2"]);
+		window.playSound(this.cardSounds);
 		this.playCardSound(options.card);
 	},
 
@@ -284,7 +287,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 				break;
 		}
 	},
-	
+
 	moveCard: function(options){
 		var from;
 		var to;
@@ -313,6 +316,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 					$(self.regions.status).text(to.name + " got a card from " + from.name + ".");
 				}
 			});
+			window.playSound(this.cardSounds);
 		}
 	},
 
@@ -338,14 +342,14 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 			bodyEl.prepend($("<div>").text("There are no cards left!"));
 		}
 		while(future.cards.length){
-			let card = future.cards.pop();
+			let card = future.cards.shift();
 			let cardView = $("<div>");
 			cardView.addClass("card");
 			let cardImg = $("<img>");
 			cardImg.attr("src", self.pathForCard(card.image));
 			cardView.append(cardImg);
-			cardView.append($("<span>").html(texts.pop() || "..."));
-			bodyEl.prepend(cardView);
+			cardView.append($("<span>").html(texts.shift() || "..."));
+			bodyEl.append(cardView);
 		};
 		chooseEl.off("hidden.bs.modal");
 		chooseEl.modal({
@@ -433,6 +437,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		var player = this.model.getPlayerById(message.player);
 		$(this.regions.status).text(player.name + " defused the exploding kitten. It was placed back into the deck.");
 		this.renderCardCounts();
+		window.playSound("defuse");
 	},
 
 	onPlayerExploded: function(message){
@@ -451,6 +456,7 @@ var ExplodingKittensRoomView = Marionette.View.extend({
 		var player = this.model.getPlayerById(message.player);
 		$(this.regions.status).text(player.name + " won!");
 		window.showConfetti();
+		window.playSound("victory");
 		this.renderControls();
 	},
 

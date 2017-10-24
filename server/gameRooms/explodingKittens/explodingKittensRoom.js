@@ -20,6 +20,11 @@ var ExplodingKittensRoom = Room.extend({
 			hands: {},
 			turnPlayer: "undefined"
 		});
+		if(this.get("players").length == this.get("maxPlayers")){
+			this.set("status", 1);
+		}else{
+			this.set("status", 0);
+		}
 	},
 
 	playerJoin: function(playerModel){
@@ -365,17 +370,38 @@ var ExplodingKittensRoom = Room.extend({
 		if(gameState.turnPlayer && gameState.turnPlayer.id == socket.id){
 			if(!!gameState.effectStack){
 				gameState.effectStack.resolveStack();
+				gameState.isAttacked = false;
+				gameState.isExploding = false;
+				gameState.favor = {};
+				this.verifyDeck();
+			} else {
+				gameState.isAttacked = false;
+				gameState.isExploding = false;
+				gameState.favor = {};
+				this.verifyDeck();
+				this.progressTurn();
 			}
-			gameState.isAttacked = false;
-			gameState.isExploding = false;
-			gameState.favor = {};
-			this.verifyDeck();
 		}
 		if(gameState.favor && gameState.favor.target == socket.id){
 			gameState.favor = {};
 		}
 		Room.prototype.playerLeave.call(this, socket);
-		if(this.get("players").length == 1){
+		this.verifyRoom();
+	},
+
+	verifyRoom: function(){
+		//verify that the room status matches the gameState
+		if(this.get("status") == 2){
+			var self = this;
+			var gameState = this.get("gameState");
+			var activePlayers = this.get("players").filter(function(player){
+				return gameState.hands[player.id] && !self.isExploded(player.id);
+			});
+			if(activePlayers.length < 2){
+				this.resetDefaultGamestate();
+				this.emitToAllExcept();
+			}
+		}else{
 			this.resetDefaultGamestate();
 			this.emitToAllExcept();
 		}
@@ -421,12 +447,6 @@ var ExplodingKittensRoom = Room.extend({
 			"player": player.id
 		});
 		this.resetDefaultGamestate();
-		//Maybe below should be extracted to own fn
-		if(this.get("players").length == this.get("maxPlayers")){
-			this.set("status", 1);
-		}else{
-			this.set("status", 0);
-		}
 	},
 
 	randomIndex: function(max){
@@ -465,11 +485,19 @@ var ExplodingKittensRoom = Room.extend({
 		if(gameState.isExploding){
 			return inHand.length > 0 && (options.card.type == "defuse" || options.card.type == "nope");
 		}
+		if((options.card.type == "cat" || options.card.type == "favor") && !this.isValidTakeTarget(options.target)){
+			return false;
+		}
 		if(options.card.type == "cat"){
 			return inHand.length > 1;
 		}
 			
 		return inHand.length > 0;
+	},
+
+	//Return true if the target has more than one card in hand
+	isValidTakeTarget: function(target){
+		return this.get("gameState").hands[target].length > 0;
 	},
 
 	handContains: function(playerId, keys){

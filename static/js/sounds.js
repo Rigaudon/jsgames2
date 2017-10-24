@@ -1,11 +1,11 @@
 (function(){
 	var path = "/static/sounds/";
+	var audio;
 	var createAndPlayAudio = function(fileName){
-		var audio = new Audio(path + fileName + ".ogg");
+		audio = new Audio(path + fileName + ".ogg");
 		try{
 			audio.play();
 		}catch(err){
-			console.log(err);
 			audio = new Audio(path + fileName + ".mp3");
 			audio.play();
 		}
@@ -19,6 +19,14 @@
 			createAndPlayAudio(sounds);
 		}else if(typeof sounds == "object"){
 			createAndPlayAudio(sounds[Math.floor(Math.random() * sounds.length)]);
+		}
+	}
+
+	window.stopSound = function(){
+		try{
+			audio.pause();
+		}catch(err){
+			
 		}
 	}
 

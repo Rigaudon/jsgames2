@@ -51,6 +51,7 @@ var SideBarView = Marionette.View.extend({
 
 	toggleSound: function(){
 		window.soundsEnabled = !window.soundsEnabled;
+		window.stopSound();
 		$(this.ui.sound).toggleClass("glyphicon-volume-up").toggleClass("glyphicon-volume-off");
 	}
 });

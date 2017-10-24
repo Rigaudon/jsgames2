@@ -22,7 +22,4 @@ For development, run `npm run server`.
 - Add who's online list to chat
 
 # Bugs
-- Exploding Kittens:
-	- When leaving room as the last person while exploding, does not give host back option to restart game
-	- When seeing the future with < 3 cards, not valid position text
-	- Playing favor/cat on player with no cards in hand
+- None found
