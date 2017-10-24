@@ -137,7 +137,7 @@ var CardGameView = Marionette.View.extend({
     });
     $(self.regions.hand).sortable({
       animation: 150,
-      draggable: this.ui.card,
+      draggable: ".card", //Not sure why, but self.ui.card doesn't work
       group: "hand"
     });
   },
@@ -201,7 +201,7 @@ var CardGameView = Marionette.View.extend({
 
   removeCardFromHand: function(card, amount){
     var removed = 0;
-    var cards = $(this.ui.card);
+    var cards = $(this.regions.hand).find(".card");
     _.forEach(cards, function(cardEl){
       if(removed < amount && cardEl.card && cardEl.card.id == card.id && cardEl.card.image == card.image){
         cardEl.remove();

@@ -20,6 +20,7 @@ For development, run `npm run server`.
 	- Cards against humanity ?
 - Add Spectate mode
 - Add who's online list to chat
+- Add twitch emotes to chat
 
 # Bugs
-- None found
+- Cats dancing

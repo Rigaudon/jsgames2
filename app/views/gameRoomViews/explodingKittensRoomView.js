@@ -80,7 +80,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
       this.onPlayInvalid();
       return;
     }
-    $(this.regions.hand).prepend($(this.ui.pile).find(this.ui.card).detach());
+    $(this.regions.hand).prepend($(this.ui.pile).find(".card").detach());
     switch(card.type){
       case "favor":
       case "cat":
@@ -115,7 +115,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
       function(){
         //Modal was closed (cancelled or completed)
         //May not be necessary...
-        $(self.regions.hand).prepend($(self.ui.pile).find(this.ui.card).detach());
+        $(self.regions.hand).prepend($(self.ui.pile).find(".card").detach());
       }
     );
   },
@@ -260,7 +260,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
     player.el.addClass("exploded");
     this.renderCardCounts();
     if(this.model.isMe(message.player)){
-      $(this.regions.hand).find(this.ui.card).remove();
+      $(this.regions.hand).find(".card").remove();
       $(".preview").css("display", "none");
     }
     window.playSound("explode");
