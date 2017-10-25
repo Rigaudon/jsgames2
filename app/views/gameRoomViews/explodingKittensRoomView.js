@@ -33,7 +33,6 @@ var ExplodingKittensRoomView = CardGameView.extend({
     "click @ui.card": "onClickCard"
   }, CardGameView.prototype.events),
 
-
   cardPathRoot: "/static/images/assets/explodingKittens/",
 
   renderCards: function(gameState){
@@ -53,7 +52,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
         self.onCardSelected(card);
       }
     });
-    if(gameState.pile && gameState.pile.length){
+    if (gameState.pile && gameState.pile.length){
       var topCard = gameState.pile[gameState.pile.length - 1];
       $(this.ui.pile).css("background-image", "url(" + this.pathForCard(topCard) + ")");
     }
@@ -64,43 +63,40 @@ var ExplodingKittensRoomView = CardGameView.extend({
     var inHand = gameState.hand.filter(function(handCard){
       return handCard.id == card.id;
     });
-    if(this.model.isExploding){
+    if (this.model.isExploding){
       return inHand.length && (card.type == "defuse" || card.type == "nope");
     }
-    switch(card.type){
-      case "cat":
-        return this.model.isMyTurn() && inHand.length >= 2;
-      case "nope":
-        return inHand.length > 0;
-      default:
-        return this.model.isMyTurn() && inHand.length;
+    switch (card.type){
+    case "cat":
+      return this.model.isMyTurn() && inHand.length >= 2;
+    case "nope":
+      return inHand.length > 0;
+    default:
+      return this.model.isMyTurn() && inHand.length;
     }
-    return true;
   },
 
   onCardSelected: function(card){
-    if(!this.onPut(card)){
+    if (!this.onPut(card)){
       this.onPlayInvalid();
       return;
     }
     $(this.regions.hand).prepend($(this.ui.pile).find(".card").detach());
-    switch(card.type){
-      case "favor":
-      case "cat":
-        this.pickPlayer(card);
-        break;
-      case "stf":
-      case "attack":
-      case "skip":
-      case "shuffle":
-      case "defuse":
-      case "nope":
-        this.onPlay(card);
-        break;
+    switch (card.type){
+    case "favor":
+    case "cat":
+      this.pickPlayer(card);
       break;
+    case "stf":
+    case "attack":
+    case "skip":
+    case "shuffle":
+    case "defuse":
+    case "nope":
+      this.onPlay(card);
       break;
-      default:
-        throw new Error("Invalid Card Type!");
+    default:
+      throw new Error("Invalid Card Type!");
     }
   },
 
@@ -129,30 +125,30 @@ var ExplodingKittensRoomView = CardGameView.extend({
     var self = this;
     var player = self.model.getPlayerById(options.from);
     var statusText = player.name + " played " + options.card.name;
-    if(options.to){
+    if (options.to){
       statusText += " on " + self.model.getPlayerById(options.to).name;
     }
     $(self.regions.status).text(statusText);
-    if(options.remove){
+    if (options.remove){
       //remove options.remove.card x options.remove.amount from hand
       self.removeCardFromHand(options.remove.card, options.remove.amount);
     }
     this.animateCardMove(fromEl, this.ui.pile, options.card.image)
-    .then(function(){
-      //show card image on pile bg
-      $(self.ui.pile).css("background-image", "url(" + self.pathForCard(options.card.image) + ")");
-    });
+      .then(function(){
+        //show card image on pile bg
+        $(self.ui.pile).css("background-image", "url(" + self.pathForCard(options.card.image) + ")");
+      });
     window.playSound(this.cardSounds);
     this.playCardSound(options.card);
   },
 
   playCardSound: function(card){
-    switch(card.type){
-      case "nope":
-        window.playSound("nope");
-        break;
-      default:
-        break;
+    switch (card.type){
+    case "nope":
+      window.playSound("nope");
+      break;
+    default:
+      break;
     }
   },
 
@@ -163,10 +159,10 @@ var ExplodingKittensRoomView = CardGameView.extend({
     var bodyEl = chooseEl.find(".modal-body");
     bodyEl.empty();
     var self = this;
-    if(!future.cards.length){
+    if (!future.cards.length){
       bodyEl.prepend($("<div>").text("There are no cards left!"));
     }
-    while(future.cards.length){
+    while (future.cards.length){
       let card = future.cards.shift();
       let cardView = $("<div>");
       cardView.addClass("pickCard");
@@ -188,7 +184,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
     var sourcePlayer = this.model.getPlayerById(message.source);
     var targetPlayer = this.model.getPlayerById(message.target);
     $(this.regions.status).text(targetPlayer.name + " is doing a favor for " + sourcePlayer.name);
-    if(message.target != this.model.socket.id){
+    if (message.target != this.model.socket.id){
       return;
     }
     var chooseEl = $(this.regions.choose);
@@ -217,7 +213,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
     });
     chooseEl.modal({
       show: true,
-      backdrop: 'static',
+      backdrop: "static",
     });
   },
 
@@ -226,15 +222,15 @@ var ExplodingKittensRoomView = CardGameView.extend({
     var player = this.model.getPlayerById(message.player);
     $(this.regions.status).text(player.name + " drew an Exploding Kitten!");
     this.animateCardMove(this.ui.deck, this.ui.pile, message.card)
-    .then(function(){
-      $(self.ui.pile).css("background-image", "url(" + self.pathForCard(message.card.image) + ")");
-    });
+      .then(function(){
+        $(self.ui.pile).css("background-image", "url(" + self.pathForCard(message.card.image) + ")");
+      });
     this.renderCardCounts();
   },
 
   timer: undefined,
   onSetTimer: function(message){
-    if(this.timer){
+    if (this.timer){
       this.timer.destroy();
     }
     this.timer = new ProgressBar.Circle(this.regions.timer, {
@@ -262,7 +258,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
     $(this.regions.status).text(player.name + " exploded!");
     player.el.addClass("exploded");
     this.renderCardCounts();
-    if(this.model.isMe(message.player)){
+    if (this.model.isMe(message.player)){
       $(this.regions.hand).find(".card").remove();
       $(".preview").css("display", "none");
     }
@@ -278,7 +274,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
     var playerRegions = $(".playtable > .player");
     _.forEach(playerRegions, function(el){
       var playerId = $(el).attr("data-id");
-      if(playerId == self.player.get("pid") || $(el).css("display") == "none" || self.model.isExploded(playerId)){
+      if (playerId == self.player.get("pid") || $(el).css("display") == "none" || self.model.isExploded(playerId)){
         return;
       }
       var playerEl = $(el).clone();
@@ -299,10 +295,10 @@ var ExplodingKittensRoomView = CardGameView.extend({
   renderPlayers: function(players){
     CardGameView.prototype.renderPlayers.call(this, players);
     var self = this;
-    players.forEach(function(player, i){
+    players.forEach(function(player){
       var playerEl = player.el;
       playerEl.attr("data-id", player.id);
-      if(self.model.isExploded(player.id)){
+      if (self.model.isExploded(player.id)){
         playerEl.addClass("exploded");
       }
     });

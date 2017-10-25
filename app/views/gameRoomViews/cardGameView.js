@@ -4,34 +4,34 @@ var common = require("../../common");
 var Promise = require("bluebird");
 
 var playerSeats = [
-  '.playerSeat',
-  '.playerTwoSeat',
-  '.playerThreeSeat',
-  '.playerFourSeat',
-  '.playerFiveSeat',
-  '.playerSixSeat',
-  '.playerSevenSeat',
-  '.playerEightSeat',
-  '.playerNineSeat'
+  ".playerSeat",
+  ".playerTwoSeat",
+  ".playerThreeSeat",
+  ".playerFourSeat",
+  ".playerFiveSeat",
+  ".playerSixSeat",
+  ".playerSevenSeat",
+  ".playerEightSeat",
+  ".playerNineSeat"
 ];
 
 var playerClass = [
-  '',
-  'onePlayer',
-  'twoPlayers',
-  'threePlayers',
-  'fourPlayers',
-  'fivePlayers',
-  'sixPlayers',
-  'sevenPlayers',
-  'eightPlayers',
-  'ninePlayers'
+  "",
+  "onePlayer",
+  "twoPlayers",
+  "threePlayers",
+  "fourPlayers",
+  "fivePlayers",
+  "sixPlayers",
+  "sevenPlayers",
+  "eightPlayers",
+  "ninePlayers"
 ];
 
 var CardGameView = Marionette.View.extend({
   initialize: function(options){
     this.player = options.player;
-    this.model = new this.gameClient({player: options.player});
+    this.model = new this.gameClient({ player: options.player });
     this.player.gameClient = this.model;
   },
 
@@ -55,9 +55,9 @@ var CardGameView = Marionette.View.extend({
 
   getOptions: function() {
     var options = "";
-    if(this.model.isHost()){
+    if (this.model.isHost()){
       var players = this.model.get("players");
-      if(players.length >= 2 && !this.model.inProgress()){
+      if (players.length >= 2 && !this.model.inProgress()){
         options += "<button class=\"startBtn btn-big\">Start Game</button>";
       }
     }
@@ -109,10 +109,10 @@ var CardGameView = Marionette.View.extend({
 
   onRender: function(){
     var gameState = this.model.get("gameState");
-    if(this.model.get("players")){
+    if (this.model.get("players")){
       this.renderPlayers(this.model.get("players"));
     }
-    if(gameState && !_.isEmpty(gameState.hand)){
+    if (gameState && !_.isEmpty(gameState.hand)){
       this.renderCards(gameState);
       this.renderCardCounts();
     }
@@ -131,7 +131,7 @@ var CardGameView = Marionette.View.extend({
     var self = this;
     var cardViewClass = this.cardView;
     gameState.hand.forEach(function(card){
-      let cardView = new cardViewClass({card: card});
+      let cardView = new cardViewClass({ card: card });
       cardView.render();
       $(self.regions.hand).prepend(cardView.$el);
     });
@@ -171,31 +171,31 @@ var CardGameView = Marionette.View.extend({
     var from;
     var to;
     this.model.get("players").map(function(player){
-      if(player.id == options.from){
+      if (player.id == options.from){
         from = player;
       }
-      if(player.id == options.to){
+      if (player.id == options.to){
         to = player;
       }
     });
-    if(from && to){
+    if (from && to){
       var self = this;
-      return this.animateCardMove(from.el, to.el, options.card)
-      .then(function(){
-        if(self.model.socket.id == options.from){
-          //remove options.card from hand
-          self.removeCardFromHand(options.card, 1);
-          //statuses shouldnt be here
-          $(self.regions.status).text("You gave " + options.card.name + " to " + to.name + ".");
-        }else if(self.model.socket.id == options.to){
-          //Add to options.card to hand
-          self.addCardToOwnHand(options.card);
-          $(self.regions.status).text("You got " + options.card.name + " from " + from.name + ".");
-        }else{
-          $(self.regions.status).text(to.name + " got a card from " + from.name + ".");
-        }
-      });
       window.playSound(this.cardSounds);
+      return this.animateCardMove(from.el, to.el, options.card)
+        .then(function(){
+          if (self.model.socket.id == options.from){
+            //remove options.card from hand
+            self.removeCardFromHand(options.card, 1);
+            //statuses shouldnt be here
+            $(self.regions.status).text("You gave " + options.card.name + " to " + to.name + ".");
+          } else if (self.model.socket.id == options.to){
+            //Add to options.card to hand
+            self.addCardToOwnHand(options.card);
+            $(self.regions.status).text("You got " + options.card.name + " from " + from.name + ".");
+          } else {
+            $(self.regions.status).text(to.name + " got a card from " + from.name + ".");
+          }
+        });
     }
   },
 
@@ -203,14 +203,14 @@ var CardGameView = Marionette.View.extend({
     var removed = 0;
     var cards = $(this.regions.hand).find(".card");
     _.forEach(cards, function(cardEl){
-      if(removed < amount && cardEl.card && cardEl.card.id == card.id && cardEl.card.image == card.image){
+      if (removed < amount && cardEl.card && cardEl.card.id == card.id && cardEl.card.image == card.image){
         cardEl.remove();
         removed++;
       }
     });
   },
 
-  onPlayInvalid: function(message){
+  onPlayInvalid: function(){
     var el = $(this.ui.invalid);
     el.addClass("active");
     setTimeout(function(){
@@ -233,7 +233,7 @@ var CardGameView = Marionette.View.extend({
 
   renderDeckCount: function(){
     var gameState = this.model.get("gameState");
-    if(gameState){
+    if (gameState){
       $(this.ui.deck).find(".numCards").text(gameState.deckCount || "");
       $(this.ui.pile).find(".numCards").text(gameState.pile.length || "");
     }
@@ -251,7 +251,7 @@ var CardGameView = Marionette.View.extend({
     var self = this;
     players.forEach(function(player, i){
       var playerEl = $(playerSeats[i]);
-      if(!playerEl.length){
+      if (!playerEl.length){
         playerEl = $(self.playerTemplate);
         playerEl.addClass(playerSeats[i].replace(".", ""));
         $(self.regions.table).prepend(playerEl);
@@ -272,9 +272,9 @@ var CardGameView = Marionette.View.extend({
   selfDraw: function(card){
     var self = this;
     this.animateCardMove(this.ui.deck, ".playerSeat", card.card.image)
-    .then(function(){
-      self.addCardToOwnHand(card.card);
-    });
+      .then(function(){
+        self.addCardToOwnHand(card.card);
+      });
     $(this.regions.status).text("You drew a card");
   },
 
@@ -283,14 +283,13 @@ var CardGameView = Marionette.View.extend({
     var opponent = this.model.get("players").filter(function(player){
       return player.id == opponentId;
     })[0];
-    var self = this;
     this.animateCardMove(this.ui.deck, opponent.el)
     $(this.regions.status).text(opponent.name + " drew a card");
     this.renderPlayerCardCounts();
   },
 
   addCardToOwnHand: function(card){
-    let cardView = new this.cardView({card: card});
+    let cardView = new this.cardView({ card: card });
     cardView.render();
     cardView.$el.card = card;
     $(this.regions.hand).prepend(cardView.$el);
@@ -299,7 +298,7 @@ var CardGameView = Marionette.View.extend({
 
   animateCardMove: function(from, to, card){
     var self = this;
-    return new Promise(function(resolve, reject){
+    return new Promise(function(resolve){
       self.renderDeckCount();
       var fromEl = $(self.regions.table).find(from);
       var toEl = $(self.regions.table).find(to);
@@ -307,41 +306,41 @@ var CardGameView = Marionette.View.extend({
       cardEl.attr("src", self.pathForCard(card || "back"));
       cardEl.css({
         left: (fromEl.position().left + (fromEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
-        top: (fromEl.position().top  + (fromEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
+        top: (fromEl.position().top + (fromEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
       });
       $(self.regions.table).append(cardEl);
       cardEl.css({
         left: (toEl.position().left + (toEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
-        top: (toEl.position().top  + (toEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
+        top: (toEl.position().top + (toEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
       });
 
       var toPile = to == self.ui.pile;
-      if(!toPile){
+      if (!toPile){
         cardEl.css("opacity", 0);
       }
       cardEl.bind(common.finishTransition, function(){
         resolve();
-        if(toPile){
+        if (toPile){
           cardEl.remove();
-        }else if(cardEl.css("opacity") == 0){
+        } else if (cardEl.css("opacity") == 0){
           cardEl.remove();
         }
       });
     })
-    .then(self.renderPlayerCardCounts.bind(self));
+      .then(self.renderPlayerCardCounts.bind(self));
   },
 
   updatePlayer: function(){
     var gameState = this.model.get("gameState");
-    if(gameState && gameState.turnPlayer){
-      this.model.get("players").forEach(function(player, i){
-        if(player.id == gameState.turnPlayer){
+    if (gameState && gameState.turnPlayer){
+      this.model.get("players").forEach(function(player){
+        if (player.id == gameState.turnPlayer){
           player.el.addClass("active");
-        }else{
+        } else {
           player.el.removeClass("active");
         }
       });
-      if(this.model.isMe(gameState.turnPlayer)){
+      if (this.model.isMe(gameState.turnPlayer)){
         window.playSound("ding");
       }
     }

@@ -1,144 +1,142 @@
 var _ = require("lodash");
-var Backbone = require("backbone");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
-var common = require("../common");
 
 var ChatItemView = Marionette.View.extend({
-	tagName: "li",
-	className: "chatItem",
-	getTemplate: function(){
-		return _.template(fs.readFileSync("./app/templates/partials/chatItem.html", "utf8"), this.templateContext());
-	},
-	
-	regions: {
-		time: ".chatTime",
-		name: ".chatName",
-		message: ".chatMessage"
-	},
+  tagName: "li",
+  className: "chatItem",
+  getTemplate: function(){
+    return _.template(fs.readFileSync("./app/templates/partials/chatItem.html", "utf8"), this.templateContext());
+  },
 
-	templateContext: function(){
-		return {
-			time: this.formatDate(),
-			name: this.formatName(),
-			message: this.formatMessage(),
-			color: this.model.get("color")
-		};
-	},
+  regions: {
+    time: ".chatTime",
+    name: ".chatName",
+    message: ".chatMessage"
+  },
 
-	formatDate: function(){
-		return this.model.get("time");
-	},
+  templateContext: function(){
+    return {
+      time: this.formatDate(),
+      name: this.formatName(),
+      message: this.formatMessage(),
+      color: this.model.get("color")
+    };
+  },
 
-	formatName: function(){
-		return this.model.get("name");
-	},
+  formatDate: function(){
+    return this.model.get("time");
+  },
 
-	formatMessage: function(){
-		return this.model.get("message");
-	}
+  formatName: function(){
+    return this.model.get("name");
+  },
+
+  formatMessage: function(){
+    return this.model.get("message");
+  }
 
 });
 
 var ChatItemServerView = Marionette.View.extend({
-	tagName: "li",
-	className: function(){
-		var myClass = "chatItemServer";
-		if(this.model.get("class")){
-			myClass += " " + this.model.get("class");
-		}
-		return myClass;
-	},	
-	getTemplate: function(){
-		return _.template(fs.readFileSync("./app/templates/partials/chatItemServer.html", "utf8"), this.templateContext());
-	},
-	templateContext: function(){
-		return {
-			message: this.model.get("message")
-		};
-	}
+  tagName: "li",
+  className: function(){
+    var myClass = "chatItemServer";
+    if (this.model.get("class")){
+      myClass += " " + this.model.get("class");
+    }
+    return myClass;
+  },
+  getTemplate: function(){
+    return _.template(fs.readFileSync("./app/templates/partials/chatItemServer.html", "utf8"), this.templateContext());
+  },
+  templateContext: function(){
+    return {
+      message: this.model.get("message")
+    };
+  }
 });
 
 var ChatCollectionView = Marionette.CollectionView.extend({
-	childView: function(item){
-		if(item.get("type") == "player"){
-			return ChatItemView;
-		}else{
-			return ChatItemServerView;
-		}
-	},
-	tagName: "ul"
+  childView: function(item){
+    if (item.get("type") == "player"){
+      return ChatItemView;
+    } else {
+      return ChatItemServerView;
+    }
+  },
+  tagName: "ul"
 });
 
 var ChatView = Marionette.View.extend({
-	className: "chatViewContainer",
-	
-	getTemplate: function(){
-		return _.template(fs.readFileSync("./app/templates/chatView.html", "utf8"), this.templateContext());
-	},
+  className: "chatViewContainer",
 
-	regions: {
-		main: ".chatMain",
-		messageList: ".messageList",
-	},
+  getTemplate: function(){
+    return _.template(fs.readFileSync("./app/templates/chatView.html", "utf8"), this.templateContext());
+  },
 
-	modelEvents:{
-		"add:message" : "messageAdded",
-		"change:channel": "render"
-	},
+  regions: {
+    main: ".chatMain",
+    messageList: ".messageList",
+  },
 
-	ui: {
-		inputMessage: ".inputMessage textarea",
-		collapse: ".collapseChat",
-	},
+  modelEvents: {
+    "add:message": "messageAdded",
+    "change:channel": "render"
+  },
 
-	events: {
-		"click @ui.collapse" : "collapseChat",
-		"keypress @ui.inputMessage": "onChatInput",
-	},
+  ui: {
+    inputMessage: ".inputMessage textarea",
+    collapse: ".collapseChat",
+  },
 
-	templateContext: function(){
-		return {
-			room: this.model.get("channel").display
-		};
-	},
- 
-	onRender: function(){
-		var self = this;
-		this.showChildView("messageList", new ChatCollectionView({collection: self.model.messageCollection}));
-	},
+  events: {
+    "click @ui.collapse": "collapseChat",
+    "keypress @ui.inputMessage": "onChatInput",
+  },
 
-	onChatInput: function(e){
-		var keycode = (e.keyCode ? e.keyCode : e.which);
-	    if(keycode == '13'){
+  templateContext: function(){
+    return {
+      room: this.model.get("channel").display
+    };
+  },
+
+  onRender: function(){
+    var self = this;
+    this.showChildView("messageList", new ChatCollectionView({ collection: self.model.messageCollection }));
+  },
+
+  onChatInput: function(e){
+    var keycode = (e.keyCode ? e.keyCode : e.which);
+	    if (keycode == "13"){
 	        this.sendChatMessage($(e.target).val().trim());
 	        this.$(e.target).val("");
 	        e.preventDefault();
 	        return false;
 	    }
-	},
+  },
 
-	sendChatMessage: function(message){
-		this.model.sendChatMessage(message.trim());
-	},
+  sendChatMessage: function(message){
+    this.model.sendChatMessage(message.trim());
+  },
 
-	messageAdded: function(){
-		//Stick to bottom
-		var scrollDiv = this.$(this.regions.messageList);
-		if(Math.abs(scrollDiv[0].scrollHeight-scrollDiv.scrollTop() - scrollDiv.outerHeight()) < 50){
-			scrollDiv.scrollTop(scrollDiv[0].scrollHeight);
-		}
-	},
+  messageAdded: function(){
+    //Stick to bottom
+    var scrollDiv = this.$(this.regions.messageList);
+    if (Math.abs(scrollDiv[0].scrollHeight-scrollDiv.scrollTop() - scrollDiv.outerHeight()) < 50){
+      scrollDiv.scrollTop(scrollDiv[0].scrollHeight);
+    }
+  },
 
-	collapseChat: function(){
-		this.$(this.regions.main)
-			.toggleClass("open")
-			.toggleClass("closed");
+  collapseChat: function(){
+    this.$(this.regions.main)
+      .toggleClass("open")
+      .toggleClass("closed");
 
-		this.$(this.ui.collapse).find("span")
-			.toggleClass("glyphicon-comment")
-			.toggleClass("glyphicon-chevron-right");
-	}
+    this.$(this.ui.collapse).find("span")
+      .toggleClass("glyphicon-comment")
+      .toggleClass("glyphicon-chevron-right");
+  }
 
 });
 

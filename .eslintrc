@@ -1,0 +1,33 @@
+{
+  "parser": "babel-eslint",
+  "rules": {
+    "quotes": [2, "double", {"avoidEscape": true, "allowTemplateLiterals": true}],
+    "no-unreachable": 2,
+    "no-dupe-keys": 2,
+    "no-irregular-whitespace": 2,
+    "valid-typeof": 2,
+    "curly": 2,
+    "no-extra-bind": 2,
+    "no-invalid-this": 2,
+    "no-lone-blocks": 2,
+    "no-multi-spaces": 2,
+    "strict": 1,
+    "no-unused-vars": 2,
+    "no-use-before-define": 2,
+    "brace-style": [2, "1tbs", { "allowSingleLine": true }],
+    "array-bracket-spacing": [2, "never"],
+    "block-spacing": [2, "always"],
+    "comma-spacing": [2, {"before": false, "after": true}],
+    "consistent-this": [2, "self"],
+    "eol-last": 2,
+    "indent": [2, 2],
+    "key-spacing": [2, {"beforeColon": false, "afterColon": true}],
+    "keyword-spacing": [2, {"before": true, "after": true}],
+    "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
+    "no-multiple-empty-lines": [2, {"max": 1}],
+    "no-trailing-spaces": [2, { "skipBlankLines": true }],
+    "no-unneeded-ternary": 2,
+    "object-curly-spacing": [2, "always"],
+    "semi-spacing": [2, {"before": false, "after": true}]
+  }
+}

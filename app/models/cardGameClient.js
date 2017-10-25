@@ -1,5 +1,4 @@
 var Backbone = require("backbone");
-var _ = require("lodash");
 var CardGameClient = Backbone.Model.extend({
   initialize: function(options){
     var self = this;
@@ -50,12 +49,12 @@ var CardGameClient = Backbone.Model.extend({
 
   actions: {
     playerDraw: function(message){
-      if(this.isMe(message.playerId) && message.card){
+      if (this.isMe(message.playerId) && message.card){
         this.onSelfDraw(message.card);
         this.trigger("self:draw", {
           card: message.card
         });
-      }else if(!this.isMe(message.playerId)){
+      } else if (!this.isMe(message.playerId)){
         this.onOpponentDraw(message.playerId);
         this.trigger("opponent:draw", {
           playerId: message.playerId
@@ -70,19 +69,19 @@ var CardGameClient = Backbone.Model.extend({
       this.onMoveCard(message);
       this.trigger("card:move", message);
     },
-    cardPlayed: function(message){
-      this.onCardPlayed(message);
+    cardPlayed: function(){
+      this.onCardPlayed();
       this.trigger("card:played", message);
     },
     gameStart: function(message){
-      this.onGameStart();
+      this.onGameStart(message);
       this.trigger("game:start");
     },
     playerWin: function(message){
-      this.onPlayerWin(message);
+      this.onPlayerWin();
       this.trigger("player:win", message);
     },
-    invalidCard: function(message){
+    invalidCard: function(){
       this.trigger("card:invalid");
     },
   },
@@ -97,24 +96,27 @@ var CardGameClient = Backbone.Model.extend({
 
   playCard: function(options){
     console.log("Playing card");
+    console.log(options);
   },
 
   validatePlayable: function(card){
+    console.log(card);
     return true;
   },
 
   onCardPlayed: function(options){
     console.log("Card played");
+    console.log(options);
   },
 
-  onPlayerWin: function(message){
+  onPlayerWin: function(){
     this.set("status", 3);
   },
 
   removeCardFromHand: function(card){
     var hand = this.get("gameState").hand;
-    for(var i=0; i<hand.length; i++){
-      if(hand[i].id == card.id && hand[i].image == card.image){
+    for (var i=0; i<hand.length; i++){
+      if (hand[i].id == card.id && hand[i].image == card.image){
         hand = hand.splice(i, 1);
         this.getPlayerById(this.socket.id).handSize--;
         return;
@@ -131,7 +133,7 @@ var CardGameClient = Backbone.Model.extend({
 
   getCardsInHand: function(card){
     var gameState = this.get("gameState");
-    if(gameState && gameState.hand){
+    if (gameState && gameState.hand){
       return gameState.hand.filter(function(handCard){
         return handCard.id == card.id && handCard.image == card.image;
       });
@@ -145,7 +147,7 @@ var CardGameClient = Backbone.Model.extend({
   },
 
   drawCard: function(){
-    if(this.inProgress() && this.isMyTurn()){
+    if (this.inProgress() && this.isMyTurn()){
       this.socket.emit("gameMessage", {
         command: "drawCard",
         roomId: this.get("id")
@@ -155,26 +157,25 @@ var CardGameClient = Backbone.Model.extend({
 
   rotatePlayers: function(){
     var players = this.get("players");
-    if(players && players.length){
-      while(!this.isMe(players[0].id)){
+    if (players && players.length){
+      while (!this.isMe(players[0].id)){
         players.unshift(players.pop());
       }
     }
   },
 
   onMoveCard: function(options){
-    if(this.isMe(options.to)){
+    if (this.isMe(options.to)){
       this.addCardToHand(options.card);
       this.getPlayerById(options.from).handSize--;
-    }else if(this.isMe(options.from)){
+    } else if (this.isMe(options.from)){
       this.removeCardFromHand(options.card);
       this.getPlayerById(options.to).handSize++;
-    }else{
+    } else {
       this.getPlayerById(options.from).handSize--;
       this.getPlayerById(options.to).handSize++;
     }
   },
-
 
   startRoom: function(){
     this.socket.emit("gameMessage", {

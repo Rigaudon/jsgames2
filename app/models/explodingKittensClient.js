@@ -1,4 +1,3 @@
-var Backbone = require("backbone");
 var _ = require("lodash");
 var CardGameClient = require("./cardGameClient");
 
@@ -37,14 +36,14 @@ var ExplodingKitten = CardGameClient.extend({
   },
 
   playCard: function(options){
-    if(options.card && this.validatePlayable(options.card)){
+    if (options.card && this.validatePlayable(options.card)){
       this.socket.emit("gameMessage", {
         command: "playCard",
         roomId: this.get("id"),
         card: options.card,
         target: options.target
       });
-    }else{
+    } else {
       this.trigger("card:invalid", {
         card: options.card
       });
@@ -62,25 +61,24 @@ var ExplodingKitten = CardGameClient.extend({
 
   validatePlayable: function(card){
     //validate that the current player can play this card
-    if(!this.inProgress()){
+    if (!this.inProgress()){
       return false;
     }
-    var gameState = this.get("gameState");
-    if(card.type != "nope" && !this.isMyTurn()){
+    if (card.type != "nope" && !this.isMyTurn()){
       return false;
     }
-    if(this.isExploding && ["defuse", "nope"].indexOf(card.type) == -1){
+    if (this.isExploding && ["defuse", "nope"].indexOf(card.type) == -1){
       return false;
     }
     var inHand = this.getCardsInHand(card);
-    if(card.type == "cat"){
+    if (card.type == "cat"){
       return inHand.length > 1;
-    }else{
+    } else {
       return inHand.length > 0;
     }
   },
 
-  onEKDefuse: function(options){
+  onEKDefuse: function(){
     this.isExploding = false;
 
     //The kitten was placed back into deck
@@ -88,11 +86,11 @@ var ExplodingKitten = CardGameClient.extend({
   },
 
   onPlayerExploded: function(message){
-    if(this.isMe(message.player)){
+    if (this.isMe(message.player)){
       this.get("gameState").hand = [];
     }
     this.getPlayerById(message.player).handSize = 0;
-    if(!this.get("gameState").exploded){
+    if (!this.get("gameState").exploded){
       this.get("gameState").exploded = [];
     }
     this.get("gameState").exploded.push(message.player);
@@ -103,32 +101,32 @@ var ExplodingKitten = CardGameClient.extend({
   },
 
   onCardPlayed: function(options){
-    if(this.isMe(options.from)){
+    if (this.isMe(options.from)){
       this.removeCardFromHand(options.card);
-      if(options.card.type == "cat"){
+      if (options.card.type == "cat"){
         this.removeCardFromHand(options.card);
       }
-    }else{
+    } else {
       var p = this.getPlayerById(options.from);
       p.handSize--;
-      if(options.card.type == "cat"){
+      if (options.card.type == "cat"){
         p.handSize--;
       }
     }
     this.get("gameState").pile.push(options.card);
-    if(options.card.type == "cat"){
+    if (options.card.type == "cat"){
       this.get("gameState").pile.push(options.card);
     }
   },
 
   onEKDrawn: function(message){
     this.get("gameState").deckCount--;
-    if(this.isMe(message.player)){
+    if (this.isMe(message.player)){
       this.isExploding = true;
     }
   },
 
-  onPlayerWin: function(message){
+  onPlayerWin: function(){
     this.isExploding = false;
     this.set("status", 3);
   },

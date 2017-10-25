@@ -13,7 +13,7 @@ var UnoRoomView = CardGameView.extend({
   playerTemplate: fs.readFileSync("./app/templates/partials/cardPlayer.html", "utf8"),
   className: CardGameView.prototype.className + " unoRoom",
   modelEvents: _.assign({
-
+    "update:deck": "renderCardCounts"
   }, CardGameView.prototype.modelEvents),
 
   regions: _.assign({
@@ -43,27 +43,27 @@ var UnoRoomView = CardGameView.extend({
         self.onCardSelected(card);
       }
     });
-    if(gameState.pile && gameState.pile.length){
+    if (gameState.pile && gameState.pile.length){
       var topCard = this.model.getTopCard();
-      if(topCard){
+      if (topCard){
         $(this.ui.pile).css("background-image", "url(" + this.pathForCard(topCard) + ")");
       }
     }
   },
 
-  onPut: function(card){
+  onPut: function(){
     return this.model.isMyTurn();
   },
 
   onCardSelected: function(card){
-    if(!this.onPut(card)){
+    if (!this.onPut(card)){
       this.onPlayInvalid();
       return;
     }
     $(this.regions.hand).prepend($(this.ui.pile).find(".card").detach());
-    if(card.type == "wild" || card.type == "wild4"){
+    if (card.type == "wild" || card.type == "wild4"){
       this.showColorModal(card);
-    }else{
+    } else {
       this.onPlay(card);
     }
   },
@@ -75,15 +75,15 @@ var UnoRoomView = CardGameView.extend({
     var player = self.model.getPlayerById(options.from);
     var statusText = player.name + " played " + options.card.name;
     $(self.regions.status).text(statusText);
-    if(options.remove){
+    if (options.remove){
       //remove options.remove.card x options.remove.amount from hand
       self.removeCardFromHand(options.remove.card, options.remove.amount);
     }
     this.animateCardMove(fromEl, this.ui.pile, options.card.image)
-    .then(function(){
-      //show card image on pile bg
-      $(self.ui.pile).css("background-image", "url(" + self.pathForCard(options.card.image) + ")");
-    });
+      .then(function(){
+        //show card image on pile bg
+        $(self.ui.pile).css("background-image", "url(" + self.pathForCard(options.card.image) + ")");
+      });
     window.playSound(this.cardSounds);
   },
 
