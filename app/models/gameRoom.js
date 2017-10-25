@@ -74,9 +74,9 @@ var GameRoom = Backbone.Model.extend({
 
 	setOptions: function(options){
 		var self = this;
-		this.set("options", _.extend(options, {
+		this.set("options", _.assign({
 			gameId: gamesCollection.get(self.get("game")).get("id")
-		}));
+		}, options));
 	},
 
 	begin: function(){

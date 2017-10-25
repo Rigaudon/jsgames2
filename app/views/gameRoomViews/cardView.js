@@ -2,18 +2,18 @@ var _ = require("lodash");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
 
-var ExplodingKittensCard = Marionette.View.extend({
+var CardView = Marionette.View.extend({
 	initialize: function(options){
 		this.card = options.card;
 		this.$el[0].card = this.card;
 	},
 
 	fullImagePath: function(){
-		return this.card ? "/static/images/assets/explodingKittens/" + this.card.image + ".png" : "";
+		return this.card ? this.partialImagePath + this.card.image + ".png" : "";
 	},
 
 	getTemplate: function(){
-		return _.template(fs.readFileSync("./app/templates/partials/explodingKittens/card.html", "utf8"), this.templateContext());
+		return _.template(fs.readFileSync("./app/templates/partials/card.html", "utf8"), this.templateContext());
 	},
 
 	templateContext: function(){
@@ -59,4 +59,4 @@ var ExplodingKittensCard = Marionette.View.extend({
 	}
 });
 
-module.exports = ExplodingKittensCard;
+module.exports = CardView;

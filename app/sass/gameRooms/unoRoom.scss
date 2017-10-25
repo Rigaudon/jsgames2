@@ -1,0 +1,27 @@
+@import "../variables";
+@import "cardRoom";
+
+.unoRoom{
+  .player{
+    background-image: url("/static/images/assets/uno/player.png");
+  }
+
+  .pile{
+    background-image: url("/static/images/assets/uno/blank.png");
+  }
+
+  .deck{
+    background-image: url("/static/images/assets/uno/back.png");
+  }
+
+  .chooseOptions{
+  	.modal-body{
+  		.pickCard{
+  			cursor:pointer;
+  			img{
+  				width: 120px;
+  			}
+  		}
+  	}
+  }
+} 

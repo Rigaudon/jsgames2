@@ -2,33 +2,36 @@ var _ = require("lodash");
 var fs = require("fs");
 var ExplodingKittensClient = require("../../models/explodingKittensClient");
 var ProgressBar = require("progressbar.js");
-var EKCardView = require("./explodingKittensCardView");
+var CardView = require("./cardView");
+var EKCardView = CardView.extend({
+  partialImagePath: "/static/images/assets/explodingKittens/",
+});
 var CardGameView = require("./cardGameView");
 
 var ExplodingKittensRoomView = CardGameView.extend({
   gameClient: ExplodingKittensClient,
   cardView: EKCardView,
   viewTemplate: fs.readFileSync("./app/templates/gameRooms/explodingKittens.html", "utf8"),
-  playerTemplate: fs.readFileSync("./app/templates/partials/explodingKittens/player.html", "utf8"),
+  playerTemplate: fs.readFileSync("./app/templates/partials/cardPlayer.html", "utf8"),
   className: CardGameView.prototype.className + " explodingKittensRoom",
-  modelEvents: _.extend(CardGameView.prototype.modelEvents, {
+  modelEvents: _.assign({
     "effect:stf": "seeTheFuture",
     "do:favor": "showFavor",
     "ek:drawn": "onEKDrawn",
     "ek:defused": "onEKDefused",
     "player:exploded": "onPlayerExploded",
     "timer:set": "onSetTimer",
-  }),
+  }, CardGameView.prototype.modelEvents),
 
-  regions: _.extend(CardGameView.prototype.regions, {
+  regions: _.assign({
     "timer": ".timer",
     "choose": ".chooseOptions",
-  }),
+  }, CardGameView.prototype.regions),
 
-  events: _.extend(CardGameView.prototype.events, {
+  events: _.assign({
     "click @ui.deck": "drawCard",
     "click @ui.card": "onClickCard"
-  }),
+  }, CardGameView.prototype.events),
 
 
   cardPathRoot: "/static/images/assets/explodingKittens/",
@@ -166,7 +169,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
     while(future.cards.length){
       let card = future.cards.shift();
       let cardView = $("<div>");
-      cardView.addClass("card");
+      cardView.addClass("pickCard");
       let cardImg = $("<img>");
       cardImg.attr("src", self.pathForCard(card.image));
       cardView.append(cardImg);

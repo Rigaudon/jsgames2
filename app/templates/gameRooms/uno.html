@@ -1,0 +1,36 @@
+<div class="playtable <%- playerNum %>">
+	<div class="pile">
+		<label>Drag or click from Hand</label>
+		<span class="invalidCard">You can't play that right now.</span>
+		<span class="handCount">
+			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
+			<span class="numCards"></span>
+		</span>
+	</div>
+	<div class="deck">
+		<label>Click to Draw</label>
+		<span class="handCount">
+			<img src="/static/images/assets/explodingKittens/handCount.png" class="glyphicon-card" />
+			<span class="numCards"></span>
+		</span>
+	</div>
+</div>
+<img class="preview" />
+<div class="status"><%= status %></div>
+<div class="heldCards"></div>
+<div class="controls">
+	<%= controls %>
+</div>
+<div class="modal fade chooseOptions" role="dialog">
+	<div class="modal-dialog">
+		<button class="closeModal" data-dismiss="modal">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
+		<div class="modal-content <%- playerNum %>">
+			<div class="modal-header">
+			</div>
+			<div class="modal-body"></div>
+			<div class="modal-footer"></div>
+		</div>
+	</div>
+</div>

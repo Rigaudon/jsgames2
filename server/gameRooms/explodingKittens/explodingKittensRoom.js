@@ -1,7 +1,7 @@
 var Room = require("../room");
 var _ = require("lodash");
 var EKcards = require("./ekcards.json");
-var CardObj = require("./card");
+var CardObj = require("./ekcard");
 var EffectStack = require("./effectStack");
 
 var hostCommands = ["startGame"];
@@ -18,7 +18,7 @@ var ExplodingKittensRoom = Room.extend({
 		this.set("gameState", {
 			deck: {},
 			hands: {},
-			turnPlayer: "undefined"
+			turnPlayer: null
 		});
 		if(this.get("players").length == this.get("maxPlayers")){
 			this.set("status", 1);
@@ -60,6 +60,8 @@ var ExplodingKittensRoom = Room.extend({
 					self.startGame();
 					break;
 			}
+		}else{
+			console.error("Cannot find command " + command);
 		}
 	},
 
@@ -68,21 +70,21 @@ var ExplodingKittensRoom = Room.extend({
 		var players = self.get("players");
 		var gameState = self.get("gameState");
 		if(players.length >= 2){
-				self.set("status", 2);
-				gameState.deck = self.initializeDeck(players.length);
-				gameState.hands = self.initializeHands();
-				self.addExplodingKittens(gameState.deck, players.length);
-				gameState.pile = [];
-				gameState.exploded = [];
-				gameState.turnPlayer = players.at(self.randomIndex(players.length));
-				gameState.favor = {};
-				gameState.isAttacked = false;
-				gameState.isExploding = undefined;
-				self.emitToAllExcept();
-				self.emitGameMessage({
-					"message": "gameStart"
-				});
-			}
+			self.set("status", 2);
+			gameState.deck = self.initializeDeck(players.length);
+			gameState.hands = self.initializeHands();
+			self.addExplodingKittens(gameState.deck, players.length);
+			gameState.pile = [];
+			gameState.exploded = [];
+			gameState.turnPlayer = players.at(self.randomIndex(players.length));
+			gameState.favor = {};
+			gameState.isAttacked = false;
+			gameState.isExploding = undefined;
+			self.emitToAllExcept();
+			self.emitGameMessage({
+				"message": "gameStart"
+			});
+		}
 	},
 
 	playCard: function(options){
@@ -360,14 +362,14 @@ var ExplodingKittensRoom = Room.extend({
 			}
 			this.emitGameMessage({
 				message: "playerTurn",
-				player: gameState.turnPlayer.id
+				player: gameState.turnPlayer.get("id")
 			});
 		}
 	},
 
 	playerLeave: function(socket){
 		var gameState = this.get("gameState");
-		if(gameState.turnPlayer && gameState.turnPlayer.id == socket.id){
+		if(gameState.turnPlayer && gameState.turnPlayer.get("id") == socket.id){
 			if(!!gameState.effectStack){
 				gameState.effectStack.resolveStack();
 				gameState.isAttacked = false;
@@ -462,7 +464,7 @@ var ExplodingKittensRoom = Room.extend({
 			return false;
 		}
 		var gameState = this.get("gameState");
-		if(options.card.type != "nope" && options.source != gameState.turnPlayer.id){
+		if(options.card.type != "nope" && options.source != gameState.turnPlayer.get("id")){
 			return false;
 		}
 		if(!!gameState.effectStack){

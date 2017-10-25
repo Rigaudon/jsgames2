@@ -1,0 +1,43 @@
+{
+	"cards": [
+		{
+			"type": "number",
+			"min": 1,
+			"max": 9,
+			"count": 2,
+			"colors": ["blue", "yellow", "green", "red"]
+		},
+		{
+			"type": "number",
+			"min": 0,
+			"max": 0,
+			"count": 1,
+			"colors": ["blue", "yellow", "green", "red"]
+		},
+		{
+			"type": "skip",
+			"count": 2,
+			"colors": ["blue", "yellow", "green", "red"]
+		},
+		{
+			"type": "reverse",
+			"count": 2,
+			"colors": ["blue", "yellow", "green", "red"]
+		},
+		{
+			"type": "draw2",
+			"count": 2,
+			"colors": ["blue", "yellow", "green", "red"]
+		},
+		{
+			"type": "wild",
+			"count": 4,
+			"colors": ["wild"]
+		},
+		{
+			"type": "wild4",
+			"count": 4,
+			"colors": ["wild"]
+		}
+	]
+}

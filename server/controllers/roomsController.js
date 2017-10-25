@@ -4,12 +4,14 @@ var games = require("../../games.json");
 var gamesCollection = new Backbone.Collection(games);
 
 var ConnectFourRoom = require("../gameRooms/connectFour/connectFourRoom");
+var UnoRoom = require("../gameRooms/uno/unoRoom");
 var ExplodingKittensRoom = require("../gameRooms/explodingKittens/explodingKittensRoom");
 
 var nextGameRoomId = 0;
 var RoomsController = Backbone.Collection.extend({	
 	idToRoomMap: {
 		"1": ConnectFourRoom,
+		"2": UnoRoom,
 		"4": ExplodingKittensRoom,
 	},
 	

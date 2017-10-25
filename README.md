@@ -14,6 +14,10 @@ For development, run `npm run server`.
 	- Exploding Kittens expansion
 	- Exploding Kittens Sort button
 	- Uno
+		- fix name of cards
+		- reshuffle deck
+		- force player to play card they drew if able
+		- uno button
 	- Pictionary ?
 	- Dominion 
 	- Othello ?
@@ -23,4 +27,10 @@ For development, run `npm run server`.
 - Add twitch emotes to chat
 
 # Bugs
-- Cats dancing
+- Cats dancing on certain size screens when playing cards
+
+# Sources/credits
+- Sounds taken from free domain.
+- Defused sound from Counterstrike
+- Nope sound from TF2
+- Cat is Pusheen the Cat

@@ -188,7 +188,7 @@ var CardGameClient = Backbone.Model.extend({
   },
 
   isMyTurn: function(){
-    return this.get("gameState") && this.isMe(this.get("gameState").turnPlayer);
+    return this.inProgress() && this.get("gameState") && this.isMe(this.get("gameState").turnPlayer);
   },
 
   isMe: function(id){

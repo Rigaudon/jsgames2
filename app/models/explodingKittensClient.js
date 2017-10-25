@@ -4,7 +4,7 @@ var CardGameClient = require("./cardGameClient");
 
 var ExplodingKitten = CardGameClient.extend({
   isExploding: false,
-  actions: _.extend(CardGameClient.prototype.actions, {
+  actions: _.assign({
     gaveFavor: function(message){
       this.onMoveCard(message);
       this.trigger("card:move", message);
@@ -30,7 +30,7 @@ var ExplodingKitten = CardGameClient.extend({
     setTimer: function(message){
       this.trigger("timer:set", message);
     },
-  }),
+  }, CardGameClient.prototype.actions),
 
   onGameStart: function(){
     this.isExploding = false;
