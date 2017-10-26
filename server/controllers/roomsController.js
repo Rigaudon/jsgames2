@@ -54,7 +54,7 @@ var RoomsController = Backbone.Collection.extend({
 
   validateRoomOptions: function(options, playerId){
     var self = this;
-    var gameOptions = gamesCollection.get(options.gameId);
+    var gameOptions = gamesCollection.get(options.gameId).get("options");
     var returnVal = {
       valid: false,
       message: "A server error occured."
@@ -84,6 +84,16 @@ var RoomsController = Backbone.Collection.extend({
       return val && val.length <= 25;
     case "start":
       return true;
+    default:
+      return this.validateGameSpecificOption(option, val);
+    }
+  },
+
+  validateGameSpecificOption: function(option, val){
+    switch (option){
+    //Exploding Kittens
+    case "expansionImploding":
+      return val === true || val === false;
     default:
       return false;
     }

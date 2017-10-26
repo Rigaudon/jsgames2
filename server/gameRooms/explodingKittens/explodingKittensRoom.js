@@ -6,12 +6,19 @@ var EffectStack = require("./effectStack");
 
 var hostCommands = ["startGame"];
 var commands = ["playCard", "drawCard", "giveFavor"];
-var STARTING_HAND_CARDS = 5;
 
 var ExplodingKittensRoom = Room.extend({
   initialize: function(options){
     Room.prototype.initialize.call(this, options);
     this.resetDefaultGamestate();
+  },
+
+  startingHandCards: function(){
+    return this.implodingKittensEnabled() ? 7 : 5;
+  },
+
+  implodingKittensEnabled: function(){
+    return this.get("options").expansionImploding;
   },
 
   resetDefaultGamestate: function(){
@@ -73,7 +80,12 @@ var ExplodingKittensRoom = Room.extend({
       self.set("status", 2);
       gameState.deck = self.initializeDeck(players.length);
       gameState.hands = self.initializeHands();
-      self.addExplodingKittens(gameState.deck, players.length);
+      if (this.implodingKittensEnabled()){
+        self.addExplodingKittens(gameState.deck, players.length - 1);
+        self.addImplodingKitten(gameState.deck);
+      } else {
+        self.addExplodingKittens(gameState.deck, players.length);
+      }
       gameState.pile = [];
       gameState.exploded = [];
       gameState.turnPlayer = players.at(self.randomIndex(players.length));
@@ -516,14 +528,23 @@ var ExplodingKittensRoom = Room.extend({
 
   initializeDeck: function(numPlayers){
     var deck = [];
-    var multiplier = numPlayers > 5 ? 2 : 1;
-    EKcards.cards.forEach(function(card){
+    var multiplier = this.implodingKittensEnabled() ? (numPlayers > 6 ? 2 : 1) : (numPlayers > 5 ? 2 : 1);
+    EKcards.base.forEach(function(card){
       for (var i = 0; i < card.num; i++){
         for (var j = 0; j < multiplier; j++){
           deck.push(new CardObj(card, i));
         }
       }
     });
+    if (this.implodingKittensEnabled()){
+      EKcards.expansionImploding.forEach(function(card){
+        for (var i = 0; i < card.num; i++){
+          for (var j = 0; j < multiplier; j++){
+            deck.push(new CardObj(card, i));
+          }
+        }
+      });
+    }
     var defuses = numPlayers == 2 ? 2 : EKcards.defuse.num * multiplier - numPlayers;
     for (var i = 0; i < defuses; i++){
       for (var j = 0; j < multiplier; j++){
@@ -540,6 +561,11 @@ var ExplodingKittensRoom = Room.extend({
     this.shuffleDeck();
   },
 
+  addImplodingKitten: function(deck){
+    deck.push(new CardObj(EKcards.implodingKitten));
+    this.shuffleDeck();
+  },
+
   shuffleDeck: function(){
     var gameState = this.get("gameState");
     gameState.deck = _.shuffle(gameState.deck);
@@ -550,9 +576,10 @@ var ExplodingKittensRoom = Room.extend({
     var players = this.get("players");
     var deck = this.get("gameState").deck;
     var i = 0;
+    var starting = this.startingHandCards();
     players.each(function(player){
       var hand = [new CardObj(EKcards.defuse, i)];
-      while (hand.length < STARTING_HAND_CARDS){
+      while (hand.length < starting){
         hand.push(deck.pop());
       }
       hands[player.id] = hand;

@@ -3,11 +3,16 @@ var Marionette = require("backbone.marionette");
 var fs = require("fs");
 
 //Static for now, since can't load templates dynamically
-var gameOptions = {
+var gameSpecificOptions = {
+  //Exploding Kittens
+  "expansionImploding": fs.readFileSync("./app/templates/partials/gameOptions/explodingKittens/expansionImploding.html")
+};
+
+var gameOptions = _.assign({
   "start": fs.readFileSync("./app/templates/partials/gameOptions/start.html"),
   "roomName": fs.readFileSync("./app/templates/partials/gameOptions/roomName.html"),
-  "roomPassword": fs.readFileSync("./app/templates/partials/gameOptions/roomPassword.html")
-};
+  "roomPassword": fs.readFileSync("./app/templates/partials/gameOptions/roomPassword.html"),
+}, gameSpecificOptions);
 
 var GameItemView = Marionette.View.extend({
 
@@ -42,11 +47,15 @@ var GameItemView = Marionette.View.extend({
     "info": ".alertInfo",
   },
 
-  ui: {
+  ui: _.assign({
     "roomName": ".roomName input",
     "roomPassword": ".roomPassword input",
     "start": ".startGame"
-  },
+  }, {
+    //Game Specific UI
+    //Exploding Kittens
+    "expansionImploding": ".expansionImploding input"
+  }),
 
   events: {
     "click @ui.start": "validateOptions"
@@ -99,7 +108,12 @@ var GameItemView = Marionette.View.extend({
     var options = {};
     var self = this;
     _.forEach(this.gameModel.get("options"), function(option){
-      options[option] = self.$(self.ui[option]).val();
+      var inputEl = self.$(self.ui[option]);
+      if (inputEl.attr("type") == "checkbox"){
+        options[option] = inputEl.is(":checked");
+      } else {
+        options[option] = self.$(self.ui[option]).val();
+      }
     });
     return options;
   },

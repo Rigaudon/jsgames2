@@ -109,10 +109,10 @@ var ChatView = Marionette.View.extend({
   onChatInput: function(e){
     var keycode = (e.keyCode ? e.keyCode : e.which);
     if (keycode == "13"){
-        this.sendChatMessage($(e.target).val().trim());
-        this.$(e.target).val("");
-        e.preventDefault();
-        return false;
+      this.sendChatMessage($(e.target).val().trim());
+      this.$(e.target).val("");
+      e.preventDefault();
+      return false;
     }
   },
 

@@ -51,6 +51,7 @@
 		"options": [
 			"roomName",
 			"roomPassword",
+			"expansionImploding",
 			"start"
 		]
 	}

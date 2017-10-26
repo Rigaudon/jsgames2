@@ -1,5 +1,5 @@
 {
-	"cards": [
+	"base": [
 		{
 			"id": "cat1",
 			"num": 4,
@@ -38,7 +38,7 @@
 		{
 			"id": "stf",
 			"num": 5,
-			"name": "See The Future",
+			"name": "See the Future",
 			"type": "stf",
 			"variableImage": true
 		},
@@ -78,6 +78,43 @@
 			"variableImage": true
 		}
 	],
+	"expansionImploding": [
+		{
+			"id": "feral",
+			"num": 4,
+			"name": "Feral Cat",
+			"type": "feral",
+			"variableImage": false
+		},
+		{
+			"id": "tattack",
+			"num": 3,
+			"name": "Targeted Attack",
+			"type": "tattack",
+			"variableImage": true
+		},
+		{
+			"id": "atf",
+			"num": 4,
+			"name": "Alter the Future",
+			"type": "atf",
+			"variableImage": true
+		},
+		{
+			"id": "bdraw",
+			"num": 4,
+			"name": "Draw from the Bottom",
+			"type": "bdraw",
+			"variableImage": true
+		},
+		{
+			"id": "reverse",
+			"num": 4,
+			"name": "Reverse",
+			"type": "reverse",
+			"variableImage": true
+		}
+	],
 	"defuse": {
 		"id": "defuse",
 		"num": 6,
@@ -91,5 +128,12 @@
 		"type": "explode",
 		"num": 4,
 		"variableImage": true
+	},
+	"implodingKitten": {
+		"id": "impldktn",
+		"name": "Imploding Kitten",
+		"type": "implode",
+		"num": 1,
+		"variableImage": false
 	}
 }
