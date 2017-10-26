@@ -22,9 +22,14 @@ var UnoRoomView = CardGameView.extend({
     "choose": ".chooseOptions",
   }, CardGameView.prototype.regions),
 
+  ui: _.assign({
+    "unoButton": ".unoButton"
+  }, CardGameView.prototype.ui),
+
   events: _.assign({
     "click @ui.deck": "drawCard",
-    "click @ui.card": "onClickCard"
+    "click @ui.card": "onClickCard",
+    "click @ui.unoButton": "callUno"
   }, CardGameView.prototype.events),
 
   cardPathRoot: "/static/images/assets/uno/",
@@ -55,6 +60,12 @@ var UnoRoomView = CardGameView.extend({
 
   onPut: function(){
     return this.model.isMyTurn();
+  },
+
+  callUno: function(){
+    $(this.ui.unoButton).css("display", "none");
+    this.model.callUno();
+    window.playSound("uno");
   },
 
   onCardSelected: function(card){
@@ -116,7 +127,7 @@ var UnoRoomView = CardGameView.extend({
     var fromEl = this.model.getPlayerById(options.from).el;
     var self = this;
     var player = self.model.getPlayerById(options.from);
-    var statusText = player.name + " played " + options.card.name;
+    var statusText = player.name + " played a " + options.card.name;
     $(self.regions.status).text(statusText);
     if (options.remove){
       //remove options.remove.card x options.remove.amount from hand
@@ -160,6 +171,18 @@ var UnoRoomView = CardGameView.extend({
       keyboard: true
     });
   },
+
+  updatePlayer: function(){
+    CardGameView.prototype.updatePlayer.call(this);
+    if (this.model.canCallUno){
+      $(this.ui.unoButton).css("display", "block");
+    }
+  },
+
+  onPlayerWin: function(message){
+    CardGameView.prototype.onPlayerWin.call(this, message);
+    $(this.regions.hand).empty();
+  }
 });
 
 module.exports = UnoRoomView;

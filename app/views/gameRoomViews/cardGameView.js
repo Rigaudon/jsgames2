@@ -115,6 +115,8 @@ var CardGameView = Marionette.View.extend({
     if (gameState && !_.isEmpty(gameState.hand)){
       this.renderCards(gameState);
       this.renderCardCounts();
+    } else {
+      $(this.regions.hand).empty();
     }
   },
 
@@ -243,7 +245,7 @@ var CardGameView = Marionette.View.extend({
     this.model.get("players").forEach(function(player, i){
       var playerEl = $(playerSeats[i]);
       var handCountEl = playerEl.find(".numCards");
-      handCountEl.text(player.handSize);
+      handCountEl.text(player.handSize || "");
     });
   },
 

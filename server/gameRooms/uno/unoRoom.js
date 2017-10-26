@@ -1,7 +1,7 @@
 var Room = require("../room");
 var _ = require("lodash");
 var hostCommands = ["startGame"];
-var commands = ["playCard", "drawCard", "forceChoose"];
+var commands = ["playCard", "drawCard", "forceChoose", "callUno"];
 var STARTING_HAND_CARDS = 7;
 var UnoCards = require("./unoCards.json");
 
@@ -47,6 +47,9 @@ var UnoRoom = Room.extend({
       case "forceChoose":
         self.drawAndPlay(playerId, options.card);
         break;
+      case "callUno":
+        self.callUno(playerId);
+        break;
       default:
         console.error("Cannot find command " + command);
         break;
@@ -73,10 +76,37 @@ var UnoRoom = Room.extend({
       gameState.hands = self.initializeHands();
       gameState.turnPlayer = players.at(self.randomIndex(players.length));
       gameState.direction = 1;
+      gameState.calledOutPlayers = new Set();
       self.emitToAllExcept();
       self.emitGameMessage({
         "message": "gameStart"
       });
+    }
+  },
+
+  callUno: function(playerId){
+    if (!this.inProgress()){
+      return false;
+    }
+    var self = this;
+    var gameState = this.get("gameState");
+    if (gameState){
+      var hands = gameState.hands;
+      var calledOut = 0;
+      Object.keys(hands).forEach(function(player){
+        if (hands[player].length == 1 && !gameState.calledOutPlayers.has(player)){
+          calledOut++;
+          gameState.calledOutPlayers.add(player);
+          if (player != playerId){
+            self.drawCard(player, false);
+            self.drawCard(player, false);
+          }
+        }
+      });
+      if (calledOut == 0){
+        self.drawCard(playerId, false);
+        self.drawCard(playerId, false);
+      }
     }
   },
 
@@ -124,7 +154,7 @@ var UnoRoom = Room.extend({
       }
       return;
     }
-
+    gameState.calledOutPlayers.delete(playerId);
     if (progress && this.verifyPlayable({
       source: playerId,
       card: card,
@@ -148,7 +178,9 @@ var UnoRoom = Room.extend({
         "playerId": playerId,
         "card": card
       });
-      this.progressTurn();
+      if (progress){
+        this.progressTurn();
+      }
     }
 
   },
@@ -286,8 +318,8 @@ var UnoRoom = Room.extend({
     if (gameState.turnPlayer && gameState.turnPlayer.get("id") == socket.id){
       this.progressTurn();
     }
-    if (gameState.favor && gameState.favor.target == socket.id){
-      gameState.favor = {};
+    if (this.get("players").length < 2){
+      this.resetDefaultGamestate();
     }
     Room.prototype.playerLeave.call(this, socket);
   },
@@ -423,11 +455,10 @@ var UnoRoom = Room.extend({
       "wild4": "draw 4",
       "wild": "card"
     };
-    var cardName = color;
     if (type == "number"){
-      return cardName + " " + value;
+      return color + " " + value;
     } else {
-      return cardName + " " + (types[type] || type);
+      return color + " " + (types[type] || type);
     }
   },
 
@@ -449,7 +480,6 @@ var UnoRoom = Room.extend({
     });
 
     return hands;
-
   },
 
   gameStateJson: function(gameState, socketId){

@@ -29,6 +29,17 @@ var UnoClient = CardGameClient.extend({
     }
   },
 
+  canCallUno: false,
+  callUno: function(){
+    if (this.canCallUno){
+      this.socket.emit("gameMessage", {
+        command: "callUno",
+        roomId: this.get("id"),
+      });
+      this.canCallUno = false;
+    }
+  },
+
   playCard: function(options){
     if (options.card && this.validatePlayable(options.card)){
       this.socket.emit("gameMessage", {
@@ -84,6 +95,11 @@ var UnoClient = CardGameClient.extend({
   onGameStart: function(){
     //console.log("Game started");
   },
+
+  onUpdatePlayer: function(newPlayer){
+    CardGameClient.prototype.onUpdatePlayer.call(this, newPlayer);
+    this.canCallUno = true;
+  }
 });
 
 module.exports = UnoClient;

@@ -10,6 +10,44 @@
     background-image: url("/static/images/assets/uno/blank.png");
   }
 
+  .unoButtonCell{
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .unoButton{
+      font-weight: bold;
+      display: none;
+      border-radius: 50%;
+      height: 100%;
+      width: 100%;
+      font-size: 40px;
+      margin: 0;
+       background-color: #C63702;
+      background-image: linear-gradient(167deg, rgba(255, 255, 255, 0.1) 50%, rgba(0, 0, 0, 0) 55%), linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0));
+      box-shadow: 0 0 0 1px #C63702 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #AD3002, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5);
+      color: #FFF;
+      font-family: "Lucida Grande", Arial, sans-serif;
+      &:hover{
+        background-color: #D13902;
+        box-shadow: 0 0 0 1px #C63702 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 10px 0 0 #AD3002, 0 10px 0 1px rgba(0, 0, 0, 0.4), 0 10px 8px 1px rgba(0, 0, 0, 0.6);
+        top: -2px;
+        color: white;
+      }
+      &:active{
+        box-shadow: 0 0 0 1px #AD3002 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 0 0 1px rgba(0, 0, 0, 0.4);
+        -moz-transform: translateY(10px);
+        -ms-transform: translateY(10px);
+        -webkit-transform: translateY(10px);
+        transform: translateY(10px);
+        color: white;
+      }
+    }
+  }
+
   .deck{
     background-image: url("/static/images/assets/uno/back.png");
   }
@@ -24,4 +62,4 @@
   		}
   	}
   }
-} 
+}
