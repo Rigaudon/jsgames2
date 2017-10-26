@@ -12,9 +12,7 @@ For development, run `npm run server`.
 # To do
 - Implement games
 	- Exploding Kittens expansion
-	- Exploding Kittens Sort button
 	- Uno
-		- force player to play card they drew if able
 		- uno button
 	- Pictionary ?
 	- Dominion
@@ -25,7 +23,7 @@ For development, run `npm run server`.
 - Add twitch emotes to chat
 
 # Bugs
-- Cats dancing on certain size screens when playing cards
+- Cats dancing on certain size screens when playing cards (try using transforms instead of transition)
 
 # Sources/credits
 - Sounds taken from free domain.

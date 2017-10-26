@@ -389,7 +389,7 @@ var UnoRoom = Room.extend({
                 type: card.type,
                 value: cardNum,
                 image: color + cardNum,
-                name: self.nameForCard(card.color, card.type, cardNum)
+                name: self.nameForCard(color, card.type, cardNum)
               });
             }
           } else {
@@ -398,7 +398,7 @@ var UnoRoom = Room.extend({
               type: card.type,
               value: card.type,
               image: color + card.type,
-              name: self.nameForCard(card.color, card.type)
+              name: self.nameForCard(color, card.type)
             });
           }
         }
