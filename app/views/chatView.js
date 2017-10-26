@@ -108,12 +108,12 @@ var ChatView = Marionette.View.extend({
 
   onChatInput: function(e){
     var keycode = (e.keyCode ? e.keyCode : e.which);
-	    if (keycode == "13"){
-	        this.sendChatMessage($(e.target).val().trim());
-	        this.$(e.target).val("");
-	        e.preventDefault();
-	        return false;
-	    }
+    if (keycode == "13"){
+        this.sendChatMessage($(e.target).val().trim());
+        this.$(e.target).val("");
+        e.preventDefault();
+        return false;
+    }
   },
 
   sendChatMessage: function(message){
@@ -123,7 +123,7 @@ var ChatView = Marionette.View.extend({
   messageAdded: function(){
     //Stick to bottom
     var scrollDiv = this.$(this.regions.messageList);
-    if (Math.abs(scrollDiv[0].scrollHeight-scrollDiv.scrollTop() - scrollDiv.outerHeight()) < 50){
+    if (Math.abs(scrollDiv[0].scrollHeight - scrollDiv.scrollTop() - scrollDiv.outerHeight()) < 50){
       scrollDiv.scrollTop(scrollDiv[0].scrollHeight);
     }
   },

@@ -47,7 +47,6 @@ var NamePickerView = Marionette.View.extend({
         self.model.set("ready", true);
       }
     });
-
   },
 
   showError: function(){

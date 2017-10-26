@@ -115,7 +115,7 @@ var CardGameClient = Backbone.Model.extend({
 
   removeCardFromHand: function(card){
     var hand = this.get("gameState").hand;
-    for (var i=0; i<hand.length; i++){
+    for (var i = 0; i < hand.length; i++){
       if (hand[i].id == card.id && hand[i].image == card.image){
         hand = hand.splice(i, 1);
         this.getPlayerById(this.socket.id).handSize--;

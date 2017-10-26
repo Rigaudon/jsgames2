@@ -266,7 +266,6 @@ var CardGameView = Marionette.View.extend({
       var playerNameEl = playerEl.find(".playerName");
       playerNameEl.html(player.name);
       player.el = playerEl;
-
     });
     this.updatePlayer();
   },
@@ -307,13 +306,13 @@ var CardGameView = Marionette.View.extend({
       var cardEl = $("<img class='animatedCard'>");
       cardEl.attr("src", self.pathForCard(card || "back"));
       cardEl.css({
-        left: (fromEl.position().left + (fromEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
-        top: (fromEl.position().top + (fromEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
+        left: (fromEl.position().left + (fromEl.outerWidth() - cardEl.outerWidth()) / 2) + "px",
+        top: (fromEl.position().top + (fromEl.outerHeight() - cardEl.outerHeight()) / 2) + "px"
       });
       $(self.regions.table).append(cardEl);
       cardEl.css({
-        left: (toEl.position().left + (toEl.outerWidth() - cardEl.outerWidth()) /2) + "px",
-        top: (toEl.position().top + (toEl.outerHeight() - cardEl.outerHeight()) /2) + "px"
+        left: (toEl.position().left + (toEl.outerWidth() - cardEl.outerWidth()) / 2) + "px",
+        top: (toEl.position().top + (toEl.outerHeight() - cardEl.outerHeight()) / 2) + "px"
       });
 
       var toPile = to == self.ui.pile;

@@ -72,7 +72,7 @@ var GameRoomListItem = Marionette.View.extend({
     //Check if room full
     var actions = "";
     if (this.model.get("maxPlayers") > this.model.get("players").length && this.model.get("status") == 0){
-      actions += "<button class='joinRoomBtn' id='joinRoom" + this.model.get("id") +"'>Join Room</button>";
+      actions += "<button class='joinRoomBtn' id='joinRoom" + this.model.get("id") + "'>Join Room</button>";
     }
     //if can spectate...
     //actions += "<button class='spectateBtn'>Spectate</button>";

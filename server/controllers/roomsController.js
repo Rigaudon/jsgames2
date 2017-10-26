@@ -21,7 +21,7 @@ var RoomsController = Backbone.Collection.extend({
 
   withoutPasswords: function(){
     var returnList = [];
-    for (var i=0; i<this.models.length; i++){
+    for (var i = 0; i < this.models.length; i++){
       var model = this.models[i];
       returnList.push(model.clientJSON());
     }

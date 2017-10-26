@@ -28,6 +28,8 @@
     "no-trailing-spaces": [2, { "skipBlankLines": true }],
     "no-unneeded-ternary": 2,
     "object-curly-spacing": [2, "always"],
-    "semi-spacing": [2, {"before": false, "after": true}]
+    "semi-spacing": [2, {"before": false, "after": true}],
+    "space-infix-ops": 2,
+    "padded-blocks": [2, "never"]
   }
 }

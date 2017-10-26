@@ -22,7 +22,7 @@ var ConnectFourRoom = Room.extend({
 		[0,0]...[6,0]
 		*/
     var boardState = new Array(7);
-    for (var i=0; i<boardState.length; i++){
+    for (var i = 0; i < boardState.length; i++){
       boardState[i] = new Array(6);
       boardState[i].fill(-1);
     }
@@ -34,13 +34,13 @@ var ConnectFourRoom = Room.extend({
     var boardState = gameState.boardState;
     var prettyState = [];
     prettyState.push("_______________");
-    for (var i=0; i<6; i++){
+    for (var i = 0; i < 6; i++){
       var lineStr = "|";
-      for (var j=0; j<7; j++){
-        if (boardState[j][5-i] == -1){
-          lineStr+= "_|";
+      for (var j = 0; j < 7; j++){
+        if (boardState[j][5 - i] == -1){
+          lineStr += "_|";
         } else {
-          lineStr+= boardState[j][5-i] + "|";
+          lineStr += boardState[j][5 - i] + "|";
         }
       }
       prettyState.push(lineStr);
@@ -89,7 +89,9 @@ var ConnectFourRoom = Room.extend({
         }
         break;
       case "kickOpponent":
-        var otherPlayer = players.filter(function(player){ return player.id != playerId; })[0];
+        var otherPlayer = players.filter(function(player){
+          return player.id != playerId;
+        })[0];
         if (otherPlayer){
           self.kickPlayer(otherPlayer);
         }
@@ -174,16 +176,16 @@ var ConnectFourRoom = Room.extend({
     var board = this.get("gameState").boardState;
     var inARow = 0;
     var prev = -1;
-    for (var i=0; i<board.length; i++){
+    for (var i = 0; i < board.length; i++){
       if (board[i][row] == -1){
         inARow = 0;
       } else if (board[i][row] == prev){
         inARow++;
         if (inARow >= 4){
           return [[i, row],
-            [i-1, row],
-            [i-2, row],
-            [i-3, row]];
+            [i - 1, row],
+            [i - 2, row],
+            [i - 3, row]];
         }
       } else {
         prev = board[i][row];
@@ -197,16 +199,16 @@ var ConnectFourRoom = Room.extend({
     var boardCol = this.get("gameState").boardState[col];
     var inARow = 0;
     var prev = -1;
-    for (var i=0; i<boardCol.length; i++){
+    for (var i = 0; i < boardCol.length; i++){
       if (boardCol[i] == -1){
         inARow = 0;
       } else if (boardCol[i] == prev){
         inARow++;
         if (inARow >= 4){
           return [[col, i],
-            [col, i-1],
-            [col, i-2],
-            [col, i-3]];
+            [col, i - 1],
+            [col, i - 2],
+            [col, i - 3]];
         }
       } else {
         prev = boardCol[i];
@@ -230,9 +232,9 @@ var ConnectFourRoom = Room.extend({
         inARow++;
         if (inARow >= 4){
           return [[col, row],
-            [col-1, row-1],
-            [col-2, row-2],
-            [col-3, row-3]];
+            [col - 1, row - 1],
+            [col - 2, row - 2],
+            [col - 3, row - 3]];
         }
       } else {
         prev = board[col][row];
@@ -245,7 +247,7 @@ var ConnectFourRoom = Room.extend({
   },
 
   checkBackwardDiagForWin: function(col, row){
-    var edge = Math.min(col, 5-row);
+    var edge = Math.min(col, 5 - row);
     col -= edge;
     row += edge;
     var board = this.get("gameState").boardState;
@@ -258,9 +260,9 @@ var ConnectFourRoom = Room.extend({
         inARow++;
         if (inARow >= 4){
           return [[col, row],
-            [col-1, row+1],
-            [col-2, row+2],
-            [col-3, row+3]];
+            [col - 1, row + 1],
+            [col - 2, row + 2],
+            [col - 3, row + 3]];
         }
       } else {
         prev = board[col][row];

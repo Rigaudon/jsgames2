@@ -12,8 +12,8 @@ For development, run `npm run server`.
 # To do
 - Implement games
 	- Exploding Kittens expansion
+  - Dominion
 	- Pictionary ?
-	- Dominion
 	- Othello ?
 	- Cards against humanity ?
 - Add Spectate mode

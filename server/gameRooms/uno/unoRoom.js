@@ -142,7 +142,7 @@ var UnoRoom = Room.extend({
     });
   },
 
-  drawCard: function(playerId, progress=true){
+  drawCard: function(playerId, progress = true){
     var gameState = this.get("gameState");
     if ((!this.inProgress() || gameState.turnPlayer.get("id") != playerId) && progress && !gameState.awaiting){
       return;
@@ -186,7 +186,6 @@ var UnoRoom = Room.extend({
         this.progressTurn();
       }
     }
-
   },
 
   drawAndPlay: function(playerId, card){
@@ -220,14 +219,14 @@ var UnoRoom = Room.extend({
   },
 
   removeCardsFromHand: function(playerId, options){
-    for (var i=0; i<options.amount; i++){
+    for (var i = 0; i < options.amount; i++){
       this.removeCardFromHand(playerId, options.card);
     }
   },
 
   removeCardFromHand: function(playerId, card){
     var hand = this.get("gameState").hands[playerId];
-    for (var i=0; i<hand.length; i++){
+    for (var i = 0; i < hand.length; i++){
       if (hand[i].type == card.type && (hand[i].color == card.color || card.type == "wild" || card.type == "wild4")){
         return hand.splice(i, 1);
       }
@@ -303,7 +302,6 @@ var UnoRoom = Room.extend({
       this.get("gameState").direction = this.get("gameState").direction * -1;
       this.progressTurn();
     }
-
   },
 
   validColors: ["red", "yellow", "green", "blue"],
@@ -417,9 +415,9 @@ var UnoRoom = Room.extend({
     var self = this;
     _.forEach(UnoCards.cards, function(card){
       _.forEach(card.colors, function(color){
-        for (var i=0; i<card.count; i++){
+        for (var i = 0; i < card.count; i++){
           if (card.type == "number"){
-            for (var cardNum=card.min; cardNum<=card.max; cardNum++){
+            for (var cardNum = card.min; cardNum <= card.max; cardNum++){
               deck.push({
                 color: color,
                 type: card.type,

@@ -38,7 +38,7 @@ var GameRoom = Backbone.Model.extend({
         errors.push(validity.message);
       }
     });
-    if (errors.length==0){
+    if (errors.length == 0){
       self.trigger("clear:errors");
       return true;
     } else {

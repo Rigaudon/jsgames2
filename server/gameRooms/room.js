@@ -95,7 +95,7 @@ var Room = Backbone.Model.extend({
 
     var myPlayers = this.get("players").models;
     var players = [];
-    for (var i=0; i<myPlayers.length; i++){
+    for (var i = 0; i < myPlayers.length; i++){
       players.push(this.transformPlayerJson(myPlayers[i].clientJSON()));
     }
     returnObj.players = players;

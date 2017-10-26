@@ -40,7 +40,7 @@ var EffectStack = function(card, resolve, options){
     }
   }
   this.top = function(){
-    return this.stack[this.stack.length-1].card;
+    return this.stack[this.stack.length - 1].card;
   }
   this.bottom = function(){
     return this.stack[0].card;

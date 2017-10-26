@@ -131,7 +131,7 @@ var ConnectFourRoomView = Marionette.View.extend({
     preview.attr("src", "/static/images/assets/connectFour/c4" + this.model.get("myColor") + ".png");
     preview.css("width", width);
     preview.css("left", left + 2);
-    preview.css("top", -1*width/2);
+    preview.css("top", -1 * width / 2);
   },
 
   animatePreview: function(options){
@@ -144,7 +144,7 @@ var ConnectFourRoomView = Marionette.View.extend({
     var pieceImg = "/static/images/assets/connectFour/c4" + options.color + ".png";
     preview.attr("src", pieceImg);
     preview.css("width", cell.width());
-    preview.css("top", -1*cell.width()/2);
+    preview.css("top", -1 * cell.width() / 2);
     preview.css("left", cell.position().left + 2);
     preview.css("display", "block");
     preview.animate({
@@ -161,14 +161,16 @@ var ConnectFourRoomView = Marionette.View.extend({
     if (gameState && gameState.boardState){
       var boardState = gameState.boardState;
       var highlight = gameState.highlight;
-      for (var col=0; col<boardState.length; col++){
-        for (var row=0; row<boardState[col].length; row++){
+      for (var col = 0; col < boardState.length; col++){
+        for (var row = 0; row < boardState[col].length; row++){
           if (boardState[col][row] != -1){
-            var cell = this.$el.find(`.connectFourBoard .square .row:nth-child(${6-row}) .cell:nth-child(${1+col})`);
+            var cell = this.$el.find(`.connectFourBoard .square .row:nth-child(${6 - row}) .cell:nth-child(${1 + col})`);
             var color = gameState.colors[boardState[col][row]];
             var pieceImg = "/static/images/assets/connectFour/c4" + color + ".png";
             cell.css("background-image", `url(${pieceImg})`);
-            if (highlight && highlight.filter(function(val){ return _.isEqual(val, [col, row]); }).length > 0){
+            if (highlight && highlight.filter(function(val){
+              return _.isEqual(val, [col, row]);
+            }).length > 0){
               cell.css("background-color", color);
             }
           }

@@ -2,7 +2,7 @@ require("dotenv").config()
 
 var express = require("express");
 var server = express();
-server.use(express.static(__dirname+"/"))
+server.use(express.static(__dirname + "/"))
 var http = require("http").Server(server);
 var io = require("socket.io")(http);
 var mem = require("./server/initializeState"); //Object used to store server state

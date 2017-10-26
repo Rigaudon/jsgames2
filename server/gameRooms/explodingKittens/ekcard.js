@@ -6,7 +6,7 @@ var Card = function(card, i) {
     this.image = card.image;
   } else {
     if (card.variableImage){
-      this.image = card.id + (i%card.num);
+      this.image = card.id + (i % card.num);
     } else {
       this.image = card.id;
     }

@@ -47,8 +47,8 @@ function processMessage(socket, message, mem){
       var room = mem.rooms.get(message.args[1]);
       if (room){
         returnMessage = "Displaying details of room " + message.args[1] + "\n";
-        returnMessage+= JSON.stringify(room.toJSON(), null, 4) + "\n";
-        returnMessage+= JSON.stringify(room.prettifyGameState(), null, 4);
+        returnMessage += JSON.stringify(room.toJSON(), null, 4) + "\n";
+        returnMessage += JSON.stringify(room.prettifyGameState(), null, 4);
       } else {
         returnMessage = "No room found with id " + message.args[1];
       }
@@ -112,13 +112,14 @@ function getAllRooms(mem){
     if (room.options.roomPassword){
       formatted += `\n\tPassword: ${room.options.roomPassword}`;
     }
-
   });
   return formatted;
 }
 
 function removeUser(id){
-  _.remove(authenticated, function(n){ return n==id; });
+  _.remove(authenticated, function(n){
+    return n == id;
+  });
 }
 
 module.exports = {
