@@ -93,6 +93,7 @@ var ExplodingKittensRoom = Room.extend({
       gameState.isAttacked = false;
       gameState.isExploding = undefined;
       gameState.direction = 1;
+      gameState.implodingKittenDrawn = false;
       self.emitToAllExcept();
       self.emitGameMessage({
         "message": "gameStart"
@@ -261,10 +262,7 @@ var ExplodingKittensRoom = Room.extend({
     if (card.type == "explode"){
       this.onDrawExplodingKitten(card);
     } else if (card.type == "implode"){
-      this.explode({
-        player: playerId,
-        card: card
-      });
+      this.onDrawImplodingKitten(playerId, card);
     } else {
       gameState.hands[playerId].push(card);
       this.emitGameMessage({
@@ -277,6 +275,12 @@ var ExplodingKittensRoom = Room.extend({
         "card": card
       });
       this.progressTurn();
+    }
+    var topCard = gameState.deck[gameState.deck.length - 1];
+    if (topCard.type == "implode" && gameState.implodingKittenDrawn){
+      this.emitGameMessage({
+        "message": "topdeckImplode"
+      });
     }
   },
 
@@ -307,6 +311,24 @@ var ExplodingKittensRoom = Room.extend({
         delay: 5000,
         setTimer: this.setTimer.bind(this)
       });
+    }
+  },
+
+  onDrawImplodingKitten: function(playerId, card){
+    var gameState = this.get("gameState");
+    if (gameState.implodingKittenDrawn){
+      this.explode({
+        player: playerId,
+        card: card
+      });
+    } else {
+      gameState.implodingKittenDrawn = true;
+      this.emitGameMessage({
+        "message": "implodingKittenDrawn"
+      });
+      gameState.deck.push(card);
+      this.shuffleDeck();
+      this.progressTurn();
     }
   },
 
