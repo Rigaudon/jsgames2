@@ -4,9 +4,19 @@ var CardGameClient = require("./cardGameClient");
 var UnoClient = CardGameClient.extend({
   actions: _.assign({
     resetDeckFromPile: function(message){
-      this.gameState.pile = [this.gameState.pile.pop()];
-      this.gameState.deckCount = message.deckCount;
+      var gameState = this.get("gameState");
+      gameState.pile = [gameState.pile.pop()];
+      gameState.deckCount = message.deckCount;
       this.trigger("update:deck");
+    },
+    drawAndPlay: function(message){
+      var gameState = this.get("gameState");
+      gameState.pile.push(message.card);
+      gameState.deckCount--;
+      this.trigger("player:dap", message);
+    },
+    forcePlay: function(message){
+      this.trigger("forcePlay", message.card);
     }
   }, CardGameClient.prototype.actions),
 
@@ -31,6 +41,14 @@ var UnoClient = CardGameClient.extend({
         card: options.card
       });
     }
+  },
+
+  forceChoose: function(card){
+    this.socket.emit("gameMessage", {
+      command: "forceChoose",
+      roomId: this.get("id"),
+      card: card
+    });
   },
 
   validatePlayable: function(card){

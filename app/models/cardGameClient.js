@@ -69,8 +69,8 @@ var CardGameClient = Backbone.Model.extend({
       this.onMoveCard(message);
       this.trigger("card:move", message);
     },
-    cardPlayed: function(){
-      this.onCardPlayed();
+    cardPlayed: function(message){
+      this.onCardPlayed(message);
       this.trigger("card:played", message);
     },
     gameStart: function(message){
@@ -78,7 +78,7 @@ var CardGameClient = Backbone.Model.extend({
       this.trigger("game:start");
     },
     playerWin: function(message){
-      this.onPlayerWin();
+      this.onPlayerWin(message);
       this.trigger("player:win", message);
     },
     invalidCard: function(){

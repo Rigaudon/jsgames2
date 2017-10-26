@@ -14,7 +14,7 @@ var RoomsController = Backbone.Collection.extend({
     "2": UnoRoom,
     "4": ExplodingKittensRoom,
   },
-	
+
   emitActiveRooms: function(socket){
     socket.emit("activeRooms", this.withoutPasswords());
   },
@@ -66,13 +66,13 @@ var RoomsController = Backbone.Collection.extend({
           return returnVal;
         }
       });
-			
+
       returnVal = {
         valid: true,
         message: ""
       };
     }
-		
+
     return returnVal;
   },
 
@@ -140,6 +140,7 @@ var RoomsController = Backbone.Collection.extend({
 				room.get("options").roomPassword == options.password &&
 				!room.get("players").get(playerId) &&
 				!this.playerMap[playerId] &&
+        room.get("status") == 0 &&
 				room.get("maxPlayers") > room.get("players").length;
   },
 

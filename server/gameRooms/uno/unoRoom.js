@@ -1,7 +1,7 @@
 var Room = require("../room");
 var _ = require("lodash");
 var hostCommands = ["startGame"];
-var commands = ["playCard", "drawCard"];
+var commands = ["playCard", "drawCard", "forceChoose"];
 var STARTING_HAND_CARDS = 7;
 var UnoCards = require("./unoCards.json");
 
@@ -44,6 +44,9 @@ var UnoRoom = Room.extend({
       case "drawCard":
         self.drawCard(playerId);
         break;
+      case "forceChoose":
+        self.drawAndPlay(playerId, options.card);
+        break;
       default:
         console.error("Cannot find command " + command);
         break;
@@ -66,8 +69,8 @@ var UnoRoom = Room.extend({
     if (players.length >= 2){
       self.set("status", 2);
       gameState.deck = self.initializeDeck();
+      gameState.pile = self.initializePile();
       gameState.hands = self.initializeHands();
-      gameState.pile = [gameState.deck.pop()];
       gameState.turnPlayer = players.at(self.randomIndex(players.length));
       gameState.direction = 1;
       self.emitToAllExcept();
@@ -78,7 +81,8 @@ var UnoRoom = Room.extend({
   },
 
   playCard: function(options){
-    if (this.verifyPlayable(options)){
+    var gameState = this.get("gameState");
+    if (this.verifyPlayable(options) && !gameState.awaiting){
       var response = {
         "message": "cardPlayed",
         "from": options.source,
@@ -91,7 +95,6 @@ var UnoRoom = Room.extend({
       };
       this.removeCardsFromHand(options.source, response.remove);
       this.getSocketFromPID(options.source).emit("gameMessage", response);
-      var gameState = this.get("gameState");
       gameState.pile.push(options.card);
       this.performEffect(options);
     } else {
@@ -107,11 +110,7 @@ var UnoRoom = Room.extend({
 
   drawCard: function(playerId, progress=true){
     var gameState = this.get("gameState");
-    if ((!this.inProgress() || gameState.turnPlayer.get("id") != playerId) && progress){
-      return;
-    }
-    if (gameState.deck.length == 0 && gameState.pile.length == 0){
-      this.progressTurn();
+    if ((!this.inProgress() || gameState.turnPlayer.get("id") != playerId) && progress && !gameState.awaiting){
       return;
     }
     var card = gameState.deck.pop();
@@ -119,25 +118,51 @@ var UnoRoom = Room.extend({
       this.resetDeckFromPile();
       card = gameState.deck.pop();
     }
-    gameState.hands[playerId].push(card);
+    if (!card){
+      if (progress){
+        this.progressTurn();
+      }
+      return;
+    }
+
+    if (progress && this.verifyPlayable({
+      source: playerId,
+      card: card,
+      doNotCheckHand: true
+    })){
+      this.drawAndPlay(playerId, card);
+    } else if (progress && (card.type == "wild" || card.type == "wild4")){
+      this.getSocketFromPID(playerId).emit("gameMessage", {
+        "message": "forcePlay",
+        "card": card
+      });
+      gameState.awaiting = card;
+    } else {
+      gameState.hands[playerId].push(card);
+      this.emitGameMessage({
+        "message": "playerDraw",
+        "playerId": playerId
+      });
+      this.getSocketFromPID(playerId).emit("gameMessage", {
+        "message": "playerDraw",
+        "playerId": playerId,
+        "card": card
+      });
+      this.progressTurn();
+    }
+
+  },
+
+  drawAndPlay: function(playerId, card){
+    var gameState = this.get("gameState");
+    gameState.awaiting = undefined;
+    gameState.pile.push(card);
     this.emitGameMessage({
-      "message": "playerDraw",
-      "playerId": playerId
-    });
-    this.getSocketFromPID(playerId).emit("gameMessage", {
-      "message": "playerDraw",
+      "message": "drawAndPlay",
       "playerId": playerId,
       "card": card
     });
-    if (progress){
-      if (!this.verifyPlayable({
-        source: playerId,
-        card: card
-      })){
-        this.progressTurn();
-      }
-    }
-
+    this.performEffect({ card: card });
   },
 
   resetDeckFromPile: function(){
@@ -147,6 +172,7 @@ var UnoRoom = Room.extend({
       card = gameState.pile.shift();
       if (card.type == "wild" || card.type == "wild4"){
         card.color = "wild";
+        card.image = card.color + card.type;
       }
       gameState.deck.push(card);
     }
@@ -292,10 +318,15 @@ var UnoRoom = Room.extend({
       return false;
     }
     var gameState = this.get("gameState");
-    var inHand = this.handContains(options.source, {
-      color: options.card.color,
-      type: options.card.type
-    });
+    var inHand;
+    if (options.doNotCheckHand){
+      inHand = [true];
+    } else {
+      inHand = this.handContains(options.source, {
+        color: options.card.color,
+        type: options.card.type
+      });
+    }
     var topCard = this.getTopCard();
     if (options.card.type != "wild" && options.card.type != "wild4"){
       if (topCard.type == "wild" || topCard.type == "wild4"){
@@ -313,7 +344,6 @@ var UnoRoom = Room.extend({
         return false;
       }
     }
-
     return gameState.turnPlayer.get("id") == options.source && inHand.length;
   },
 
@@ -348,6 +378,7 @@ var UnoRoom = Room.extend({
 
   initializeDeck: function(){
     var deck = [];
+    var self = this;
     _.forEach(UnoCards.cards, function(card){
       _.forEach(card.colors, function(color){
         for (var i=0; i<card.count; i++){
@@ -358,7 +389,7 @@ var UnoRoom = Room.extend({
                 type: card.type,
                 value: cardNum,
                 image: color + cardNum,
-                name: "test"
+                name: self.nameForCard(card.color, card.type, cardNum)
               });
             }
           } else {
@@ -367,13 +398,37 @@ var UnoRoom = Room.extend({
               type: card.type,
               value: card.type,
               image: color + card.type,
-              name: "test"
+              name: self.nameForCard(card.color, card.type)
             });
           }
         }
       });
     });
     return _.shuffle(deck);
+  },
+
+  initializePile: function(){
+    var deck = this.get("gameState").deck;
+    var card = deck.pop();
+    while (card.type != "number"){
+      deck.unshift(card);
+      card = deck.pop();
+    }
+    return [card];
+  },
+
+  nameForCard: function(color, type, value){
+    var types = {
+      "draw2": "draw 2",
+      "wild4": "draw 4",
+      "wild": "card"
+    };
+    var cardName = color;
+    if (type == "number"){
+      return cardName + " " + value;
+    } else {
+      return cardName + " " + (types[type] || type);
+    }
   },
 
   shuffleDeck: function(){

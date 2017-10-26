@@ -14,12 +14,10 @@ For development, run `npm run server`.
 	- Exploding Kittens expansion
 	- Exploding Kittens Sort button
 	- Uno
-		- fix name of cards
-		- reshuffle deck
 		- force player to play card they drew if able
 		- uno button
 	- Pictionary ?
-	- Dominion 
+	- Dominion
 	- Othello ?
 	- Cards against humanity ?
 - Add Spectate mode

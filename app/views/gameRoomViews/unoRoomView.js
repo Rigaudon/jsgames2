@@ -13,7 +13,9 @@ var UnoRoomView = CardGameView.extend({
   playerTemplate: fs.readFileSync("./app/templates/partials/cardPlayer.html", "utf8"),
   className: CardGameView.prototype.className + " unoRoom",
   modelEvents: _.assign({
-    "update:deck": "renderCardCounts"
+    "update:deck": "renderCardCounts",
+    "player:dap": "onDrawAndPlay",
+    "forcePlay": "onForcePlayWild"
   }, CardGameView.prototype.modelEvents),
 
   regions: _.assign({
@@ -66,6 +68,47 @@ var UnoRoomView = CardGameView.extend({
     } else {
       this.onPlay(card);
     }
+  },
+
+  onDrawAndPlay: function(message){
+    var self = this;
+    this.animateCardMove(this.ui.deck, this.ui.pile, message.card.image)
+      .then(function(){
+        $(self.ui.pile).css("background-image", "url(" + self.pathForCard(message.card.image) + ")");
+      });
+    window.playSound(this.cardSounds);
+  },
+
+  onForcePlayWild: function(card){
+    var self = this;
+    var chooseEl = $(this.regions.choose);
+    chooseEl.find(".modal-header").text("Pick a color");
+    var bodyEl = chooseEl.find(".modal-body");
+    var closeBtn = chooseEl.find(".closeModal").detach();
+    bodyEl.empty();
+    var colors = ["red", "yellow", "green", "blue"];
+    colors.forEach(function(color){
+      var cardWrapper = $("<div></div>");
+      var cardEl = $("<img/>");
+      cardWrapper.addClass("pickCard");
+      cardEl.attr("src", self.pathForCard(color + card.type));
+      cardEl.click(function(){
+        chooseEl.modal("hide");
+        card.color = color;
+        card.image = card.color + card.type;
+        self.model.forceChoose(card);
+      });
+      cardWrapper.append(cardEl);
+      bodyEl.append(cardWrapper);
+    });
+    chooseEl.off("hidden.bs.modal").on("hidden.bs.modal", function(){
+      chooseEl.find(".modal-dialog").prepend(closeBtn);
+    });
+    chooseEl.modal({
+      show: true,
+      backdrop: "static",
+      keyboard: false
+    });
   },
 
   cardPlayed: function(options){
