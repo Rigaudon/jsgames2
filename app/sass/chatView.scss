@@ -1,5 +1,3 @@
-@import "variables";
-
 .chatView{
 	height: 100%;
 	background-color: $passive-color;
@@ -30,7 +28,7 @@
 			max-width: 400px;
 			width: 25vw;
 		}
-		
+
 		.chatHeader{
 			height: 50px;
 			min-height: 50px;
@@ -86,7 +84,7 @@
 		}
 
 		::-webkit-scrollbar-track {
-		    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+		    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 		    -webkit-border-radius: 10px;
 		    border-radius: 10px;
 		}
@@ -94,7 +92,7 @@
 		::-webkit-scrollbar-thumb {
 		    -webkit-border-radius: 20px;
 		    border-radius: 20px;
-		    background: rgba(0,0,0,0.5); 
+		    background: rgba(0,0,0,0.5);
 		}
 
 		ul{

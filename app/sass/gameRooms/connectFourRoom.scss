@@ -1,5 +1,3 @@
-@import "../variables";
-
 .connectFourRoom{
 	width: 100%;
 	height: 100%;
@@ -7,7 +5,7 @@
 	flex-direction: row;
 	align-items: center;
 	background: rgba(255, 255, 255, 0.5);
-	
+
 	.connectFourMain{
 		flex-grow: 1;
 		height: 100%;
@@ -64,7 +62,7 @@
 			opacity: 0.85;
 			width: 50vmax;
 			height: 42.85vmax;
-		
+
 			.square{
 				border: 1px solid $primary-color;
 				top: 0;
