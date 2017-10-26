@@ -17,6 +17,10 @@ var UnoClient = CardGameClient.extend({
     },
     forcePlay: function(message){
       this.trigger("forcePlay", message.card);
+    },
+    unoCalled: function(message){
+      this.onUnoCalled();
+      this.trigger("uno:called", message.player);
     }
   }, CardGameClient.prototype.actions),
 
@@ -38,6 +42,10 @@ var UnoClient = CardGameClient.extend({
       });
       this.canCallUno = false;
     }
+  },
+
+  onUnoCalled: function(){
+    this.canCallUno = false;
   },
 
   playCard: function(options){

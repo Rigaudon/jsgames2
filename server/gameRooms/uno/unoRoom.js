@@ -107,6 +107,10 @@ var UnoRoom = Room.extend({
         self.drawCard(playerId, false);
         self.drawCard(playerId, false);
       }
+      self.emitGameMessage({
+        "message": "unoCalled",
+        "player": playerId
+      });
     }
   },
 
@@ -315,11 +319,11 @@ var UnoRoom = Room.extend({
 
   playerLeave: function(socket){
     var gameState = this.get("gameState");
+    if (this.get("players").length == 2){ // 2 because one is about to leave
+      this.resetDefaultGamestate();
+    }
     if (gameState.turnPlayer && gameState.turnPlayer.get("id") == socket.id){
       this.progressTurn();
-    }
-    if (this.get("players").length < 2){
-      this.resetDefaultGamestate();
     }
     Room.prototype.playerLeave.call(this, socket);
   },

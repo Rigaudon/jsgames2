@@ -15,7 +15,8 @@ var UnoRoomView = CardGameView.extend({
   modelEvents: _.assign({
     "update:deck": "renderCardCounts",
     "player:dap": "onDrawAndPlay",
-    "forcePlay": "onForcePlayWild"
+    "forcePlay": "onForcePlayWild",
+    "uno:called": "onUnoCalled"
   }, CardGameView.prototype.modelEvents),
 
   regions: _.assign({
@@ -65,7 +66,13 @@ var UnoRoomView = CardGameView.extend({
   callUno: function(){
     $(this.ui.unoButton).css("display", "none");
     this.model.callUno();
+  },
+
+  onUnoCalled: function(playerId){
+    $(this.ui.unoButton).css("display", "none");
     window.playSound("uno");
+    var player = this.model.getPlayerById(playerId);
+    $(this.regions.status).text(player.name + " called Uno!");
   },
 
   onCardSelected: function(card){
