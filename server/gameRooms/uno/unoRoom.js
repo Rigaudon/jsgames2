@@ -276,7 +276,11 @@ var UnoRoom = Room.extend({
     var players = this.get("players");
     var gameState = this.get("gameState");
     var currTurn = players.indexOf(player);
-    return players.at((currTurn + num * gameState.direction) % players.length);
+    return players.at(this.mod(currTurn + num * gameState.direction, players.length));
+  },
+
+  mod: function(n, m){
+    return ((n % m) + m) % m;
   },
 
   skip: function(){

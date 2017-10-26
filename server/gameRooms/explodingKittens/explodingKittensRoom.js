@@ -92,6 +92,7 @@ var ExplodingKittensRoom = Room.extend({
       gameState.favor = {};
       gameState.isAttacked = false;
       gameState.isExploding = undefined;
+      gameState.direction = 1;
       self.emitToAllExcept();
       self.emitGameMessage({
         "message": "gameStart"
@@ -188,16 +189,7 @@ var ExplodingKittensRoom = Room.extend({
       });
       break;
     case "explode":
-      gameState.exploded.push(options.player);
-      gameState.isExploding = undefined;
-      this.emitGameMessage({
-        "message": "exploded",
-        "player": options.player
-      });
-      if (!this.checkWin()){
-        gameState.isAttacked = false;
-        this.progressTurn();
-      }
+      this.explode(options);
       break;
     case "defuse":
       if (gameState.isExploding != options.source){
@@ -211,13 +203,43 @@ var ExplodingKittensRoom = Room.extend({
       });
       this.progressTurn();
       break;
+    //Imploding kittens
+    case "tattack":
+      gameState.isAttacked = false;
+      this.progressTurn(options.target);
+      gameState.isAttacked = true;
+      break;
+    case "reverse":
+      gameState.direction = gameState.direction * -1;
+      this.progressTurn();
+      break;
+    case "bdraw":
+      this.drawCard(options.source, "bottom");
+      break;
+    case "atf":
+    case "feral":
     default:
       console.error("Card type " + options.card.type + " not implemented!");
       break;
     }
   },
 
-  drawCard: function(playerId){
+  explode: function(options){
+    var gameState = this.get("gameState");
+    gameState.exploded.push(options.player);
+    gameState.isExploding = undefined;
+    this.emitGameMessage({
+      "message": "exploded",
+      "player": options.player,
+      "card": options.card
+    });
+    if (!this.checkWin()){
+      gameState.isAttacked = false;
+      this.progressTurn();
+    }
+  },
+
+  drawCard: function(playerId, from = "top"){
     var gameState = this.get("gameState");
     if (	!this.inProgress() ||
 				gameState.turnPlayer.get("id") != playerId ||
@@ -226,13 +248,23 @@ var ExplodingKittensRoom = Room.extend({
 				!!gameState.effectStack){
       return;
     }
-    var card = gameState.deck.pop();
+    var card;
+    if (from == "top"){
+      card = gameState.deck.pop();
+    } else if (from == "bottom"){
+      card = gameState.deck.shift();
+    }
     if (!card){
       console.error("Tried to draw when the deck was empty");
       return;
     }
     if (card.type == "explode"){
       this.onDrawExplodingKitten(card);
+    } else if (card.type == "implode"){
+      this.explode({
+        player: playerId,
+        card: card
+      });
     } else {
       gameState.hands[playerId].push(card);
       this.emitGameMessage({
@@ -345,34 +377,45 @@ var ExplodingKittensRoom = Room.extend({
     throw new Error("Tried to remove a nonexistant card");
   },
 
-  progressTurn: function(){
+  progressTurn: function(to){
     if (!this.inProgress()){
       return;
     }
-    var players = this.get("players");
     var gameState = this.get("gameState");
     if (gameState.isExploding){
       return false;
     }
-    var currTurn = players.indexOf(gameState.turnPlayer);
-    if (currTurn > -1){
-      if (gameState.isAttacked){
-        gameState.isAttacked = false;
-      } else {
-        for (var i = 0; i < players.length; i++){
-          currTurn = (currTurn + 1) % players.length;
-          var player = players.at(currTurn);
-          if (!this.isExploded(player.id)){
-            break;
-          }
-        }
-        gameState.turnPlayer = players.at(currTurn);
-      }
-      this.emitGameMessage({
-        message: "playerTurn",
-        player: gameState.turnPlayer.get("id")
-      });
+    if (to){
+      gameState.turnPlayer = this.get("players").get(to);
+    } else {
+      gameState.turnPlayer = this.nextPlayer();
     }
+    this.emitGameMessage({
+      message: "playerTurn",
+      player: gameState.turnPlayer.get("id")
+    });
+  },
+
+  nextPlayer: function(){
+    var players = this.get("players");
+    var gameState = this.get("gameState");
+    var currTurn = players.indexOf(gameState.turnPlayer);
+    if (gameState.isAttacked){
+      gameState.isAttacked = false;
+    } else {
+      for (var i = 0; i < players.length; i++){
+        currTurn = this.mod(currTurn + gameState.direction, players.length);
+        var player = players.at(currTurn);
+        if (!this.isExploded(player.id)){
+          break;
+        }
+      }
+    }
+    return players.at(currTurn);
+  },
+
+  mod: function(n, m){
+    return ((n % m) + m) % m;
   },
 
   playerLeave: function(socket){
@@ -471,6 +514,12 @@ var ExplodingKittensRoom = Room.extend({
     if (this.isExploded(options.source)){
       return false;
     }
+    if (this.requiresTarget(options.card.type) && !options.target){
+      return false;
+    }
+    if (options.target && !this.get("players").get(options.target)){
+      return false;
+    }
     var gameState = this.get("gameState");
     if (options.card.type != "nope" && options.source != gameState.turnPlayer.get("id")){
       return false;
@@ -505,6 +554,9 @@ var ExplodingKittensRoom = Room.extend({
     return inHand.length > 0;
   },
 
+  requiresTarget: function(type){
+    return ["cat", "favor", "tattack"].indexOf(type) > -1;
+  },
   //Return true if the target has more than one card in hand
   isValidTakeTarget: function(target){
     return this.get("gameState").hands[target].length > 0;
