@@ -5,7 +5,7 @@ var CardObj = require("./ekcard");
 var EffectStack = require("./effectStack");
 
 var hostCommands = ["startGame"];
-var commands = ["playCard", "drawCard", "giveFavor"];
+var commands = ["playCard", "drawCard", "giveFavor", "alterTheFuture"];
 
 var ExplodingKittensRoom = Room.extend({
   initialize: function(options){
@@ -57,6 +57,9 @@ var ExplodingKittensRoom = Room.extend({
       case "giveFavor":
         self.giveFavor(options);
         break;
+      case "alterTheFuture":
+        self.doAlterTheFuture(options);
+        break;
       default:
         console.error("Cannot find command " + command);
         break;
@@ -94,6 +97,7 @@ var ExplodingKittensRoom = Room.extend({
       gameState.isExploding = undefined;
       gameState.direction = 1;
       gameState.implodingKittenDrawn = false;
+      gameState.altering = undefined;
       self.emitToAllExcept();
       self.emitGameMessage({
         "message": "gameStart"
@@ -218,6 +222,8 @@ var ExplodingKittensRoom = Room.extend({
       this.drawCard(options.source, "bottom");
       break;
     case "atf":
+      this.alterTheFuture(options.source);
+      break;
     case "feral":
     default:
       console.error("Card type " + options.card.type + " not implemented!");
@@ -246,7 +252,9 @@ var ExplodingKittensRoom = Room.extend({
 				gameState.turnPlayer.get("id") != playerId ||
 				this.isExploded(playerId) ||
 				gameState.isExploding ||
-				!!gameState.effectStack){
+				!!gameState.effectStack ||
+        gameState.favor.source ||
+        gameState.altering){
       return;
     }
     var card;
@@ -353,6 +361,47 @@ var ExplodingKittensRoom = Room.extend({
     return response;
   },
 
+  alterTheFuture: function(playerId){
+    var nextCards = this.seeTheFuture();
+    this.get("gameState").altering = playerId;
+    this.getSocketFromPID(playerId).emit("gameMessage", {
+      "message": "alterTheFuture",
+      "cards": nextCards.cards
+    });
+  },
+
+  doAlterTheFuture: function(options){
+    if (!this.inProgress()){
+      return;
+    }
+    var gameState = this.get("gameState");
+    if ( !gameState ||
+        !gameState.altering ||
+        gameState.altering != options.source ||
+        this.isExploded(options.source) ||
+        gameState.isExploding){
+      return;
+    }
+    var order = options.newOrder;
+    if (!order){
+      console.error("Invalid order. Deck was not altered.");
+      return;
+    } else {
+      //Order should be given [0,1,2]
+      //And returned as (e.g.) [1,0,2]
+      //Possible to have: [1,0] or [0] for when 2 or 1 card left in deck
+      var deck = gameState.deck;
+      var altering = [];
+      order.forEach(function(num){
+        altering[num] = deck.pop();
+      });
+      while (altering.length){
+        deck.push(altering.pop());
+      }
+    }
+    gameState.altering = undefined;
+  },
+
   giveFavor: function(options){
     if (!this.inProgress()){
       return;
@@ -412,6 +461,8 @@ var ExplodingKittensRoom = Room.extend({
     } else {
       gameState.turnPlayer = this.nextPlayer();
     }
+    gameState.favor = {};
+    gameState.altering = undefined;
     this.emitGameMessage({
       message: "playerTurn",
       player: gameState.turnPlayer.get("id")
@@ -544,6 +595,9 @@ var ExplodingKittensRoom = Room.extend({
     }
     var gameState = this.get("gameState");
     if (options.card.type != "nope" && options.source != gameState.turnPlayer.get("id")){
+      return false;
+    }
+    if (gameState.favor.source || gameState.altering){
       return false;
     }
     if (!!gameState.effectStack){
