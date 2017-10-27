@@ -123,7 +123,7 @@ var ExplodingKitten = CardGameClient.extend({
   onCardPlayed: function(options){
     var self = this;
     if (this.isMe(options.from)){
-      if(options.remove){
+      if (options.remove){
         _.forEach(options.remove, function(cardToRemove){
           self.trigger("card:remove", cardToRemove);
           for (var i = 0; i < cardToRemove.amount; i++){

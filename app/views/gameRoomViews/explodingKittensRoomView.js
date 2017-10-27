@@ -89,24 +89,24 @@ var ExplodingKittensRoomView = CardGameView.extend({
     }
     $(this.regions.hand).prepend($(this.ui.pile).find(".card").detach());
     switch (card.type){
-      case "favor":
-      case "cat":
-      case "tattack":
-        this.pickPlayer(card);
-        break;
-      case "stf":
-      case "atf":
-      case "bdraw":
-      case "reverse":
-      case "attack":
-      case "skip":
-      case "shuffle":
-      case "defuse":
-      case "nope":
-        this.onPlay(card);
-        break;
-      default:
-        throw new Error("Invalid Card Type!");
+    case "favor":
+    case "cat":
+    case "tattack":
+      this.pickPlayer(card);
+      break;
+    case "stf":
+    case "atf":
+    case "bdraw":
+    case "reverse":
+    case "attack":
+    case "skip":
+    case "shuffle":
+    case "defuse":
+    case "nope":
+      this.onPlay(card);
+      break;
+    default:
+      throw new Error("Invalid Card Type!");
     }
   },
 

@@ -8,6 +8,7 @@ var assign = require("lodash").assign;
 var uglify = require("gulp-uglify");
 var eslint = require("gulp-eslint");
 var gulpIf = require("gulp-if");
+var sass = require("gulp-sass");
 
 var customOpts = {
   entries: ["./app/app.js"],
@@ -34,13 +35,13 @@ function bundle() {
 }
 
 var w = watchify(b);
-function watch() {
+function watchJs() {
   return w.bundle()
     .on("error", gutil.log.bind(gutil, "Browserify Error"))
     .pipe(source("jsgames.js"))
     .pipe(gulp.dest("./dist"));
 }
-w.on("update", watch);
+w.on("update", watchJs);
 w.on("log", gutil.log);
 
 function isFixed(file) {
@@ -57,6 +58,21 @@ function lint() {
     .pipe(eslint.failAfterError());
 }
 
+function css() {
+  return gulp.src("./app/sass/main.scss")
+    .pipe(sass({ outputStyle: "compressed" }).on("error", sass.logError))
+    .pipe(gulp.dest("./dist"));
+}
+
+function watchScss(){
+  return gulp.watch("./app/sass/**/*.scss", ["sass"]);
+}
+
 gulp.task("bundle", bundle);
-gulp.task("watch", watch);
+gulp.task("watchJs", watchJs);
 gulp.task("lint", lint);
+gulp.task("sass", css);
+gulp.task("watchSass", watchScss);
+gulp.task("default", ["watchJs", "watchSass"]);
+gulp.task("build", ["bundle", "sass"]);
+

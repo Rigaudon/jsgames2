@@ -4,12 +4,9 @@
   "description": "A more object oriented iteration of JSGames",
   "main": "entry.js",
   "scripts": {
-    "server": "concurrently --kill-others \"gulp watch\" \"node entry.js\" \"node-sass --output-style compressed -w app/sass/main.scss dist/main.css\"",
-    "bundle-js": "gulp bundle",
-    "bundle-css": "node-sass --output-style compact app/sass/main.scss dist/main.css",
+    "server": "concurrently --kill-others \"node entry.js\" \"gulp\"",
     "start": "node entry.js",
-    "watch": "gulp watch",
-    "postinstall": "gulp bundle && node-sass --output-style compact app/sass/main.scss dist/main.css",
+    "postinstall": "gulp build",
     "lint": "gulp lint"
   },
   "repository": {
@@ -55,9 +52,9 @@
     "gulp-babel": "^7.0.0",
     "gulp-eslint": "^4.0.0",
     "gulp-if": "^2.0.2",
+    "gulp-sass": "^3.1.0",
     "gulp-uglify": "^2.0.1",
     "gulp-util": "^3.0.8",
-    "node-sass": "^4.5.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.9.0"
