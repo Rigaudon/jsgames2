@@ -20,7 +20,6 @@ For development, run `gulp`.
 - Add Spectate mode
 - Add who's online list to chat
 - Add twitch emotes to chat
-- Add cookies to save user prefs (name, color)
 - Add user avatar (ability to choose animal)
 
 # Bugs

@@ -2,6 +2,7 @@ var _ = require("lodash");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
 var common = require("../common");
+var Cookie = require("js-cookie");
 
 var NamePickerView = Marionette.View.extend({
   className: "namePicker",
@@ -19,6 +20,13 @@ var NamePickerView = Marionette.View.extend({
 
   events: {
     "keypress @ui.nameInput": "onNameInput",
+  },
+
+  onRender: function(){
+    var storedUsername = Cookie.get("username");
+    if (storedUsername && /[a-zA-Z0-9-_ ]*/.test(storedUsername)){
+      $(this.ui.nameInput).val(storedUsername);
+    }
   },
 
   onNameInput: function(e){

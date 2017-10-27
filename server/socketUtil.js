@@ -1,4 +1,4 @@
-function validateName(name, mem){
+function validateName(name, players){
   var returnObj = { success: false };
   if (!name){
     returnObj.error = "Invalid name.";
@@ -6,7 +6,7 @@ function validateName(name, mem){
     returnObj.error = "Name must not be empty.";
   } else if (name.length > 15){
     returnObj.error = "Name must be shorter than 15 characters.";
-  } else if (mem.players.where({ name: name }).length > 0){
+  } else if (players.where({ name: name }).length > 0){
     returnObj.error = "Name has already been taken.";
   }
   if (!returnObj.error){
@@ -34,8 +34,13 @@ function validateMessage(message, socket, io){
 			io.sockets.adapter.rooms[message.channel].sockets[socket.id];
 }
 
+function validateColor(color){
+  return typeof color == "string" && color.length === 7 && !isNaN(parseInt(color.substring(1), 16)) && color.charAt(0) == "#";
+}
+
 module.exports = {
   randomColor: randomColor,
   validateMessage: validateMessage,
   validateName: validateName,
+  validateColor: validateColor
 };

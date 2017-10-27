@@ -1,6 +1,6 @@
 //Handling of SERVER-SIDE io events
-var util = require("./socketUtil");
 var consoleManager = require("./consoleManager");
+var _ = require("lodash");
 
 var socketEvents = function(io, mem){
   mem.rooms.io = io;
@@ -15,22 +15,13 @@ var socketEvents = function(io, mem){
     mem.rooms.emitActiveRooms(socket);
 
     //Request a name
-    socket.on("nameRequest", function(name){
-      name = name.trim();
-      var response = util.validateName(name, mem, socket);
-      let color = util.randomColor();
-      if (response.success){
-        response.color = color;
-        mem.players.addPlayer({
-          id: socket.id,
-          name: name,
-          color: color,
-          socket: socket
-        });
-      }
-      socket.emit("nameRequest", response);
+    socket.on("nameRequest", function(options){
+      socket.emit("nameRequest", mem.players.addPlayer(_.assign({
+        id: socket.id,
+        socket: socket
+      }, options)));
     });
-		
+
     //User disconnected
     socket.on("disconnect", function(){
       mem.rooms.playerLeave(socket);
@@ -68,7 +59,7 @@ var socketEvents = function(io, mem){
 
     //User requested a new color
     socket.on("pickColor", function(color){
-      mem.players.pickColor(socket.id, color);
+      socket.emit("setColor", mem.players.pickColor(socket.id, color));
     });
 
     //Game message, delegate to the room

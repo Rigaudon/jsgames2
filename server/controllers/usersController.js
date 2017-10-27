@@ -1,9 +1,19 @@
 var Backbone = require("backbone");
 var User = require("../user");
+var util = require("../socketUtil");
 
 var UsersController = Backbone.Collection.extend({
   addPlayer: function(options){
-    this.add(new User(options));
+    options.name = options.name.trim();
+    var response = util.validateName(options.name, this);
+    if (response.success){
+      if (!util.validateColor(options.color)){
+        options.color = util.randomColor();
+      }
+      this.add(new User(options));
+      response.color = options.color;
+    }
+    return response;
   },
 
   removePlayer: function(id){
@@ -11,9 +21,16 @@ var UsersController = Backbone.Collection.extend({
   },
 
   pickColor: function(id, color){
-    if (typeof color == "string" && color.length === 7 && !isNaN(parseInt(color.substring(1), 16)) && color.charAt(0) == "#"){
+    if (util.validateColor(color)){
       this.get(id).set("color", color);
+      return {
+        success: true,
+        color: color
+      };
     }
+    return {
+      success: false
+    };
   }
 });
 

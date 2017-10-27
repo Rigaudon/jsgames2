@@ -1,5 +1,6 @@
 var Backbone = require("backbone");
 var ChatClient = require("./chatClient.js");
+var Cookie = require("js-cookie");
 
 var User = Backbone.Model.extend({
   initialize: function(){
@@ -23,7 +24,7 @@ var User = Backbone.Model.extend({
   setUpSocket: function(){
     var self = this;
     self.set("socket", io());
-    //Getting unique socket id 
+    //Getting unique socket id
     self.getSocket().on("myId", function(value){
       if (self.get("ready")){
         //Connection was reset; refresh the page.
@@ -37,8 +38,16 @@ var User = Backbone.Model.extend({
       if (response.success){
         self.set("name", response.name);
         self.set("color", response.color);
+        Cookie.set("username", response.name);
+        Cookie.set("color", response.color);
       } else {
         self.set("error", response.error);
+      }
+    });
+    //Response from setting color
+    self.getSocket().on("setColor", function(response){
+      if (response.success){
+        Cookie.set("color", response.color);
       }
     });
     //Initialize/update active game rooms
@@ -74,7 +83,10 @@ var User = Backbone.Model.extend({
   },
 
   requestName: function(name){
-    this.getSocket().emit("nameRequest", name);
+    this.getSocket().emit("nameRequest", {
+      name: name,
+      color: Cookie.get("color")
+    });
   },
 
   createChatClient: function(){
