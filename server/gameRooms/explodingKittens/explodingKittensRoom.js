@@ -114,10 +114,10 @@ var ExplodingKittensRoom = Room.extend({
         "to": options.target
       };
       this.emitGameMessageToAllExcept([options.source], response);
-      response.remove = {
+      response.remove = [{
         card: options.card,
         amount: options.card.type == "cat" ? 2 : 1
-      };
+      }];
       this.removeCardsFromHand(options.source, response.remove);
       this.getSocketFromPID(options.source).emit("gameMessage", response);
 
@@ -357,10 +357,13 @@ var ExplodingKittensRoom = Room.extend({
     }
   },
 
-  removeCardsFromHand: function(playerId, options){
-    for (var i = 0; i < options.amount; i++){
-      this.removeCardFromHand(playerId, options.card);
-    }
+  removeCardsFromHand: function(playerId, cardsToRemove){
+    var self = this;
+    _.forEach(cardsToRemove, function(cardToRemove){
+      for (var i = 0; i < cardToRemove.amount; i++){
+        self.removeCardFromHand(playerId, cardToRemove.card);
+      }
+    });
   },
 
   seeTheFuture: function(){

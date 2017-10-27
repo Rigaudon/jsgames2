@@ -121,10 +121,15 @@ var ExplodingKitten = CardGameClient.extend({
   },
 
   onCardPlayed: function(options){
+    var self = this;
     if (this.isMe(options.from)){
-      this.removeCardFromHand(options.card);
-      if (options.card.type == "cat"){
-        this.removeCardFromHand(options.card);
+      if(options.remove){
+        _.forEach(options.remove, function(cardToRemove){
+          self.trigger("card:remove", cardToRemove);
+          for (var i = 0; i < cardToRemove.amount; i++){
+            self.removeCardFromHand(cardToRemove.card);
+          }
+        });
       }
     } else {
       var p = this.getPlayerById(options.from);

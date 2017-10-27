@@ -11,15 +11,17 @@ For development, run `npm run server`.
 
 # To do
 - Implement games
-	- Exploding Kittens expansion
+  - Exploding Kittens expansion
     - Feral Cats
   - Dominion
-	- Pictionary ?
-	- Othello ?
-	- Cards against humanity ?
+  - Pictionary ?
+  - Othello ?
+  - Cards against humanity ?
 - Add Spectate mode
 - Add who's online list to chat
 - Add twitch emotes to chat
+- Add cookies to save user prefs (name, color)
+- Add user avatar (ability to choose animal)
 
 # Bugs
 - Cats dancing on certain size screens when playing cards (try using transforms instead of transition)

@@ -25,7 +25,8 @@ var ExplodingKittensRoomView = CardGameView.extend({
     "timer:set": "onSetTimer",
     "topdeck:implode": "showImplodingKitten",
     "ik:drawn": "onDrawImplodingKitten",
-    "topdeck:safe": "showCardBack"
+    "topdeck:safe": "showCardBack",
+    "card:remove": "removeCard",
   }, CardGameView.prototype.modelEvents),
 
   regions: _.assign({
@@ -88,24 +89,24 @@ var ExplodingKittensRoomView = CardGameView.extend({
     }
     $(this.regions.hand).prepend($(this.ui.pile).find(".card").detach());
     switch (card.type){
-    case "favor":
-    case "cat":
-    case "tattack":
-      this.pickPlayer(card);
-      break;
-    case "stf":
-    case "atf":
-    case "bdraw":
-    case "reverse":
-    case "attack":
-    case "skip":
-    case "shuffle":
-    case "defuse":
-    case "nope":
-      this.onPlay(card);
-      break;
-    default:
-      throw new Error("Invalid Card Type!");
+      case "favor":
+      case "cat":
+      case "tattack":
+        this.pickPlayer(card);
+        break;
+      case "stf":
+      case "atf":
+      case "bdraw":
+      case "reverse":
+      case "attack":
+      case "skip":
+      case "shuffle":
+      case "defuse":
+      case "nope":
+        this.onPlay(card);
+        break;
+      default:
+        throw new Error("Invalid Card Type!");
     }
   },
 
@@ -138,10 +139,6 @@ var ExplodingKittensRoomView = CardGameView.extend({
       statusText += " on " + self.model.getPlayerById(options.to).name;
     }
     $(self.regions.status).text(statusText);
-    if (options.remove){
-      //remove options.remove.card x options.remove.amount from hand
-      self.removeCardFromHand(options.remove.card, options.remove.amount);
-    }
     this.animateCardMove(fromEl, this.ui.pile, options.card.image)
       .then(function(){
         //show card image on pile bg
@@ -149,6 +146,10 @@ var ExplodingKittensRoomView = CardGameView.extend({
       });
     window.playSound(this.cardSounds);
     this.playCardSound(options.card);
+  },
+
+  removeCard: function(options){
+    this.removeCardFromHand(options.card, options.amount);
   },
 
   playCardSound: function(card){
@@ -302,6 +303,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
   },
 
   showCardAndFlipIntoDeck: function(card){
+    //TODO: move this into a template
     var placeholder = $("<div>");
     placeholder.addClass("placeHolder");
     $(this.ui.deck).append(placeholder);
