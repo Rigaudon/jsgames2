@@ -8,6 +8,7 @@ var EKCardView = CardView.extend({
 });
 var CardGameView = require("./cardGameView");
 var common = require("../../common");
+var Promise = require("bluebird");
 
 var ExplodingKittensRoomView = CardGameView.extend({
   gameClient: ExplodingKittensClient,
