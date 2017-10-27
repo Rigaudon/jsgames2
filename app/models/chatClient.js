@@ -1,11 +1,12 @@
 var Backbone = require("backbone");
 var emoji = require("node-emoji");
+var moment = require("moment-timezone");
 
 var ChatMessage = Backbone.Model.extend({
   initialize: function(data){
     this.set("message", decodeURIComponent(data.message));
     this.set("name", data.name);
-    this.set("time", data.time);
+    this.set("time", moment(data.time).format("h:mm"));
     this.set("color", data.color);
     this.set("type", "player");
   },

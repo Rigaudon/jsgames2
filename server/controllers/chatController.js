@@ -1,6 +1,5 @@
 var Backbone = require("backbone");
 var util = require("../socketUtil");
-var dateFormat = require("dateformat");
 
 var nextMsgId = 0;
 var ChatController = Backbone.Collection.extend({
@@ -11,7 +10,7 @@ var ChatController = Backbone.Collection.extend({
         id: ++nextMsgId,
         message: message.message,
         name: player.get("name"),
-        time: dateFormat(new Date(), "h:MM"),
+        time: new Date(),
         color: player.get("color")
       };
 
