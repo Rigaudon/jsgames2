@@ -84,7 +84,7 @@ var ExplodingKittensRoom = Room.extend({
       gameState.deck = self.initializeDeck(players.length);
       gameState.hands = self.initializeHands();
       if (this.implodingKittensEnabled()){
-        self.addExplodingKittens(gameState.deck, players.length - 1);
+        self.addExplodingKittens(gameState.deck, players.length);
         self.addImplodingKitten(gameState.deck);
       } else {
         self.addExplodingKittens(gameState.deck, players.length);
@@ -129,7 +129,7 @@ var ExplodingKittensRoom = Room.extend({
 
       if (!gameState.effectStack){
         gameState.effectStack = new EffectStack(options.card, this.performEffect.bind(this, options), {
-          onComplete: function(){
+          onStartResolve: function(){
             gameState.effectStack = undefined;
           },
           setTimer: this.setTimer.bind(this)
@@ -252,10 +252,15 @@ var ExplodingKittensRoom = Room.extend({
 				gameState.turnPlayer.get("id") != playerId ||
 				this.isExploded(playerId) ||
 				gameState.isExploding ||
-				!!gameState.effectStack ||
         gameState.favor.source ||
         gameState.altering){
       return;
+    }
+    if (!!gameState.effectStack){
+      //Only draw from bottom is allowed to draw during effects
+      if (gameState.effectStack.bottom().type != "bdraw"){
+        return;
+      }
     }
     var card;
     if (from == "top"){
@@ -284,10 +289,22 @@ var ExplodingKittensRoom = Room.extend({
       });
       this.progressTurn();
     }
+    this.showImplodingKitten();
+  },
+
+  showImplodingKitten: function(){
+    var gameState = this.get("gameState");
     var topCard = gameState.deck[gameState.deck.length - 1];
+    if (!topCard){
+      return;
+    }
     if (topCard.type == "implode" && gameState.implodingKittenDrawn){
       this.emitGameMessage({
         "message": "topdeckImplode"
+      });
+    } else {
+      this.emitGameMessage({
+        "message": "topdeckSafe"
       });
     }
   },
@@ -312,7 +329,7 @@ var ExplodingKittensRoom = Room.extend({
         player: playerId
       });
       gameState.effectStack = new EffectStack(card, doExplosion, {
-        onComplete: function(){
+        onStartResolve: function(){
           gameState.effectStack = undefined;
         },
         initialDelay: false,
@@ -392,14 +409,17 @@ var ExplodingKittensRoom = Room.extend({
       //Possible to have: [1,0] or [0] for when 2 or 1 card left in deck
       var deck = gameState.deck;
       var altering = [];
-      order.forEach(function(num){
-        altering[num] = deck.pop();
+
+      order.forEach(function(){
+        altering.push(deck.pop());
       });
-      while (altering.length){
-        deck.push(altering.pop());
-      }
+      order.reverse();
+      order.forEach(function(num){
+        deck.push(altering[num]);
+      });
     }
     gameState.altering = undefined;
+    this.showImplodingKitten();
   },
 
   giveFavor: function(options){
@@ -546,11 +566,21 @@ var ExplodingKittensRoom = Room.extend({
     var activePlayers = this.get("players").filter(function(player){
       return self.get("gameState").exploded.indexOf(player.id) == -1;
     });
-    var requiredAmount = activePlayers.length - 1;
+    var requiredAmount;
+    if (this.implodingKittensEnabled()){
+      requiredAmount = this.get("players").length == 2 ? 1 : activePlayers.length - 2;
+    } else {
+      requiredAmount = activePlayers.length - 1;
+    }
+    var inserted = 0;
     while (inDeck < requiredAmount){
       deck.splice(this.randomIndex(deck.length), 0,
         new CardObj(EKcards.explodingKitten, this.randomIndex(EKcards.explodingKitten.num)));
       inDeck++;
+      inserted++;
+    }
+    if (inserted > 0){
+      this.showImplodingKitten();
     }
   },
 
@@ -683,7 +713,11 @@ var ExplodingKittensRoom = Room.extend({
   },
 
   addExplodingKittens: function(deck, numPlayers){
-    for (var i = 0; i < numPlayers - 1; i++){
+    var needed = numPlayers - 1;
+    if (this.implodingKittensEnabled() && numPlayers > 2){
+      needed--;
+    }
+    for (var i = 0; i < needed; i++){
       deck.push(new CardObj(EKcards.explodingKitten, i));
     }
     this.shuffleDeck();
@@ -697,6 +731,7 @@ var ExplodingKittensRoom = Room.extend({
   shuffleDeck: function(){
     var gameState = this.get("gameState");
     gameState.deck = _.shuffle(gameState.deck);
+    this.showImplodingKitten();
   },
 
   initializeHands: function(){

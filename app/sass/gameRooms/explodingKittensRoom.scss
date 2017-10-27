@@ -10,9 +10,59 @@
   .pile{
     background-image: url("/static/images/assets/explodingKittens/blank.png");
   }
-
+/*
+  .playtable{
+    background-image: url("/static/images/assets/explodingKittens/tablebgbase.png");
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+*/
   .deck{
     background-image: url("/static/images/assets/explodingKittens/back.png");
+    .placeHolder{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: url("/static/images/assets/explodingKittens/back.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 4;
+    }
+  }
+
+  .flipCardContainer{
+    z-index: 3;
+    position: absolute;
+    perspective: 800px;
+    width: 100%;
+    height: 100%;
+    transition: 1s;
+    .flipCard{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      transform-style: preserve-3d;
+      transition: transform 1s;
+      .card{
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        display: block;
+        position: absolute;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        backface-visibility: hidden;
+      }
+      .back{
+        transform: rotateY(180deg);
+      }
+    }
+    .flipCard.flipped{
+      transform: rotateY(180deg);
+    }
   }
 
   .timer{
@@ -22,6 +72,32 @@
     grid-row-end: 3;
     display: flex;
     align-items: center;
+    justify-content: center;
+  }
+
+  .modal-body{
+    .alterTheFuture{
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      div{
+        width: 30%;
+        img{
+          width: 100%;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .orderText{
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+    }
+  }
+
+  .modal-footer{
+    display: flex;
     justify-content: center;
   }
 

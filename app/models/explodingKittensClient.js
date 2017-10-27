@@ -29,6 +29,18 @@ var ExplodingKitten = CardGameClient.extend({
     setTimer: function(message){
       this.trigger("timer:set", message);
     },
+    alterTheFuture: function(message){
+      this.trigger("effect:atf", message);
+    },
+    topdeckImplode: function(){
+      this.trigger("topdeck:implode");
+    },
+    implodingKittenDrawn: function(){
+      this.trigger("ik:drawn");
+    },
+    topdeckSafe: function(){
+      this.trigger("topdeck:safe");
+    }
   }, CardGameClient.prototype.actions),
 
   onGameStart: function(){
@@ -56,6 +68,14 @@ var ExplodingKitten = CardGameClient.extend({
       roomId: this.get("id"),
       card: options.card,
       target: options.target
+    });
+  },
+
+  alterTheFuture: function(newOrder){
+    this.socket.emit("gameMessage", {
+      command: "alterTheFuture",
+      roomId: this.get("id"),
+      newOrder: newOrder
     });
   },
 

@@ -7,6 +7,7 @@ var EKCardView = CardView.extend({
   partialImagePath: "/static/images/assets/explodingKittens/",
 });
 var CardGameView = require("./cardGameView");
+var common = require("../../common");
 
 var ExplodingKittensRoomView = CardGameView.extend({
   gameClient: ExplodingKittensClient,
@@ -16,11 +17,15 @@ var ExplodingKittensRoomView = CardGameView.extend({
   className: CardGameView.prototype.className + " explodingKittensRoom",
   modelEvents: _.assign({
     "effect:stf": "seeTheFuture",
+    "effect:atf": "alterTheFuture",
     "do:favor": "showFavor",
     "ek:drawn": "onEKDrawn",
     "ek:defused": "onEKDefused",
     "player:exploded": "onPlayerExploded",
     "timer:set": "onSetTimer",
+    "topdeck:implode": "showImplodingKitten",
+    "ik:drawn": "onDrawImplodingKitten",
+    "topdeck:safe": "showCardBack"
   }, CardGameView.prototype.modelEvents),
 
   regions: _.assign({
@@ -85,9 +90,13 @@ var ExplodingKittensRoomView = CardGameView.extend({
     switch (card.type){
     case "favor":
     case "cat":
+    case "tattack":
       this.pickPlayer(card);
       break;
     case "stf":
+    case "atf":
+    case "bdraw":
+    case "reverse":
     case "attack":
     case "skip":
     case "shuffle":
@@ -180,6 +189,68 @@ var ExplodingKittensRoomView = CardGameView.extend({
     });
   },
 
+  alterTheFuture: function(future){
+    var texts = ["Next Card", "2<sup>nd</sup> Card", "3<sup>rd</sup> Card"];
+    var chooseEl = $(this.regions.choose);
+    chooseEl.find(".modal-header").text("Altering the future");
+    var bodyEl = chooseEl.find(".modal-body");
+    bodyEl.empty();
+    var closeBtn = chooseEl.find(".closeModal").detach();
+    var self = this;
+    if (!future.cards.length){
+      bodyEl.prepend($("<div>").text("There are no cards left!"));
+    }
+    var numCards = future.cards.length;
+    var sortableView = $("<div>");
+    sortableView.addClass("alterTheFuture");
+    var i = 0;
+    while (future.cards.length){
+      let card = future.cards.shift();
+      let cardImg = $("<img>");
+      cardImg.attr("data-order", i);
+      cardImg.attr("src", self.pathForCard(card.image));
+      let wrapper = $("<div>");
+      wrapper.append(cardImg);
+      sortableView.append(wrapper);
+      i++;
+    };
+    bodyEl.append(sortableView);
+    sortableView.sortable({
+      animation: 150
+    });
+
+    var orderText = $("<div>");
+    orderText.addClass("orderText");
+    for (var i = 0; i < numCards; i++){
+      let text = $("<span>");
+      text.html(texts.shift());
+      orderText.append(text);
+    }
+    bodyEl.append(orderText);
+    var footerEl = chooseEl.find(".modal-footer");
+    var submitBtn = $("<button>");
+    submitBtn.addClass("btn-big");
+    submitBtn.text("Accept");
+    submitBtn.click(function(){
+      var newOrder = [];
+      $(".alterTheFuture").find("img").each(function(){
+        newOrder.push($(this).attr("data-order"));
+      });
+      self.model.alterTheFuture(newOrder);
+      chooseEl.modal("hide");
+    });
+    footerEl.append(submitBtn);
+
+    chooseEl.off("hidden.bs.modal").on("hidden.bs.modal", function(){
+      chooseEl.find(".modal-dialog").prepend(closeBtn);
+      footerEl.empty();
+    });
+    chooseEl.modal({
+      show: true,
+      backdrop: true,
+    });
+  },
+
   showFavor: function(message){
     var sourcePlayer = this.model.getPlayerById(message.source);
     var targetPlayer = this.model.getPlayerById(message.target);
@@ -215,6 +286,64 @@ var ExplodingKittensRoomView = CardGameView.extend({
       show: true,
       backdrop: "static",
     });
+  },
+
+  showImplodingKitten: function(){
+    $(this.ui.deck).css("background-image", "url(" + this.pathForCard("impldktn") + ")");
+  },
+
+  showCardBack: function(){
+    $(this.ui.deck).css("background-image", "url(" + this.pathForCard("back") + ")");
+  },
+
+  onDrawImplodingKitten: function(){
+    $(this.regions.status).text("The Imploding Kitten has been drawn!");
+    this.showCardAndFlipIntoDeck("impldktn");
+  },
+
+  showCardAndFlipIntoDeck: function(card){
+    var placeholder = $("<div>");
+    placeholder.addClass("placeHolder");
+    $(this.ui.deck).append(placeholder);
+
+    var containerEl = $("<div>");
+    containerEl.addClass("flipCardContainer");
+    var cardEl = $("<div>");
+    containerEl.append(cardEl);
+    cardEl.addClass("flipCard");
+    var front = $("<div>");
+    front.addClass("front");
+    front.addClass("card");
+    front.css("background-image", "url(" + this.pathForCard(card) + ")");
+    var back = $("<div>");
+    back.addClass("back");
+    back.addClass("card");
+    back.css("background-image", "url(" + this.pathForCard("back") + ")");
+    cardEl.append(front);
+    cardEl.append(back);
+    cardEl.toggleClass("flipped");
+    $(this.ui.deck).append(containerEl);
+    containerEl.css("left", "0");
+
+    setTimeout(function(){
+      new Promise(function(resolve){
+        containerEl.bind(common.finishTransition, resolve);
+        containerEl.css("left", "-100%");
+      }).then(function(){
+        return new Promise(function(resolve){
+          cardEl.toggleClass("flipped");
+          setTimeout(resolve, 1500);
+        });
+      }).then(function(){
+        return new Promise(function(resolve){
+          containerEl.unbind(common.finishTransition).bind(common.finishTransition, resolve);
+          containerEl.css("left", "0");
+        });
+      }).then(function(){
+        containerEl.remove();
+        placeholder.remove();
+      });
+    }, 100);
   },
 
   onEKDrawn: function(message){

@@ -12,6 +12,7 @@ For development, run `npm run server`.
 # To do
 - Implement games
 	- Exploding Kittens expansion
+    - Feral Cats
   - Dominion
 	- Pictionary ?
 	- Othello ?

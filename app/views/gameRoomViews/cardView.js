@@ -45,7 +45,11 @@ var CardView = Marionette.View.extend({
     preview.css("left", (hand.offset().left - Math.round((preview.width() - hand.width()) / 2) - this.totalLeftOffset(preview.parent())) + "px");
     preview.css("top", (hand.offset().top - preview.height() - 20) + "px");
     if (preview.offset().left < this.totalLeftOffset(preview.parent())){
+      preview.css("right", "");
       preview.css("left", "10px");
+    } else if (preview.offset().left + preview.outerWidth(true) > preview.parent().outerWidth(true)){
+      preview.css("right", "10px");
+      preview.css("left", "");
     }
   },
 

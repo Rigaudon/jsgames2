@@ -21,6 +21,9 @@ var EffectStack = function(card, resolve, options){
   }
   this.resolveStack = function(){
     clearTimeout(this._resolveTimeout);
+    if (options.onStartResolve){
+      options.onStartResolve();
+    }
     var topCard;
     while (this.stack.length){
       topCard = this.stack.pop();
@@ -35,9 +38,6 @@ var EffectStack = function(card, resolve, options){
         break;
       }
     }
-    if (options.onComplete){
-      options.onComplete();
-    }
   }
   this.top = function(){
     return this.stack[this.stack.length - 1].card;
@@ -51,8 +51,8 @@ var EffectStack = function(card, resolve, options){
   }
   this.cancel = function(){
     clearTimeout(this._resolveTimeout);
-    if (options.onComplete){
-      options.onComplete();
+    if (options.onStartResolve){
+      options.onStartResolve();
     }
   }
   if (!(options.initialDelay === false)){
