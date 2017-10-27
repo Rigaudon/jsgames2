@@ -4,10 +4,8 @@
   "description": "A more object oriented iteration of JSGames",
   "main": "entry.js",
   "scripts": {
-    "server": "concurrently --kill-others \"node entry.js\" \"gulp\"",
     "start": "node entry.js",
-    "postinstall": "gulp build",
-    "lint": "gulp lint"
+    "postinstall": "gulp build"
   },
   "repository": {
     "type": "git",
@@ -47,7 +45,6 @@
     "babelify": "^7.3.0",
     "brfs": "^1.4.3",
     "browserify": "^14.1.0",
-    "concurrently": "^3.3.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
     "gulp-eslint": "^4.0.0",

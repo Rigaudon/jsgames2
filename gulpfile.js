@@ -9,6 +9,7 @@ var uglify = require("gulp-uglify");
 var eslint = require("gulp-eslint");
 var gulpIf = require("gulp-if");
 var sass = require("gulp-sass");
+var childProcess = require("child_process");
 
 var customOpts = {
   entries: ["./app/app.js"],
@@ -68,11 +69,18 @@ function watchScss(){
   return gulp.watch("./app/sass/**/*.scss", ["sass"]);
 }
 
+function webServer(){
+  var child = childProcess.exec("node entry.js");
+  child.stdout.pipe(process.stdout);
+  child.stderr.pipe(process.stderr);
+}
+
 gulp.task("bundle", bundle);
 gulp.task("watchJs", watchJs);
 gulp.task("lint", lint);
 gulp.task("sass", css);
 gulp.task("watchSass", watchScss);
-gulp.task("default", ["watchJs", "watchSass"]);
 gulp.task("build", ["bundle", "sass"]);
+gulp.task("webserver", webServer);
 
+gulp.task("default", ["watchJs", "watchSass", "webserver"]);

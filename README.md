@@ -7,7 +7,7 @@ Currently, Connect Four, Uno, and Exploding Kittens are implemented.
 # Local Setup
 Developed in node `6.10.0`, npm `4.3.0`.
 Run `npm install`, then `npm start`.
-For development, run `npm run server`.
+For development, run `gulp`.
 
 # To do
 - Implement games
