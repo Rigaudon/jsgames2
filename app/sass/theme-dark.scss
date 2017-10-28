@@ -4,7 +4,7 @@ $primary-color: white;
 $menu-color: #4f4f51;
 $secondary-color: #4f4f51;
 $passive-color: #282828;
-$bg-url: url(../../static/images/themes/dark/bg.png);
+$bg-url: url(/static/images/themes/dark/bg.png), url(/static/images/themes/dark/twinkling.png), url(/static/images/themes/dark/stars.png);
 $create-room-bg-url: #222222;
 $transition-very-fast: 0.2s;
 $transition-fast: 1s;

@@ -1,6 +1,11 @@
-@keyframes animatedBackground{
+@keyframes animatedClouds{
 	from { background-position: 0 100%; }
 	to { background-position: 560px 100%; }
+}
+
+@keyframes move-twink-back {
+    from { background-position:left bottom, 0 0, 0 0; }
+    to { background-position:left bottom, -10000px 5000px, 0 0; }
 }
 
 .lobbyView{
@@ -12,16 +17,18 @@
 	align-items: center;
 	text-align: center;
 	font-size: 20px;
-	background: $bg-url;
+	background-image: $bg-url;
 	@if $light-theme {
 		background-position: 0% 100%;
 		background-repeat: repeat-x;
-		animation: animatedBackground 20s linear infinite;
+		animation: animatedClouds 20s linear infinite;
 	}
 	@else {
-		background-size: cover;
+		background-color: black;
+		background-size: auto, auto, auto;
 		background-position: 0% 0%;
-		background-repeat: no-repeat;
+		background-repeat: no-repeat, repeat, repeat;
+	  animation:move-twink-back 200s linear infinite;
 	}
 }
 
