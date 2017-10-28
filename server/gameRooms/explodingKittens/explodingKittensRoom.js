@@ -113,11 +113,20 @@ var ExplodingKittensRoom = Room.extend({
         "card": options.card,
         "to": options.target
       };
+      if (options.card.type == "feral"){
+        response.with = options.with;
+      }
       this.emitGameMessageToAllExcept([options.source], response);
       response.remove = [{
         card: options.card,
         amount: options.card.type == "cat" ? 2 : 1
       }];
+      if (options.card.type == "feral"){
+        response.remove.push({
+          card: options.with,
+          amount: 1
+        });
+      }
       this.removeCardsFromHand(options.source, response.remove);
       this.getSocketFromPID(options.source).emit("gameMessage", response);
 
@@ -154,19 +163,9 @@ var ExplodingKittensRoom = Room.extend({
   performEffect: function(options){
     var gameState = this.get("gameState");
     switch (options.card.type){
+    case "feral":
     case "cat":
-      var targetHand = gameState.hands[options.target];
-      var randomCard = targetHand.splice(this.randomIndex(targetHand.length), 1)[0];
-      gameState.hands[options.source].push(randomCard);
-      var response = {
-        "message": "moveCard",
-        "from": options.target,
-        "to": options.source,
-      };
-      this.emitGameMessageToAllExcept([options.source, options.target], response);
-      response.card = randomCard;
-      this.getSocketFromPID(options.source).emit("gameMessage", response);
-      this.getSocketFromPID(options.target).emit("gameMessage", response);
+      this.takeCard(options.source, options.target);
       break;
     case "skip":
       this.progressTurn();
@@ -224,11 +223,26 @@ var ExplodingKittensRoom = Room.extend({
     case "atf":
       this.alterTheFuture(options.source);
       break;
-    case "feral":
     default:
       console.error("Card type " + options.card.type + " not implemented!");
       break;
     }
+  },
+
+  takeCard: function(source, target){
+    var gameState = this.get("gameState");
+    var targetHand = gameState.hands[target];
+    var randomCard = targetHand.splice(this.randomIndex(targetHand.length), 1)[0];
+    gameState.hands[source].push(randomCard);
+    var response = {
+      "message": "moveCard",
+      "from": target,
+      "to": source,
+    };
+    this.emitGameMessageToAllExcept([source, target], response);
+    response.card = randomCard;
+    this.getSocketFromPID(source).emit("gameMessage", response);
+    this.getSocketFromPID(target).emit("gameMessage", response);
   },
 
   explode: function(options){
@@ -659,12 +673,26 @@ var ExplodingKittensRoom = Room.extend({
     if (options.card.type == "cat"){
       return inHand.length > 1;
     }
-
+    if (options.card.type == "feral"){
+      var playedWith = options.with;
+      if (!playedWith){
+        return false;
+      }
+      if (playedWith.type != "feral" && playedWith.type != "cat"){
+        return false;
+      }
+      var playedWithInHand = this.handContains(options.source, {
+        id: playedWith.id
+      });
+      if (playedWithInHand.length == 0 || (playedWith.type == "feral" && playedWithInHand.length < 2)){
+        return false;
+      }
+    }
     return inHand.length > 0;
   },
 
   requiresTarget: function(type){
-    return ["cat", "favor", "tattack"].indexOf(type) > -1;
+    return ["cat", "favor", "tattack", "feral"].indexOf(type) > -1;
   },
   //Return true if the target has more than one card in hand
   isValidTakeTarget: function(target){

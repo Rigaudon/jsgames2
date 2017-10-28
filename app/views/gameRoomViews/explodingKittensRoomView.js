@@ -90,6 +90,9 @@ var ExplodingKittensRoomView = CardGameView.extend({
     }
     $(this.regions.hand).prepend($(this.ui.pile).find(".card").detach());
     switch (card.type){
+    case "feral":
+      this.onPlayFeral(card);
+      break;
     case "favor":
     case "cat":
     case "tattack":
@@ -250,6 +253,45 @@ var ExplodingKittensRoomView = CardGameView.extend({
     chooseEl.modal({
       show: true,
       backdrop: true,
+    });
+  },
+
+  onPlayFeral: function(feral){
+    var validCards = this.model.getValidFeral();
+    if (!validCards.length){
+      this.onPlayInvalid();
+      return;
+    }
+    var chooseEl = $(this.regions.choose);
+    chooseEl.find(".modal-header").text("Play Feral Cat With");
+    var bodyEl = chooseEl.find(".modal-body");
+    bodyEl.empty();
+    var self = this;
+    _.forEach(validCards, function(validCard){
+      let cardView = $("<div>");
+      cardView.addClass("smallCard");
+      let cardImg = $("<img>");
+      cardImg.attr("src", self.pathForCard(validCard.image));
+      cardView.append(cardImg);
+      cardView.on("click", function(){
+        self.showPickPlayerModal(
+          feral,
+          function(pid){
+            self.model.playCard({
+              card: feral,
+              target: pid,
+              with: validCard
+            });
+          },
+          function(){}
+        );
+      });
+      bodyEl.append(cardView);
+    });
+    chooseEl.off("hidden.bs.modal");
+    chooseEl.modal({
+      show: true,
+      backdrop: false
     });
   },
 

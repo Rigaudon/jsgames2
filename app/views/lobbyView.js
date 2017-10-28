@@ -59,7 +59,7 @@ var LobbyView = Marionette.View.extend({
   },
 
   showGameRoom: function(roomId){
-    //check active games, then render based on the id of self.model.get("roomId")		
+    //check active games, then render based on the id of self.model.get("roomId")
     var activeRoom = this.model.get("activeRooms").get(roomId);
     var self = this;
     var mainView = this.$(this.regions.main);

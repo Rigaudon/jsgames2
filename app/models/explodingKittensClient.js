@@ -49,12 +49,18 @@ var ExplodingKitten = CardGameClient.extend({
 
   playCard: function(options){
     if (options.card && this.validatePlayable(options.card)){
-      this.socket.emit("gameMessage", {
+      var message = {
         command: "playCard",
         roomId: this.get("id"),
-        card: options.card,
-        target: options.target
-      });
+        card: options.card
+      };
+      if (options.target){
+        message.target = options.target
+      }
+      if (options.with){
+        message.with = options.with;
+      }
+      this.socket.emit("gameMessage", message);
     } else {
       this.trigger("card:invalid", {
         card: options.card
@@ -120,6 +126,18 @@ var ExplodingKitten = CardGameClient.extend({
     return this.get("gameState").exploded && this.get("gameState").exploded.indexOf(player) > -1;
   },
 
+  getValidFeral: function(){
+    var foundFeral = false;
+    var hand = this.get("gameState").hand;
+    return hand.filter(function(card){
+      if (card.type == "feral" && !foundFeral){
+        foundFeral = true;
+        return false;
+      }
+      return card.type == "feral" || card.type == "cat";
+    });
+  },
+
   onCardPlayed: function(options){
     var self = this;
     if (this.isMe(options.from)){
@@ -134,14 +152,17 @@ var ExplodingKitten = CardGameClient.extend({
     } else {
       var p = this.getPlayerById(options.from);
       p.handSize--;
-      if (options.card.type == "cat"){
+      if (options.card.type == "cat" || options.card.type == "feral"){
         p.handSize--;
       }
     }
-    this.get("gameState").pile.push(options.card);
     if (options.card.type == "cat"){
       this.get("gameState").pile.push(options.card);
+    } else if (options.card.type == "feral"){
+      this.get("gameState").pile.push(options.with);
     }
+
+    this.get("gameState").pile.push(options.card);
   },
 
   onEKDrawn: function(message){
