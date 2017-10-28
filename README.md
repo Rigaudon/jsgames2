@@ -11,8 +11,6 @@ For development, run `gulp`.
 
 # To do
 - Implement games
-  - Exploding Kittens expansion
-    - Feral Cats
   - Dominion
   - Pictionary ?
   - Othello ?

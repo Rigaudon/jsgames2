@@ -1,3 +1,6 @@
+var Promise = require("bluebird");
+var Cookie = require("js-cookie");
+
 //Get the transition string for finish animation
 var sUsrAg = navigator.userAgent;
 var finishTransition;
@@ -36,7 +39,49 @@ function fadeOutThenIn(view, callback){
   view.css("opacity", 0);
 }
 
+var validThemes = ["light", "dark"];
+function loadCss(theme){
+  return new Promise(function(resolve){
+    if (theme && validThemes.indexOf(theme) > -1){
+      setTheme(theme);
+    } else {
+      var savedTheme = Cookie.get("theme");
+      if (savedTheme && validThemes.indexOf(savedTheme) > -1){
+        setTheme(savedTheme);
+      } else {
+        setTheme("light");
+      }
+    }
+    resolve();
+  });
+}
+
+function setTheme(theme){
+  var themeCss = document.getElementById("themeCss");
+  themeCss.setAttribute("href", "dist/theme-" + theme + ".css");
+  Cookie.set("theme", theme);
+}
+
+function getTheme(){
+  var savedTheme = Cookie.get("theme");
+  if (savedTheme && validThemes.indexOf(savedTheme) > -1){
+    return savedTheme;
+  }
+  return "light";
+}
+var currentTheme = getTheme();
+
+function cycleTheme(){
+  var nextTheme = (validThemes.indexOf(currentTheme) + 1) % validThemes.length;
+  setTheme(validThemes[nextTheme]);
+  currentTheme = validThemes[nextTheme];
+  return validThemes[nextTheme];
+}
+
 module.exports = {
   finishTransition: finishTransition,
   fadeOutThenIn: fadeOutThenIn,
+  loadCss: loadCss,
+  getTheme: getTheme,
+  cycleTheme: cycleTheme
 };

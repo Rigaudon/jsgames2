@@ -60,7 +60,7 @@ function lint() {
 }
 
 function css() {
-  return gulp.src("./app/sass/main.scss")
+  return gulp.src("./app/sass/theme-*.scss")
     .pipe(sass({ outputStyle: "compressed" }).on("error", sass.logError))
     .pipe(gulp.dest("./dist"));
 }

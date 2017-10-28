@@ -135,8 +135,9 @@
       width: inherit;
       word-wrap: break-word;
       padding: 6px;
-        color: white;
-        text-shadow: 0px 0px 8px black;
+      color: white;
+      text-shadow: 0px 0px 8px black;
+      mix-blend-mode: difference;
     }
   }
 

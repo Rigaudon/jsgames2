@@ -1,0 +1,21 @@
+$primary-color: #003366;
+$gradient-color: #0B3F5C;
+$secondary-color: #bce8f1;
+$tertiary-color: #FFCC66;
+$fourth-color: #bb171a;
+$bg-color: #ffffff;
+$passive-color: #efeef1;
+$passive-color-transparent: rgba(239, 238, 241, 0.8);
+$inset-color: #dad8de;
+$menu-color: #003366;
+$bg-url: url(../../static/images/themes/light/bg.png);
+$create-room-bg-url: url(../../static/images/themes/light/create-room-bg.png);
+$transition-very-fast: 0.2s;
+$transition-fast: 1s;
+$transition-speed: 1.5s;
+$transition-slow: 2s ease;
+$light-theme: true;
+$logo-url: url("/static/images/themes/light/logo.png");
+$loading-url: url("/static/images/themes/light/ripple.svg") no-repeat center center;
+
+@import "main";

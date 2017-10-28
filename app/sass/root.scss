@@ -9,7 +9,7 @@
 	text-align: center;
 	color: $primary-color;
 	background-color: $primary-color; /*this is reset in code for transition*/
-	background: linear-gradient($primary-color, $gradient-color);
+	background: linear-gradient($menu-color, $gradient-color);
 	overflow: auto;
 
 	.logo, .content{
@@ -45,7 +45,7 @@
 				height: 90%;
 				width: 100%;
 				margin: 20px;
-				background:url("/static/images/logo.png");
+				background: $logo-url;
 				background-position: center center;
 				background-size: contain;
 				background-repeat: no-repeat;
@@ -71,9 +71,14 @@
 
 		.loading{
 			transition: $transition-speed;
-			background:url("/static/images/ripple.svg") no-repeat center center;
+			background: $loading-url;
 			background-size: contain;
-			color: $bg-color;
+			@if $light-theme {
+				color: $bg-color;
+			}
+			@else {
+				color: $primary-color;
+			}
 			font-size: 35px;
 			margin-top: 10%;
 			width: 50%;

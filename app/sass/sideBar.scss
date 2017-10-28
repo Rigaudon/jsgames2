@@ -36,6 +36,14 @@
 		height: 100%;
 		width: auto;
 
+		.sideBarItem:not(:first-child):not(:last-child){
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			label{
+				margin: 0;
+			}
+		}
 		.sideBarItem{
 			padding-top: 10px;
 			label{
@@ -55,6 +63,15 @@
 				font-size: 30px;
 				display: inline;
 				padding: 5px;
+				transition: $transition-very-fast;
+			}
+
+			.selectTheme{
+				cursor: pointer;
+				height: 40px;
+				width: 40px;
+				background-position: center;
+				background-repeat: no-repeat;
 			}
 		}
 
@@ -94,6 +111,17 @@
 		.sideBarItem{
 			label{
 				display: none;
+			}
+			&:not(:first-child):not(:last-child){
+				transition: $transition-very-fast;
+				&:hover{
+					background-color: $secondary-color;
+				}
+			}
+			.volumeControl{
+				&:hover{
+					color: $primary-color;
+				}
 			}
 		}
 	}

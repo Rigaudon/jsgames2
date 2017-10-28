@@ -12,11 +12,17 @@
 	align-items: center;
 	text-align: center;
 	font-size: 20px;
-	transition: $transition-speed;
 	background: $bg-url;
-	background-position: 0% 100%;
-	background-repeat: repeat-x;
-	animation: animatedBackground 20s linear infinite;
+	@if $light-theme {
+		background-position: 0% 100%;
+		background-repeat: repeat-x;
+		animation: animatedBackground 20s linear infinite;
+	}
+	@else {
+		background-size: cover;
+		background-position: 0% 0%;
+		background-repeat: no-repeat;
+	}
 }
 
 

@@ -1,6 +1,7 @@
 var _ = require("lodash");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
+var common = require("../common");
 
 var SideBarView = Marionette.View.extend({
   className: "fullWidth fullHeight",
@@ -21,13 +22,19 @@ var SideBarView = Marionette.View.extend({
   ui: {
     "collapse": ".collapseSideBar",
     "colorPicker": ".colorPicker",
-    "sound": ".volumeControl"
+    "sound": ".volumeControl",
+    "theme": ".selectTheme"
   },
 
   events: {
     "click @ui.collapse": "collapseSideBar",
     "blur @ui.colorPicker": "pickColor",
-    "click @ui.sound": "toggleSound"
+    "click @ui.sound": "toggleSound",
+    "click @ui.theme": "toggleTheme"
+  },
+
+  onRender: function(){
+    this.setThemeIcon();
   },
 
   collapseSideBar: function(){
@@ -51,6 +58,15 @@ var SideBarView = Marionette.View.extend({
     window.soundsEnabled = !window.soundsEnabled;
     window.stopSound();
     $(this.ui.sound).toggleClass("glyphicon-volume-up").toggleClass("glyphicon-volume-off");
+  },
+
+  toggleTheme: function(){
+    common.cycleTheme();
+    this.setThemeIcon();
+  },
+
+  setThemeIcon: function(){
+    $(this.ui.theme).css("background-image", "url(/static/images/themes/" + common.getTheme() + "/icon.png)");
   }
 });
 

@@ -1,6 +1,7 @@
 var Marionette = require("backbone.marionette");
 var RootView = require("./views/rootView");
 var User = require("./models/user");
+var loadCss = require("./common").loadCss;
 
 var App = Marionette.Application.extend({
   region: "body",
@@ -14,8 +15,9 @@ var App = Marionette.Application.extend({
 
 var myApp = new App();
 
-myApp.start();
-
+loadCss().then(function(){
+  myApp.start();
+});
 $(document).on("keypress", function(e){
   if (e.which == 96){ //~
     var consoleView = $(".console");

@@ -138,7 +138,10 @@ var ExplodingKittensRoomView = CardGameView.extend({
     var fromEl = this.model.getPlayerById(options.from).el;
     var self = this;
     var player = self.model.getPlayerById(options.from);
-    var statusText = player.name + " played " + options.card.name;
+    var statusText = player.name + " played a " + options.card.name;
+    if (options.with){
+      statusText += " with a " + options.with.name;
+    }
     if (options.to){
       statusText += " on " + self.model.getPlayerById(options.to).name;
     }
