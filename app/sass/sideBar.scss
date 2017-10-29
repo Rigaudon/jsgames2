@@ -47,6 +47,7 @@
 		.sideBarItem{
 			padding-top: 10px;
 			padding-bottom: 10px;
+
 			label{
 				vertical-align: middle;
 			}
@@ -108,7 +109,7 @@
 	}
 
 	.sideBarItems.open{
-		.sideBarItem:not(:first-child){
+		.sideBarItem:not(:first-child):not(:last-child){
 			display: flex;
 			justify-content: space-between;
 			align-items: center;

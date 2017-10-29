@@ -36,7 +36,6 @@ var ExplodingKitten = CardGameClient.extend({
       this.trigger("topdeck:implode");
     },
     implodingKittenDrawn: function(){
-      this.onDrawImplodingKitten();
       this.trigger("ik:drawn");
     },
     topdeckSafe: function(){

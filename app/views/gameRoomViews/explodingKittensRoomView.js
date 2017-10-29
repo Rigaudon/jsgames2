@@ -407,7 +407,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
 
   timer: undefined,
   onSetTimer: function(message){
-    if (this.timer){
+    if (this.timer && this.timer.destroy){
       this.timer.destroy();
     }
     this.timer = new ProgressBar.Circle(this.regions.timer, {
@@ -418,7 +418,9 @@ var ExplodingKittensRoomView = CardGameView.extend({
     this.timer.set(1);
     var self = this;
     this.timer.animate(0, function(){
-      this.destroy();
+      if(this && this.destroy){
+        this.destroy();
+      }
       self.timer = undefined;
     });
   },

@@ -363,15 +363,6 @@ var ExplodingKittensRoom = Room.extend({
   onDrawImplodingKitten: function(playerId, card){
     var gameState = this.get("gameState");
     if (gameState.implodingKittenDrawn){
-      this.emitGameMessage({
-        "message": "playerDraw",
-        "playerId": playerId
-      });
-      this.getSocketFromPID(playerId).emit("gameMessage", {
-        "message": "playerDraw",
-        "playerId": playerId,
-        "card": card
-      });
       this.explode({
         player: playerId,
         card: card,
