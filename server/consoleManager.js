@@ -33,32 +33,35 @@ function processMessage(socket, message, mem){
   var returnMessage = "";
 
   switch (message.args[0]){
-  case "list_authorized_users":
-    returnMessage = authenticatedToString(mem);
-    break;
-  case "list_all_users":
-    returnMessage = getAllUsers(mem);
-    break;
-  case "list_all_rooms":
-    returnMessage = getAllRooms(mem);
-    break;
-  case "room_details":
-    if (message.args[1]){
-      var room = mem.rooms.get(message.args[1]);
-      if (room){
-        returnMessage = "Displaying details of room " + message.args[1] + "\n";
-        returnMessage += JSON.stringify(room.toJSON(), null, 4) + "\n";
-        returnMessage += JSON.stringify(room.prettifyGameState(), null, 4);
+    case "list_authorized_users":
+      returnMessage = authenticatedToString(mem);
+      break;
+    case "list_all_users":
+      returnMessage = getAllUsers(mem);
+      break;
+    case "list_all_rooms":
+      returnMessage = getAllRooms(mem);
+      break;
+    case "room_details":
+      if (message.args[1]){
+        var room = mem.rooms.get(message.args[1]);
+        if (room){
+          returnMessage = "Displaying details of room " + message.args[1] + "\n";
+          returnMessage += JSON.stringify(room.toJSON(), null, 4) + "\n";
+          returnMessage += JSON.stringify(room.prettifyGameState(), null, 4);
+        } else {
+          returnMessage = "No room found with id " + message.args[1];
+        }
       } else {
-        returnMessage = "No room found with id " + message.args[1];
+        returnMessage = "No room specified";
       }
-    } else {
-      returnMessage = "No room specified";
-    }
-    break;
-  default:
-    returnMessage = "Unknown server command";
-    break;
+      break;
+    case "help":
+      returnMessage = "authorize <user> <auth>, list_authorized_users, list_all_users, room_details <roomId>, help";
+      break;
+    default:
+      returnMessage = "Unknown server command";
+      break;
   }
 
   socket.emit("consoleMessage", {

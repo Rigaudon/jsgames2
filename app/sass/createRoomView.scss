@@ -5,6 +5,19 @@
 	font-size: 40px;
 }
 
+.createRoomView {
+	.modal-header{
+		.close{
+			opacity: 1;
+			color: $primary-color;
+		}
+	}
+	.modal-content{
+		border: 2px solid $primary-color;
+		border-radius: 0;
+	}
+}
+
 .modal-body.createGameBody{
 	padding: 0;
 	display: flex;

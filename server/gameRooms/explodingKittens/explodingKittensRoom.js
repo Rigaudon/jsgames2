@@ -815,6 +815,11 @@ var ExplodingKittensRoom = Room.extend({
       player.handSize = gameState.hands[player.id].length;
     }
     return player;
+  },
+
+  prettifyGameState: function(){
+    //Should have been returned by toJSON
+    return "";
   }
 
 });
