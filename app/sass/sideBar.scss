@@ -83,6 +83,11 @@
 			font-size: 25px;
 			display: flex;
 			justify-content: center;
+			align-items: center;
+			height: 40px;
+			label{
+				margin: 10px 0 0 0;
+			}
 		}
 
 		.sideBarItem:last-child{
