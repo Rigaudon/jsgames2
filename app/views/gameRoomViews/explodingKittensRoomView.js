@@ -7,7 +7,6 @@ var EKCardView = CardView.extend({
   partialImagePath: "/static/images/assets/explodingKittens/",
 });
 var CardGameView = require("./cardGameView");
-var common = require("../../common");
 var Promise = require("bluebird");
 
 var ExplodingKittensRoomView = CardGameView.extend({
@@ -375,8 +374,8 @@ var ExplodingKittensRoomView = CardGameView.extend({
 
     setTimeout(function(){
       new Promise(function(resolve){
-        containerEl.bind(common.finishTransition, resolve);
         containerEl.css("left", "-100%");
+        setTimeout(resolve, 1000);
       }).then(function(){
         return new Promise(function(resolve){
           cardEl.toggleClass("flipped");
@@ -384,8 +383,8 @@ var ExplodingKittensRoomView = CardGameView.extend({
         });
       }).then(function(){
         return new Promise(function(resolve){
-          containerEl.unbind(common.finishTransition).bind(common.finishTransition, resolve);
           containerEl.css("left", "0");
+          setTimeout(resolve, 1000);
         });
       }).then(function(){
         containerEl.remove();
@@ -416,7 +415,6 @@ var ExplodingKittensRoomView = CardGameView.extend({
       strokeWidth: 8,
     });
     this.timer.set(1);
-    var self = this;
     this.timer.animate(0);
   },
 
@@ -476,6 +474,27 @@ var ExplodingKittensRoomView = CardGameView.extend({
         playerEl.addClass("exploded");
       }
     });
+  },
+
+  sortOrder: ["defuse", "nope", "tattack", "attack", "skip", "reverse", "bdraw", "atf", "stf", "shuffle", "favor", "feral", "cat"],
+  sortHand: function(){
+    if (!this.model.isExploded(this.model.socket.id)){
+      var self = this;
+      var cards = $(this.regions.hand).find(".card");
+      cards = cards.sort(function(a, b){
+        var cardA = a.card;
+        var cardB = b.card;
+        if (cardA.type == cardB.type){
+          if (cardA.id == cardB.id){
+            return 0;
+          }
+          return cardA.id > cardB.id;
+        } else {
+          return self.sortOrder.indexOf(cardA.type) - self.sortOrder.indexOf(cardB.type);
+        }
+      });
+      $(this.regions.hand).html(cards);
+    }
   },
 });
 

@@ -189,6 +189,29 @@ var UnoRoomView = CardGameView.extend({
   onPlayerWin: function(message){
     CardGameView.prototype.onPlayerWin.call(this, message);
     $(this.regions.hand).empty();
+  },
+
+  sortOrderColor: ["red", "yellow", "green", "blue"],
+  sortOrderType: ["wild4", "wild", "draw2", "skip", "reverse", "number"],
+  sortHand: function(){
+    var self = this;
+    var cards = $(this.regions.hand).find(".card");
+    cards = cards.sort(function(a, b){
+      var cardA = a.card;
+      var cardB = b.card;
+      if (cardA.color == cardB.color){
+        if (cardA.type == cardB.type){
+          if (cardA.type == "number"){
+            return cardA.value - cardB.value;
+          }
+          return 0;
+        }
+        return self.sortOrderType.indexOf(cardA.type) - self.sortOrderType.indexOf(cardB.type);
+      } else {
+        return self.sortOrderColor.indexOf(cardA.color) - self.sortOrderColor.indexOf(cardB.color);
+      }
+    });
+    $(this.regions.hand).html(cards);
   }
 });
 

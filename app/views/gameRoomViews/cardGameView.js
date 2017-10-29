@@ -62,6 +62,9 @@ var CardGameView = Marionette.View.extend({
       }
     }
     options += "<button class='leaveBtn btn-big'>Leave Room</button>";
+    if (this.model.inProgress()){
+      options += "<button class='sortBtn btn-big'>Sort Hand</button>";
+    }
     return options;
   },
 
@@ -82,7 +85,8 @@ var CardGameView = Marionette.View.extend({
     "deck": ".deck",
     "pile": ".pile",
     "invalid": ".invalidCard",
-    "card": ".card"
+    "card": ".card",
+    "sortBtn": ".sortBtn"
   },
 
   regions: {
@@ -95,6 +99,7 @@ var CardGameView = Marionette.View.extend({
   events: {
     "click @ui.leaveBtn": "leaveRoom",
     "click @ui.startBtn": "startRoom",
+    "click @ui.sortBtn": "sortHand"
   },
 
   cardSounds: ["card1", "card2"],
@@ -199,6 +204,10 @@ var CardGameView = Marionette.View.extend({
           }
         });
     }
+  },
+
+  sortHand: function(){
+    console.log("Sorting hand");
   },
 
   removeCardFromHand: function(card, amount){
