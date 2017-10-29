@@ -417,12 +417,7 @@ var ExplodingKittensRoomView = CardGameView.extend({
     });
     this.timer.set(1);
     var self = this;
-    this.timer.animate(0, function(){
-      if(this && this.destroy){
-        this.destroy();
-      }
-      self.timer = undefined;
-    });
+    this.timer.animate(0);
   },
 
   onEKDefused: function(message){

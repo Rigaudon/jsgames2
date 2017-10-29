@@ -22,7 +22,6 @@ For development, run `gulp`.
 
 # Bugs
 - Cats dancing on certain size screens when playing cards (try using transforms instead of transition)
-- EK drawing IK on regular draw decrements deck by one extra
 
 # Sources/credits
 - Sounds taken from free domain.
