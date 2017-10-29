@@ -38,7 +38,7 @@
 
 		.sideBarItem:not(:first-child):not(:last-child){
 			display: flex;
-			justify-content: space-around;
+			justify-content: center;
 			align-items: center;
 			label{
 				margin: 0;
@@ -46,6 +46,7 @@
 		}
 		.sideBarItem{
 			padding-top: 10px;
+			padding-bottom: 10px;
 			label{
 				vertical-align: middle;
 			}
@@ -79,6 +80,8 @@
 			color: $primary-color;
 			background-color: $bg-color;
 			font-size: 25px;
+			display: flex;
+			justify-content: center;
 		}
 
 		.sideBarItem:last-child{
@@ -90,6 +93,7 @@
 			color: $primary-color;
 			display: flex;
 			flex-direction: column;
+			padding-bottom: 0;
 			img{
 				height: 100%;
 			}
@@ -100,6 +104,16 @@
 				background-color: $bg-color;
 				margin: 0;
 			}
+		}
+	}
+
+	.sideBarItems.open{
+		.sideBarItem:not(:first-child){
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding-left: 10px;
+			padding-right: 10px;
 		}
 	}
 

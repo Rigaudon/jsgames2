@@ -135,6 +135,9 @@ var ExplodingKittensRoom = Room.extend({
       if (options.card.type == "cat"){
         gameState.pile.push(options.card);
       }
+      if (options.card.type == "feral"){
+        gameState.pile.push(options.with);
+      }
 
       if (!gameState.effectStack){
         gameState.effectStack = new EffectStack(options.card, this.performEffect.bind(this, options), {
@@ -249,11 +252,15 @@ var ExplodingKittensRoom = Room.extend({
     var gameState = this.get("gameState");
     gameState.exploded.push(options.player);
     gameState.isExploding = undefined;
-    this.emitGameMessage({
+    var message = {
       "message": "exploded",
       "player": options.player,
-      "card": options.card
-    });
+      "card": options.card,
+    };
+    if (options.imploding){
+      message.imploding = true;
+    }
+    this.emitGameMessage(message);
     if (!this.checkWin()){
       gameState.isAttacked = false;
       this.progressTurn();
@@ -356,9 +363,19 @@ var ExplodingKittensRoom = Room.extend({
   onDrawImplodingKitten: function(playerId, card){
     var gameState = this.get("gameState");
     if (gameState.implodingKittenDrawn){
+      this.emitGameMessage({
+        "message": "playerDraw",
+        "playerId": playerId
+      });
+      this.getSocketFromPID(playerId).emit("gameMessage", {
+        "message": "playerDraw",
+        "playerId": playerId,
+        "card": card
+      });
       this.explode({
         player: playerId,
-        card: card
+        card: card,
+        imploding: true
       });
     } else {
       gameState.implodingKittenDrawn = true;
@@ -549,6 +566,7 @@ var ExplodingKittensRoom = Room.extend({
       gameState.favor = {};
     }
     Room.prototype.playerLeave.call(this, socket);
+    this.showImplodingKitten();
     this.verifyRoom();
   },
 
@@ -580,15 +598,19 @@ var ExplodingKittensRoom = Room.extend({
     var inDeck = deck.filter(function(card){
       return card.type == "explode";
     }).length;
+    var implodingInDeck = deck.filter(function(card){
+      return card.type == "implode";
+    }).length;
     var activePlayers = this.get("players").filter(function(player){
       return self.get("gameState").exploded.indexOf(player.id) == -1;
     });
     var requiredAmount;
     if (this.implodingKittensEnabled()){
-      requiredAmount = this.get("players").length == 2 ? 1 : activePlayers.length - 2;
+      requiredAmount = this.get("players").length == 2 ? 2 - implodingInDeck : activePlayers.length - 1 - implodingInDeck;
     } else {
       requiredAmount = activePlayers.length - 1;
     }
+
     var inserted = 0;
     while (inDeck < requiredAmount){
       deck.splice(this.randomIndex(deck.length), 0,
