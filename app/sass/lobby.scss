@@ -4,8 +4,8 @@
 }
 
 @keyframes move-twink-back {
-    from { background-position:left bottom, 0 0, 0 0; }
-    to { background-position:left bottom, -10000px 5000px, 0 0; }
+    from { background-position:left bottom, left top, 0 0, 0 0; }
+    to { background-position:left bottom, left top, -10000px 5000px, 0 0; }
 }
 
 .lobbyView{
@@ -25,9 +25,9 @@
 	}
 	@else {
 		background-color: black;
-		background-size: auto, auto, auto;
+		background-size: contain, auto, auto, auto;
 		background-position: 0% 0%;
-		background-repeat: no-repeat, repeat, repeat;
+		background-repeat: no-repeat, no-repeat, repeat, repeat;
 	  animation:move-twink-back 200s linear infinite;
 	}
 }
