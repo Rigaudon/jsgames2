@@ -104,6 +104,7 @@ var ChatView = Marionette.View.extend({
   onRender: function(){
     var self = this;
     this.showChildView("messageList", new ChatCollectionView({ collection: self.model.messageCollection }));
+    this.scrollToBottom();
   },
 
   onChatInput: function(e){
@@ -124,8 +125,13 @@ var ChatView = Marionette.View.extend({
     //Stick to bottom
     var scrollDiv = this.$(this.regions.messageList);
     if (Math.abs(scrollDiv[0].scrollHeight - scrollDiv.scrollTop() - scrollDiv.outerHeight()) < 50){
-      scrollDiv.scrollTop(scrollDiv[0].scrollHeight);
+      this.scrollToBottom();
     }
+  },
+
+  scrollToBottom: function(){
+    var scrollDiv = this.$(this.regions.messageList);
+    scrollDiv.scrollTop(scrollDiv[0].scrollHeight);
   },
 
   collapseChat: function(){
