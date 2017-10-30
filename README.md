@@ -4,6 +4,8 @@
 A stateless Nodejs game server using Socket.io and Backbone/Marionette.
 Currently, Connect Four, Uno, and Exploding Kittens are implemented.
 
+<img src="./static/images/connect-four.png" width="150" /><img src="./static/images/uno.png" width="150" /><img src="./static/images/kittens.jpg" width="150" />
+
 # Local Setup
 Developed in node `6.10.0`, npm `4.3.0`.
 Run `npm install`, then `npm start`.
