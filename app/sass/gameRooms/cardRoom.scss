@@ -277,6 +277,7 @@
       justify-content: space-around;
       align-items: center;
       flex-wrap: wrap;
+      color: #222; /*the modal bg is always white */
       .player{
         cursor: pointer;
       }
