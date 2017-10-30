@@ -36,7 +36,7 @@ var RootView = Marionette.View.extend({
     var self = this;
     var cSelector = this.$(this.regions.contentRegion);
     var logoSelector = this.$(this.regions.logoRegion);
-		
+
     //Chrome fix
     var renderedNamePicker = false;
 

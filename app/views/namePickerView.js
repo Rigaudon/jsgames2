@@ -46,6 +46,7 @@ var NamePickerView = Marionette.View.extend({
   },
 
   nameSet: function(){
+    window.playSound("startup");
     var self = this;
     this.$el.css("opacity", 0);
     this.$el.html(`Welcome, ${this.model.get("name")}!`);

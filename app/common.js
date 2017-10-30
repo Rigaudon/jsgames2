@@ -78,10 +78,40 @@ function cycleTheme(){
   return validThemes[nextTheme];
 }
 
+function setSoundSetting(){
+  return new Promise(function(resolve){
+    var setting = Cookie.get("sound");
+    if (setting == "true"){
+      window.soundsEnabled = true;
+    } else {
+      if (setting === undefined){
+        Cookie.set("sound", "true");
+        window.soundsEnabled = true;
+      } else {
+        window.soundsEnabled = false;
+      }
+    }
+    resolve();
+  });
+}
+
+function initialize(){
+  return setSoundSetting()
+    .then(loadCss);
+}
+
+function toggleSound(){
+  window.soundsEnabled = !window.soundsEnabled;
+  window.stopSound();
+  Cookie.set("sound", window.soundsEnabled);
+}
+
 module.exports = {
   finishTransition: finishTransition,
   fadeOutThenIn: fadeOutThenIn,
   loadCss: loadCss,
   getTheme: getTheme,
-  cycleTheme: cycleTheme
+  cycleTheme: cycleTheme,
+  initialize: initialize,
+  toggleSound: toggleSound
 };

@@ -1,7 +1,7 @@
 var Marionette = require("backbone.marionette");
 var RootView = require("./views/rootView");
 var User = require("./models/user");
-var loadCss = require("./common").loadCss;
+var common = require("./common");
 
 var App = Marionette.Application.extend({
   region: "body",
@@ -15,7 +15,7 @@ var App = Marionette.Application.extend({
 
 var myApp = new App();
 
-loadCss().then(function(){
+common.initialize().then(function(){
   myApp.start();
 });
 $(document).on("keypress", function(e){

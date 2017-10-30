@@ -35,6 +35,7 @@ var SideBarView = Marionette.View.extend({
 
   onRender: function(){
     this.setThemeIcon();
+    this.setVolumeIcon();
   },
 
   collapseSideBar: function(){
@@ -55,9 +56,16 @@ var SideBarView = Marionette.View.extend({
   },
 
   toggleSound: function(){
-    window.soundsEnabled = !window.soundsEnabled;
-    window.stopSound();
-    $(this.ui.sound).toggleClass("glyphicon-volume-up").toggleClass("glyphicon-volume-off");
+    common.toggleSound();
+    this.setVolumeIcon();
+  },
+
+  setVolumeIcon: function(){
+    if (!window.soundsEnabled){
+      $(this.ui.sound).removeClass("glyphicon-volume-up").addClass("glyphicon-volume-off");
+    } else {
+      $(this.ui.sound).addClass("glyphicon-volume-up").removeClass("glyphicon-volume-off");
+    }
   },
 
   toggleTheme: function(){
