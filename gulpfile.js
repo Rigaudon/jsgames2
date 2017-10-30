@@ -24,13 +24,17 @@ function bundle() {
     .on("error", gutil.log.bind(gutil, "Browserify Error"))
     .pipe(source("jsgames.js"))
     .pipe(buffer())
-	  .pipe(uglify())
+	  .pipe(uglify({
+      output: {
+        max_line_len: false
+      }
+    }))
     .on("error", function(err){
       gutil.log(gutil.colors.red("[Error]"), err.toString());
     })
     .pipe(gulp.dest("./dist"))
     .once("end", function(){
-      console.log("Done");
+      console.log("Finished gulp task: bundle");
       process.exit(0);
     });
 }
