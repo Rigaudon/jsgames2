@@ -34,14 +34,6 @@ var ExplodingKittensRoom = Room.extend({
     }
   },
 
-  playerJoin: function(playerModel){
-    Room.prototype.playerJoin.call(this, playerModel);
-    if (this.get("players").length == this.get("maxPlayers")){
-      this.set("status", 1);
-    }
-    this.emitToAllExcept(playerModel.id);
-  },
-
   executeCommand: function(options, playerId){
     var self = this;
     var command = options.command;

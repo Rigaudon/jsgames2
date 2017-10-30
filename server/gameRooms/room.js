@@ -43,6 +43,10 @@ var Room = Backbone.Model.extend({
       this.set("host", playerModel.clientJSON());
     }
     roomPlayers.add(playerModel);
+    if (this.get("players").length == this.get("maxPlayers")){
+      this.set("status", 1);
+    }
+    this.emitToAllExcept(playerModel.id, "playerJoin");
   },
 
   playerLeave: function(socket){
@@ -70,12 +74,12 @@ var Room = Backbone.Model.extend({
         this.set("host", randomPlayer.clientJSON());
       }
     }
-    this.emitToAllExcept();
+    this.emitToAllExcept(null, "playerLeave");
   },
 
-  sendRoomInfo: function(socket){
+  sendRoomInfo: function(socket, event){
     //Overwrite me!
-    socket.emit("roomInfo", this.toJSON(socket.id));
+    socket.emit("roomInfo", _.assign(this.toJSON(socket.id), { event: event }));
   },
 
   clientJSON: function(socketId){
@@ -123,11 +127,11 @@ var Room = Backbone.Model.extend({
     return clientJSON;
   },
 
-  emitToAllExcept: function(playerId){
+  emitToAllExcept: function(playerId, event){
     var self = this;
     _.forEach(self.get("players").models, function(playerModel){
       if (playerId != playerModel.id){
-        self.sendRoomInfo(playerModel.get("socket"));
+        self.sendRoomInfo(playerModel.get("socket"), event);
       }
     });
   },

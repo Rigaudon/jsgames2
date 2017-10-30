@@ -45,6 +45,14 @@ var CardGameClient = Backbone.Model.extend({
     });
     this.rotatePlayers();
     this.trigger("update:room");
+    switch (roomInfo.event){
+    case "playerJoin":
+      window.playSound("playerJoin");
+      break;
+    case "playerLeave":
+      window.playSound("playerLeave");
+      break;
+    }
   },
 
   actions: {

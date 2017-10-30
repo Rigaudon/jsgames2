@@ -63,6 +63,7 @@ var User = Backbone.Model.extend({
       if (response.success){
         self.set("channelName", response.channelName);
         self.set("roomId", response.roomId);
+        window.playSound("joinRoom");
       } else {
         self.chatClient.addMessage({
           type: "server",
