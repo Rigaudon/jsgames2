@@ -1,4 +1,4 @@
-![JSGames v2](./static/images/logo.png "JSGames v2")
+![JSGames v2](./static/images/themes/light/logo.png "JSGames v2")
 
 # JSGames v2
 A stateless Nodejs game server using Socket.io and Backbone/Marionette.
@@ -22,6 +22,7 @@ For development, run `gulp`.
 
 # Bugs
 - Cats dancing on certain size screens when playing cards (try using transforms instead of transition)
+- Views not responsive in phone browser, chat not closing properly
 
 # Sources/credits
 - Sounds taken from free domain.
