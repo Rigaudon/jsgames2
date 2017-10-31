@@ -3,12 +3,8 @@
 	var audio;
 	var createAndPlayAudio = function(fileName){
 		audio = new Audio(path + fileName + ".ogg");
-		try{
-			audio.play();
-		}catch(err){
-			audio = new Audio(path + fileName + ".mp3");
-			audio.play();
-		}
+		audio.volume = window.soundsVolume;
+		audio.play();
 	}
 
 	window.playSound = function(sounds){
@@ -25,9 +21,7 @@
 	window.stopSound = function(){
 		try{
 			audio.pause();
-		}catch(err){
-			
-		}
+		}catch(err){}
 	}
 
 	window.soundsEnabled = true;

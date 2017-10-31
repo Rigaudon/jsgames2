@@ -57,6 +57,9 @@ function loadCss(theme){
 }
 
 function setTheme(theme){
+  if (validThemes.indexOf(theme) == -1){
+    return;
+  }
   var themeCss = document.getElementById("themeCss");
   themeCss.setAttribute("href", "dist/theme-" + theme + ".css");
   Cookie.set("theme", theme);
@@ -79,17 +82,14 @@ function cycleTheme(){
 }
 
 function setSoundSetting(){
+  window.soundsEnabled = true;
   return new Promise(function(resolve){
-    var setting = Cookie.get("sound");
-    if (setting == "true"){
-      window.soundsEnabled = true;
+    var setting = Number(Cookie.get("sound"));
+    if (setting !== undefined && !isNaN(setting) && setting >= 0 && setting <= 1){
+      window.soundsVolume = setting;
     } else {
-      if (setting === undefined){
-        Cookie.set("sound", "true");
-        window.soundsEnabled = true;
-      } else {
-        window.soundsEnabled = false;
-      }
+      Cookie.set("sound", "1");
+      window.soundsVolume = 1;
     }
     resolve();
   });
@@ -106,12 +106,22 @@ function toggleSound(){
   Cookie.set("sound", window.soundsEnabled);
 }
 
+function setVolume(val){
+  if (val !== undefined && !isNaN(val) && val >= 0 && val <= 1){
+    Cookie.set("sound", val);
+    window.soundsVolume = val;
+  }
+}
+
 module.exports = {
   finishTransition: finishTransition,
   fadeOutThenIn: fadeOutThenIn,
   loadCss: loadCss,
   getTheme: getTheme,
+  setTheme: setTheme,
+  validThemes: validThemes,
   cycleTheme: cycleTheme,
   initialize: initialize,
-  toggleSound: toggleSound
+  toggleSound: toggleSound,
+  setVolume: setVolume
 };

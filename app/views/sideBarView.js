@@ -29,13 +29,26 @@ var SideBarView = Marionette.View.extend({
   events: {
     "click @ui.collapse": "collapseSideBar",
     "blur @ui.colorPicker": "pickColor",
-    "click @ui.sound": "toggleSound",
-    "click @ui.theme": "toggleTheme"
   },
 
   onRender: function(){
     this.setThemeIcon();
     this.setVolumeIcon();
+    $(this.ui.sound).popover({
+      html: true,
+      container: "body",
+      content: this.soundControlContent()
+    });
+    $(this.ui.theme).popover({
+      html: true,
+      container: "body",
+      content: this.themeContent()
+    });
+
+    //Fixes multiple click after hide
+    $("body").off("hidden.bs.popover").on("hidden.bs.popover", function (e) {
+      $(e.target).data("bs.popover").inState.click = false;
+    });
   },
 
   collapseSideBar: function(){
@@ -46,6 +59,8 @@ var SideBarView = Marionette.View.extend({
     this.$(this.ui.collapse).find("span")
       .toggleClass("glyphicon-chevron-right")
       .toggleClass("glyphicon-chevron-left");
+
+    $(".popover").popover("hide");
   },
 
   pickColor: function(){
@@ -55,22 +70,56 @@ var SideBarView = Marionette.View.extend({
     }
   },
 
-  toggleSound: function(){
-    common.toggleSound();
+  soundControlContent: function(){
+    var currentVolume = (window.soundsVolume || 1) * 100;
+    var rangeEl = $("<input type='range' min='0' max='100' class='volumeVal' />");
+    rangeEl.val(currentVolume);
+    var self = this;
+    rangeEl.on("change", function(){
+      self.changeVolume(rangeEl.val());
+    });
+    return rangeEl;
+  },
+
+  changeVolume: function(val){
+    common.setVolume(val / 100);
     this.setVolumeIcon();
   },
 
   setVolumeIcon: function(){
-    if (!window.soundsEnabled){
-      $(this.ui.sound).removeClass("glyphicon-volume-up").addClass("glyphicon-volume-off");
+    if (!window.soundsEnabled || window.soundsVolume == 0){
+      $(this.ui.sound)
+        .removeClass("glyphicon-volume-down")
+        .removeClass("glyphicon-volume-up")
+        .addClass("glyphicon-volume-off");
+    } else if (window.soundsVolume <= 0.5){
+      $(this.ui.sound)
+        .removeClass("glyphicon-volume-up")
+        .removeClass("glyphicon-volume-off")
+        .addClass("glyphicon-volume-down");
     } else {
-      $(this.ui.sound).addClass("glyphicon-volume-up").removeClass("glyphicon-volume-off");
+      $(this.ui.sound)
+        .removeClass("glyphicon-volume-down")
+        .removeClass("glyphicon-volume-off")
+        .addClass("glyphicon-volume-up");
     }
   },
 
-  toggleTheme: function(){
-    common.cycleTheme();
-    this.setThemeIcon();
+  themeContent: function(){
+    var content = $("<div>");
+    content.addClass("list");
+    var self = this;
+    _.forEach(common.validThemes, function(theme){
+      var themeEl = $("<img>");
+      themeEl.addClass("theme");
+      themeEl.attr("src", "/static/images/themes/" + theme + "/icon.png");
+      content.append(themeEl);
+      themeEl.on("click", function(){
+        common.setTheme(theme);
+        self.setThemeIcon();
+      });
+    });
+    return content;
   },
 
   setThemeIcon: function(){
