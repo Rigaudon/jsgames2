@@ -41,24 +41,28 @@ var RootView = Marionette.View.extend({
     var renderedNamePicker = false;
 
     //When the loading message fades,
-    cSelector.one(common.finishTransition, function(){
+    cSelector.on(common.finishTransition, function(){
       //Move logo out of screen
-      logoSelector.addClass("expanded");
+      if(cSelector.css("opacity") == 0){
+        logoSelector.addClass("expanded");
+      }
     });
 
     //When the logo moves off the screen,
-    logoSelector.one(common.finishTransition, function(){
+    logoSelector.on(common.finishTransition, function(){
       //Remove the logo
-      logoSelector.remove();
-      self.$el.addClass("noInvert");
-      if (renderedNamePicker){
-        return;
-      }
+      if(logoSelector.css("font-size") == "1px"){
+        logoSelector.remove();
+        self.$el.addClass("noInvert");
+        if (renderedNamePicker){
+          return;
+        }
 
-      renderedNamePicker = true;
-      //Show name picker
-      self.showChildView("contentRegion", new NamePickerView({ model: self.model }));
-      cSelector.css("opacity", 1);
+        renderedNamePicker = true;
+        //Show name picker
+        self.showChildView("contentRegion", new NamePickerView({ model: self.model }));
+        cSelector.css("opacity", 1);
+      }
     });
 
     //Fade out the loading message
