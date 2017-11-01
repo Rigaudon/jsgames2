@@ -43,7 +43,7 @@ var RootView = Marionette.View.extend({
     //When the loading message fades,
     cSelector.on(common.finishTransition, function(){
       //Move logo out of screen
-      if(cSelector.css("opacity") == 0){
+      if (cSelector.css("opacity") == 0){
         logoSelector.addClass("expanded");
       }
     });
@@ -51,7 +51,7 @@ var RootView = Marionette.View.extend({
     //When the logo moves off the screen,
     logoSelector.on(common.finishTransition, function(){
       //Remove the logo
-      if(logoSelector.css("font-size") == "1px"){
+      if (logoSelector.css("font-size") == "1px"){
         logoSelector.remove();
         self.$el.addClass("noInvert");
         if (renderedNamePicker){

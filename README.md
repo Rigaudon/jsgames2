@@ -1,5 +1,6 @@
-![JSGames v2](./static/images/themes/light/logo.png "JSGames v2")
-
+<p align="center">
+  <img alt="JSGames" src="/static/images/themes/light/logo.png" />
+</p>
 # JSGames v2
 A stateless Nodejs game server using Socket.io and Backbone/Marionette.
 Currently, Connect Four, Uno, and Exploding Kittens are implemented.
