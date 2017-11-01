@@ -4,8 +4,8 @@
 }
 
 @keyframes move-city {
-    from { background-position: -1000% bottom, center bottom, 20% top, 0 0, 0 0, 400px 400px; }
-    to { background-position: 20000% bottom, center bottom, 20% top, -10000px 5000px, -2000px 1375px, -700px 500px; }
+    from { background-position: -3000px bottom, center bottom, 20% top, 0 0, 0 0, 400px 400px; }
+    to { background-position: 250000px bottom, center bottom, 20% top, -10000px 5000px, -2000px 1375px, -700px 500px; }
 }
 
 .lobbyView{
@@ -25,7 +25,7 @@
 	}
 	@else {
 		background-color: black;
-		background-size: auto 60px, contain, auto, auto, auto, auto;
+		background-size: auto 40px, contain, auto, auto, auto, auto;
 		background-position: 0% 0%;
 		background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat, repeat;
 	  animation:move-city 200s linear infinite;
