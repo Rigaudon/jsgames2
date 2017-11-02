@@ -1,3 +1,57 @@
 .pictionaryRoom{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 
+  .gameUItop{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+
+    .scoreboard{
+      width: 200px;
+    }
+
+    .drawboard{
+      width: 800px;
+      height: 600px;
+    }
+
+    .tools{
+      width: 100px;
+      margin-right: 100px; /*Offset the scoreboard*/
+    }
+  }
+
+  .gameUIbottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+
+    .guess{
+
+    }
+
+    .gameInfo{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+
+      .word{
+
+      }
+
+      .timer{
+
+      }
+    }
+  }
 }
