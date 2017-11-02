@@ -8,11 +8,13 @@ var GameRoomsView = require("./gameRoomsView");
 
 var ConnectFourRoomView = require("./gameRoomViews/connectFourRoomView");
 var UnoRoomView = require("./gameRoomViews/unoRoomView");
+var PictionaryRoomView = require("./gameRoomViews/pictionaryRoomView");
 var ExplodingKittensRoomView = require("./gameRoomViews/explodingKittensRoomView");
 
 var GameRoomViewsMap = {
   "1": ConnectFourRoomView,
   "2": UnoRoomView,
+  "3": PictionaryRoomView,
   "4": ExplodingKittensRoomView,
 };
 
