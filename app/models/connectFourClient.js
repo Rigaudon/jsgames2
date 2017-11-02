@@ -1,45 +1,18 @@
-var Backbone = require("backbone");
-var ConnectFourClient = Backbone.Model.extend({
-  initialize: function(options){
-    var self = this;
-    this.player = options.player;
-    this.socket = this.player.getSocket();
-    this.socket.off("roomInfo");
-    this.socket.on("roomInfo", function(roomInfo){
-      self.processRoomInfo(roomInfo);
-    });
-    this.socket.off("gameMessage");
-    this.socket.on("gameMessage", function(message){
-      self.processGameMessage(message);
-    });
-    this.set("myTurn", undefined);
-    this.set("inProgress", false);
-    //We do this instead of the server side event because of the delay it takes to create the view
-    this.getRoomInfo();
-  },
+var GameClient = require("./gameClient");
 
-  getRoomInfo: function(){
-    this.socket.emit("requestRoomInfo");
-  },
+var ConnectFourClient = GameClient.extend({
 
   processRoomInfo: function(roomInfo){
-    var self = this;
-    this.set("host", roomInfo.host);
-    this.set("isHost", this.isHost());
-    this.set("gameState", roomInfo.gameState);
-    this.set("status", roomInfo.status);
-    this.set("players", roomInfo.players);
-    this.set("opponentName", this.opponentName());
-    this.set("roomName", roomInfo.options.roomName);
-    this.set("id", roomInfo.id);
-    this.set("inProgress", roomInfo.status == 2);
-    if (roomInfo.gameState.playerNum){
-      this.set("myPlayerNum", roomInfo.gameState.playerNum[self.player.get("name")]);
-      if (roomInfo.gameState.colors){
-        this.set("myColor", roomInfo.gameState.colors[self.get("myPlayerNum")]);
-      }
-    }
+    GameClient.prototype.processRoomInfo.call(this, roomInfo);
     this.trigger("update:room");
+  },
+
+  myColor: function(){
+    if (!this.get("gameState")){
+      return false;
+    }
+    var playerNum = this.get("gameState").playerNum[this.player.get("name")];
+    return this.get("gameState").colors[playerNum];
   },
 
   opponentName: function(){
@@ -55,16 +28,16 @@ var ConnectFourClient = Backbone.Model.extend({
     }
   },
 
-  processGameMessage: function(message){
-    switch (message.message){
-    case "turn":
-      if (message.turn == this.player.get("name")){
-        this.set("myTurn", true);
-      } else {
-        this.set("myTurn", false);
-      }
-      break;
-    case "madeMove":
+  myTurn: function(){
+    return this.get("gameState").turn == this.player.get("name");
+  },
+
+  actions: {
+    turn: function(message){
+      this.get("gameState").turn = message.turn;
+      this.trigger("change:myTurn");
+    },
+    madeMove: function(message){
       var targetPosition = this.get("gameState").boardState[message.move].indexOf(-1);
       var color = this.get("gameState").colors[message.playerNum];
       //Set the local gamestate
@@ -74,32 +47,26 @@ var ConnectFourClient = Backbone.Model.extend({
         row: targetPosition,
         col: message.move
       });
-      break;
-    case "victory":
+    },
+    victory: function(message){
       this.player.chatClient.addMessage({
         message: message.player + " won!",
         class: "success",
         type: "server"
       });
-      this.set("inProgress", false);
-      this.set("myTurn", null);
+      this.set("status", 1);
       this.trigger("victory");
-      break;
     }
   },
 
   makeMove: function(col){
-    if (this.get("myTurn") && this.get("inProgress")){
+    if (this.myTurn() && this.inProgress()){
       this.socket.emit("gameMessage", {
         command: "makeMove",
         roomId: this.get("id"),
         column: col
       });
     }
-  },
-
-  isHost: function(){
-    return this.get("host") && this.get("host").id == this.socket.id;
   },
 
   //Below are host functions
@@ -110,12 +77,6 @@ var ConnectFourClient = Backbone.Model.extend({
     });
   },
 
-  startRoom: function(){
-    this.socket.emit("gameMessage", {
-      command: "startGame",
-      roomId: this.get("id")
-    });
-  }
 });
 
 module.exports = ConnectFourClient;

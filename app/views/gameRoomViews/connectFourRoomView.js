@@ -20,13 +20,13 @@ var ConnectFourRoomView = Marionette.View.extend({
 
   templateContext: function(){
     return {
-      opponent: this.model.get("opponentName") || "Waiting for opponent...",
+      opponent: this.model.opponentName() || "Waiting for opponent...",
       controls: this.getOptions(),
       roomName: this.model.get("roomName") || "Connect Four",
       id: this.model.get("id"),
       status: this.statusCodes[this.model.get("status")],
-      host: this.model.get("host") ? ( this.model.get("host").name + (this.model.get("isHost") ? " (you)" : "")) : "",
-      isHost: this.model.get("isHost"),
+      host: this.model.get("host") ? ( this.model.get("host").name + (this.model.isHost() ? " (you)" : "")) : "",
+      isHost: this.model.isHost(),
       hostControls: this.getHostOptions(),
       player: this.player.get("name")
     };
@@ -34,9 +34,9 @@ var ConnectFourRoomView = Marionette.View.extend({
 
   modelEvents: {
     "update:room": "render",
-    "change:myTurn": "changeTurn",
     "animate:preview": "animatePreview",
-    "victory": "onVictory"
+    "victory": "onVictory",
+    "change:myTurn": "changeTurn"
   },
 
   ui: {
@@ -66,9 +66,9 @@ var ConnectFourRoomView = Marionette.View.extend({
 
   getHostOptions: function(){
     var hostOptions = "";
-    if (this.model.get("isHost")){
+    if (this.model.isHost()){
       var players = this.model.get("players");
-      if (players.length == 2 && !this.model.get("inProgress")){
+      if (players.length == 2 && !this.model.inProgress()){
         //Add restart option
         hostOptions += "<button class=\"kickBtn btn-big\">Kick Opponent</button>";
         hostOptions += "<button class=\"startBtn btn-big\">Start Game</button>";
@@ -90,11 +90,11 @@ var ConnectFourRoomView = Marionette.View.extend({
   },
 
   changeTurn: function(){
-    if (!this.model.get("inProgress")){
+    if (!this.model.inProgress()){
       this.$el.find(".myName").removeClass("currentTurn");
       this.$el.find(".opponentName").removeClass("currentTurn");
       $(this.ui.preview).css("display", "none");
-    } else if (this.model.get("myTurn")){
+    } else if (this.model.myTurn()){
       this.$el.find(".myName").addClass("currentTurn");
       this.$el.find(".opponentName").removeClass("currentTurn");
     } else {
@@ -105,7 +105,7 @@ var ConnectFourRoomView = Marionette.View.extend({
   },
 
   cellHover: function(child){
-    if (this.model.get("myTurn") && this.model.get("inProgress")){
+    if (this.model.myTurn() && this.model.inProgress()){
       var $elem = $(child.target);
       var position = $elem.position();
       var width = $elem.width();
@@ -114,7 +114,7 @@ var ConnectFourRoomView = Marionette.View.extend({
   },
 
   cellClick: function(child){
-    if (this.model.get("myTurn") && this.model.get("inProgress")){
+    if (this.model.myTurn() && this.model.inProgress()){
       var $elem = $(child.target);
       var col = $elem.index();
       this.model.makeMove(col);
@@ -128,7 +128,7 @@ var ConnectFourRoomView = Marionette.View.extend({
   showPreviewOnCol: function(left, width){
     var preview = $(this.ui.preview);
     preview.css("display", "block");
-    preview.attr("src", "/static/images/assets/connectFour/c4" + this.model.get("myColor") + ".png");
+    preview.attr("src", "/static/images/assets/connectFour/c4" + this.model.myColor() + ".png");
     preview.css("width", width);
     preview.css("left", left + 2);
     preview.css("top", -1 * width / 2);

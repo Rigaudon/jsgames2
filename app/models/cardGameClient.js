@@ -1,21 +1,6 @@
-var Backbone = require("backbone");
-var CardGameClient = Backbone.Model.extend({
-  initialize: function(options){
-    var self = this;
-    this.player = options.player;
-    this.socket = this.player.getSocket();
-    this.socket.off("roomInfo");
-    this.socket.on("roomInfo", function(roomInfo){
-      self.processRoomInfo(roomInfo);
-    });
-    this.socket.off("gameMessage");
-    this.socket.on("gameMessage", function(message){
-      self.processGameMessage(message);
-    });
-    //We do this instead of the server side event because of the delay it takes to create the view
-    this.getRoomInfo();
-  },
+var GameClient = require("./gameClient");
 
+var CardGameClient = GameClient.extend({
   onSelfDraw: function(card){
     this.get("gameState").deckCount--;
     this.addCardToHand(card);
@@ -30,29 +15,10 @@ var CardGameClient = Backbone.Model.extend({
     this.get("gameState").turnPlayer = newPlayer;
   },
 
-  getRoomInfo: function(){
-    this.socket.emit("requestRoomInfo");
-  },
-
-  isHost: function(){
-    return this.get("host") && this.isMe(this.get("host").id);
-  },
-
   processRoomInfo: function(roomInfo){
-    var self = this;
-    Object.keys(roomInfo).forEach(function(val){
-      self.set(val, roomInfo[val]);
-    });
+    GameClient.prototype.processRoomInfo.call(this, roomInfo);
     this.rotatePlayers();
     this.trigger("update:room");
-    switch (roomInfo.event){
-    case "playerJoin":
-      window.playSound("playerJoin");
-      break;
-    case "playerLeave":
-      window.playSound("playerLeave");
-      break;
-    }
   },
 
   actions: {
@@ -94,10 +60,6 @@ var CardGameClient = Backbone.Model.extend({
     },
   },
 
-  processGameMessage: function(message){
-    this.actions[message.message].call(this, message);
-  },
-
   onGameStart: function(){
     console.log("Game started");
   },
@@ -131,12 +93,6 @@ var CardGameClient = Backbone.Model.extend({
       }
     }
     console.error("Tried to remove a card that doesn't exist");
-  },
-
-  getPlayerById: function(id){
-    return this.get("players").filter(function(player){
-      return player.id == id;
-    })[0];
   },
 
   getCardsInHand: function(card){
@@ -185,24 +141,9 @@ var CardGameClient = Backbone.Model.extend({
     }
   },
 
-  startRoom: function(){
-    this.socket.emit("gameMessage", {
-      command: "startGame",
-      roomId: this.get("id")
-    });
-  },
-
-  inProgress: function(){
-    return this.get("status") == 2;
-  },
-
   isMyTurn: function(){
     return this.inProgress() && this.get("gameState") && this.isMe(this.get("gameState").turnPlayer);
   },
-
-  isMe: function(id){
-    return this.socket.id == id;
-  }
 
 });
 
