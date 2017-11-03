@@ -22,6 +22,8 @@ var toolDefaults = {
     }
   }
 };
+//Tools that draw by dragging
+var dragTools = ["brush", "eraser"];
 
 var PictionaryClient = GameClient.extend({
   isDrawing: false,
@@ -73,6 +75,10 @@ var PictionaryClient = GameClient.extend({
 
   canvasClick: function([x, y]){
     if (this.selectedTool.type == "fill"){
+      this.transactions.push({
+        tool: "fill",
+        position: [x, y]
+      });
       this.trigger("canvas:fill", [x, y]);
     }
   },
@@ -98,16 +104,21 @@ var PictionaryClient = GameClient.extend({
     if (!this.transactions.length){
       return;
     }
+    this.transactions.pop();
+    // We only need to redraw from the last "clear"
     var lastClear = 0;
     this.transactions.forEach(function(transaction, i){
       if (transaction.tool == "clear"){
         lastClear = i;
       }
     });
-    this.trigger("canvas:redraw", this.transactions.slice(lastClear, -1));
+    this.trigger("canvas:redraw", this.transactions.slice(lastClear));
   },
 
   startDrawing: function(){
+    if (dragTools.indexOf(this.selectedTool.type) == -1){
+      return;
+    }
     this.isDrawing = true;
     this.currentTransaction = {
       tool: _.cloneDeep(this.selectedTool),
@@ -116,6 +127,9 @@ var PictionaryClient = GameClient.extend({
   },
 
   stopDrawing: function(){
+    if (dragTools.indexOf(this.selectedTool.type) == -1){
+      return;
+    }
     this.isDrawing = false;
     if (this.currentTransaction && this.currentTransaction.positions.length){
       this.transactions.push(this.currentTransaction);

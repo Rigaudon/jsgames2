@@ -60,7 +60,7 @@ var PictionaryCanvasView = Marionette.View.extend({
     $(this.ui.canvas).clearCanvas();
   },
 
-  clearOverlay: function(options={}){
+  clearOverlay: function(options = {}){
     $(this.ui.overlay).clearCanvas(options);
   },
 
@@ -73,11 +73,26 @@ var PictionaryCanvasView = Marionette.View.extend({
   },
 
   fill: function([x, y]){
-
+    console.log("IMPLEMENT ME - fill " + x + ", " + y);
   },
 
   drawTransaction: function(transaction){
-
+    var currentPosition;
+    var prevPosition;
+    if (transaction.tool.type == "brush" || transaction.tool.type == "eraser"){
+      for (var i = 0; i < transaction.positions.length; i++){
+        if (currentPosition){
+          prevPosition = {
+            x1: currentPosition[0],
+            y1: currentPosition[1]
+          };
+        }
+        currentPosition = transaction.positions[i];
+        this.drawTick([currentPosition[0], currentPosition[1], transaction.tool, prevPosition])
+      }
+    } else if (transaction.tool.type == "fill"){
+      this.fill(transaction.position);
+    }
   },
 
   drawTick: function([x, y, toolOptions, previousTick]){
