@@ -6,10 +6,10 @@ var ChatView = require("./chatView");
 var SideBarView = require("./sideBarView");
 var GameRoomsView = require("./gameRoomsView");
 
-var ConnectFourRoomView = require("./gameRoomViews/connectFourRoomView");
-var UnoRoomView = require("./gameRoomViews/unoRoomView");
-var PictionaryRoomView = require("./gameRoomViews/pictionaryRoomView");
-var ExplodingKittensRoomView = require("./gameRoomViews/explodingKittensRoomView");
+var ConnectFourRoomView = require("./gameRoomViews/connectFour/connectFourRoomView");
+var UnoRoomView = require("./gameRoomViews/uno/unoRoomView");
+var PictionaryRoomView = require("./gameRoomViews/pictionary/pictionaryRoomView");
+var ExplodingKittensRoomView = require("./gameRoomViews/explodingKittens/explodingKittensRoomView");
 
 var GameRoomViewsMap = {
   "1": ConnectFourRoomView,

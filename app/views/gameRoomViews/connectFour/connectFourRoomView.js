@@ -1,6 +1,6 @@
 var _ = require("lodash");
 var Marionette = require("backbone.marionette");
-var ConnectFourClient = require("../../models/connectFourClient");
+var ConnectFourClient = require("../../../models/connectFourClient");
 var fs = require("fs");
 
 var ConnectFourRoomView = Marionette.View.extend({

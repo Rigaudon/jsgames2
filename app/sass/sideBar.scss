@@ -172,7 +172,7 @@
 		height: 40px;
 	}
 }
-input[type=range] {
+input[type=range]{
   -webkit-appearance: none;
   width: 150px;
   /*webkit*/
@@ -189,7 +189,7 @@ input[type=range] {
 	  height: 14px;
 	  width: 14px;
 	  border-radius: 50%;
-	  background: $tertiary-color;
+	  background: $primary-color;
 	  margin-top: -4px;
 	}
 	&:focus{
@@ -205,9 +205,13 @@ input[type=range] {
 	}
 	&::-moz-range-thumb {
 	  border: none;
-	  height: 16px;
-	  width: 16px;
+	  height: 14px;
+	  width: 14px;
 	  border-radius: 50%;
 	  background: $primary-color;
   }
+  &::-moz-focusring{
+		outline: 1px solid white;
+		outline-offset: -1px;
+	}
 }

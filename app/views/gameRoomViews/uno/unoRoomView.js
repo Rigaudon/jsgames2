@@ -1,8 +1,8 @@
 var _ = require("lodash");
 var fs = require("fs");
-var UnoClient = require("../../models/unoClient");
-var CardGameView = require("./cardGameView");
-var CardView = require("./cardView");
+var UnoClient = require("../../../models/unoClient");
+var CardGameView = require("../cardGameView");
+var CardView = require("../cardView");
 var UnoCardView = CardView.extend({
   partialImagePath: "/static/images/assets/uno/",
 });

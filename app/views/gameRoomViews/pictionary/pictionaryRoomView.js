@@ -1,29 +1,9 @@
 var Marionette = require("backbone.marionette");
-var PictionaryClient = require("../../models/pictionaryClient");
+var PictionaryClient = require("../../../models/pictionaryClient");
 var _ = require("lodash");
 var fs = require("fs");
-
-//TODO: move this into its own file and make directory for each game under views
-var PictionaryCanvasView = Marionette.View.extend({
-  className: "drawboard",
-
-  getTemplate: function(){
-    return _.template("<canvas id='pictionaryCanvas' width='800' height='600'></canvas><canvas id='pictionaryOverlay' width='800' height='600'></canvas>");
-  },
-
-  ui: {
-    "canvas": "#pictionaryCanvas",
-    "overlay": "#pictionaryOverlay"
-  },
-
-  onRender: function(){
-    this.setupCanvas();
-  },
-
-  setupCanvas: function(){
-
-  }
-});
+var PictionaryCanvasView = require("./pictionaryCanvasView");
+var PictionaryToolsView = require("./PictionaryToolsView");
 
 var PictionaryRoomView = Marionette.View.extend({
   initialize: function(options){
@@ -40,7 +20,10 @@ var PictionaryRoomView = Marionette.View.extend({
       el: ".drawboard",
       replaceElement: true
     },
-    "tools": ".tools"
+    "tools": {
+      el: ".tools",
+      replaceElement: true
+    }
   },
 
   ui: {
@@ -65,6 +48,9 @@ var PictionaryRoomView = Marionette.View.extend({
 
   onRender: function(){
     this.showChildView("canvas", new PictionaryCanvasView({
+      model: this.model
+    }));
+    this.showChildView("tools", new PictionaryToolsView({
       model: this.model
     }));
   },

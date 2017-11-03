@@ -1,12 +1,12 @@
 var _ = require("lodash");
 var fs = require("fs");
-var ExplodingKittensClient = require("../../models/explodingKittensClient");
+var ExplodingKittensClient = require("../../../models/explodingKittensClient");
 var ProgressBar = require("progressbar.js");
-var CardView = require("./cardView");
+var CardView = require("../cardView");
 var EKCardView = CardView.extend({
   partialImagePath: "/static/images/assets/explodingKittens/",
 });
-var CardGameView = require("./cardGameView");
+var CardGameView = require("../cardGameView");
 var Promise = require("bluebird");
 
 var ExplodingKittensRoomView = CardGameView.extend({

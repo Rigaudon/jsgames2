@@ -9,22 +9,86 @@
   .gameUItop{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     width: 100%;
 
     .scoreboard{
       width: 200px;
+      min-width: 200px;
     }
 
     .drawboard{
       width: 800px;
+      min-width: 800px;
       height: 600px;
+      position: relative;
+
+      canvas{
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor: none;
+      }
+
+      #pictionaryCanvas{
+        background-color: white;
+        border: 3px solid $primary-color;
+        border-radius: 10px;
+        opacity: 0.9;
+      }
     }
 
     .tools{
       width: 100px;
       margin-right: 100px; /*Offset the scoreboard*/
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: auto;
+
+      button{
+        border-radius: 4px;
+        margin: 3px;
+        padding: 0;
+        width: 50px;
+        height: 50px;
+        background-color: $bg-color;
+        border-color: $primary-color;
+        color: $primary-color;
+
+        .glyphicons{
+          font-size: 30px;
+        }
+
+        &:hover, &.active{
+          background-color: $primary-color;
+          color: $bg-color;
+        }
+      }
+
+      label{
+        margin-top: 15px;
+        margin-bottom: 0;
+        text-decoration: underline;
+        width: 100%;
+      }
+
+      input[type=color]{
+        width: 40px;
+        height: 40px;
+      }
+
+      input[type=range]{
+        transform: rotate(-90deg);
+        transform-origin: 75px;
+        margin-top: 80px;
+        -webkit-filter: drop-shadow(0 0 4px $primary-color);
+        -moz-filter: drop-shadow(0 0 4px $primary-color);
+        -ms-filter: drop-shadow(0 0 4px $primary-color);
+        -o-filter: drop-shadow(0 0 4px $primary-color);
+        filter: drop-shadow(0 0 4px $primary-color);
+      }
     }
   }
 
