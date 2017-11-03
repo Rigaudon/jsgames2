@@ -123,11 +123,9 @@ var PictionaryClient = GameClient.extend({
     this.currentTransaction = undefined;
   },
 
-  getPreviousTick: function(x, y){
+  getPreviousTick: function(){
     if (!this.currentTransaction || !this.currentTransaction.positions.length){
-      return {
-        x1: x, y1: y
-      };
+      return null;
     }
     var previousPosition = this.currentTransaction.positions[this.currentTransaction.positions.length - 1];
     return {

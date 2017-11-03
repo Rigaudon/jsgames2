@@ -39,9 +39,9 @@ var PictionaryCanvasView = Marionette.View.extend({
 
   setupCanvas: function(){
     var self = this;
-    $(this.ui.canvas).clearCanvas();
+    this.clearCanvas();
+    this.clearOverlay();
     var overlay = $(this.ui.overlay);
-    overlay.clearCanvas();
     overlay.on("mousemove", function(e){
       self.model.canvasHover([e.offsetX, e.offsetY]);
     });
@@ -59,24 +59,34 @@ var PictionaryCanvasView = Marionette.View.extend({
   clearCanvas: function(){
     $(this.ui.canvas).clearCanvas();
   },
-  /*
-  redrawCanvas: function(transactions){
-    transactions.forEach(function(transaction){
 
+  clearOverlay: function(options={}){
+    $(this.ui.overlay).clearCanvas(options);
+  },
+
+  redrawCanvas: function(transactions){
+    var self = this;
+    this.clearCanvas();
+    transactions.forEach(function(transaction){
+      self.drawTransaction(transaction);
     });
   },
 
   fill: function([x, y]){
 
   },
-*/
-  drawTick: function([x, y, toolOptions]){
+
+  drawTransaction: function(transaction){
+
+  },
+
+  drawTick: function([x, y, toolOptions, previousTick]){
     $(this.ui.canvas).drawLine(_.assign({
       strokeStyle: toolOptions.type == "eraser" ? "#ffffff" : toolOptions.options.color,
       strokeWidth: toolOptions.options.size,
       rounded: true,
       x2: x, y2: y
-    }, this.model.getPreviousTick(x, y)));
+    }, previousTick || this.model.getPreviousTick() || { x1: x, y1: y }));
   },
 
   getToolPreview: function(options){
@@ -90,7 +100,7 @@ var PictionaryCanvasView = Marionette.View.extend({
           x: options.x,
           y: options.y,
           fontSize: this.toolSize,
-          fromCenter: false,
+          fromCenter: true,
           fontFamily: "Glyphicons Regular",
           fillStyle: "#000"
         }
@@ -103,7 +113,7 @@ var PictionaryCanvasView = Marionette.View.extend({
           x: options.x,
           y: options.y,
           fontSize: this.toolSize,
-          fromCenter: false,
+          fromCenter: true,
           fontFamily: "Glyphicons Regular",
           fillStyle: "#000"
         }
@@ -135,17 +145,16 @@ var PictionaryCanvasView = Marionette.View.extend({
   },
 
   clearToolPreview: function(){
-    var overlay = $(this.ui.overlay);
     if (this.previousToolPreview){
-      overlay.clearCanvas({
+      this.clearOverlay({
         x: this.previousToolPreview.x,
         y: this.previousToolPreview.y,
-        width: this.previousToolPreview.width || this.previousToolPreview.radius * 2 || this.previousToolPreview.fontSize + 2,
-        height: this.previousToolPreview.height || this.previousToolPreview.radius * 2 || this.previousToolPreview.fontSize + 2,
+        width: this.previousToolPreview.width || this.previousToolPreview.radius * 2 || this.previousToolPreview.fontSize + 4,
+        height: this.previousToolPreview.height || this.previousToolPreview.radius * 2 || this.previousToolPreview.fontSize + 4,
         fromCenter: this.previousToolPreview.fromCenter
       });
     } else {
-      overlay.clearCanvas();
+      this.clearOverlay();
     }
   },
 });
