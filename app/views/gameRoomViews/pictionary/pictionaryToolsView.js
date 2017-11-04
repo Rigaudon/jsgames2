@@ -1,6 +1,11 @@
 var Marionette = require("backbone.marionette");
 var _ = require("lodash");
 var fs = require("fs");
+var validToolOptions = {
+  "brush": ["color", "size"],
+  "fill": ["color"],
+  "eraser": ["size"]
+};
 
 var PictionaryToolsView = Marionette.View.extend({
   className: "tools",
@@ -40,16 +45,20 @@ var PictionaryToolsView = Marionette.View.extend({
   onRender: function(){
     var tool = this.model.selectedTool;
     $(this.ui[tool.type]).addClass("active");
-    if (tool.options.color){
+    if (this.toolHasOption(tool.type, "color")){
       $(this.ui.color).val(tool.options.color);
     } else {
       $(this.regions.colorContainer).css("display", "none");
     }
-    if (tool.options.size){
+    if (this.toolHasOption(tool.type, "size")){
       $(this.ui.size.val(tool.options.size));
     } else {
       $(this.regions.sizeContainer).css("display", "none");
     }
+  },
+
+  toolHasOption(tool, option){
+    return validToolOptions[tool].indexOf(option) > -1;
   },
 
   changeTool: function(e){

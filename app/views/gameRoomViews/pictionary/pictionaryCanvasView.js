@@ -76,12 +76,13 @@ var PictionaryCanvasView = Marionette.View.extend({
     var [x, y] = transaction.position;
     var canvas = $(this.ui.canvas)[0];
     var ctx = canvas.getContext("2d");
-    var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var image = ctx.getImageData(0, 0, this.width, this.height);
     var searchColor = this.getCtxPixelAt(image, x, y);
     var newColor = this.getRgbaFromHex(transaction.tool.options.color);
     if (this.sameColor(searchColor, newColor, true)){
       return;
     }
+
     var pxlStack = [[x, y]];
     var currX, currY;
     var recordedLeft, recordedRight;
@@ -89,15 +90,15 @@ var PictionaryCanvasView = Marionette.View.extend({
       recordedLeft = false;
       recordedRight = false;
       [currX, currY] = pxlStack.pop();
-      while (currY > 0 && this.sameColor(searchColor, this.getCtxPixelAt(image, currX, currY - 1), true)){
+      while (currY > 0 && this.matchStartColor(image, currX, currY - 1, searchColor)){
         //Move cursor to top
         currY--;
       }
-      while (currY++ < canvas.height - 1 && this.sameColor(searchColor, this.getCtxPixelAt(image, currX, currY), true)){
+      while (currY < this.height && this.matchStartColor(image, currX, currY, searchColor)){
         this.setCtxPixelAt(image, currX, currY, newColor);
 
         if (currX > 0){
-          if (this.sameColor(searchColor, this.getCtxPixelAt(image, currX - 1, currY), true)){
+          if (this.matchStartColor(image, currX - 1, currY, searchColor)){
             if (!recordedLeft){
               pxlStack.push([currX - 1, currY]);
               recordedLeft = true;
@@ -107,8 +108,8 @@ var PictionaryCanvasView = Marionette.View.extend({
           }
         }
 
-        if (currX < canvas.width){
-          if (this.sameColor(searchColor, this.getCtxPixelAt(image, currX + 1, currY), true)){
+        if (currX < this.width){
+          if (this.matchStartColor(image, currX + 1, currY, searchColor)){
             if (!recordedRight){
               pxlStack.push([currX + 1, currY]);
               recordedRight = true;
@@ -117,6 +118,7 @@ var PictionaryCanvasView = Marionette.View.extend({
             recordedRight = false;
           }
         }
+        currY++;
       }
     }
     ctx.putImageData(image, 0, 0);
@@ -130,15 +132,15 @@ var PictionaryCanvasView = Marionette.View.extend({
   },
 
   getCtxPixelAt: function(image, x, y){
-    if (x > image.width || y > image.height || x < 0 || y < 0){
+    if (x > this.width || y > this.height || x < 0 || y < 0){
       return null;
     }
-    var i = 4 * (y * image.width + x);
+    var i = 4 * (y * this.width + x);
     return image.data.slice(i, i + 4);
   },
 
   setCtxPixelAt: function(image, x, y, newColor){
-    var i = 4 * (y * image.width + x);
+    var i = 4 * (y * this.width + x);
     image.data[i] = newColor[0];
     image.data[i + 1] = newColor[1];
     image.data[i + 2] = newColor[2];
@@ -147,6 +149,16 @@ var PictionaryCanvasView = Marionette.View.extend({
 
   sameColor: function(col1, col2, matchAlpha = false){
     return col1 && col2 && col1[0] == col2[0] && col1[1] == col2[1] && col1[2] == col2[2] && (col1[3] == col2[3] || !matchAlpha);
+  },
+
+  // This is a combination of calling sameColor(startColor, getCtxPixelAt(image, x, y))
+  // But flattened so that it doesnt make so twice as many function calls
+  matchStartColor: function(image, x, y, startColor){
+    var i = 4 * (y * this.width + x);
+    return image.data[i] == startColor[0] &&
+            image.data[i + 1] == startColor[1] &&
+            image.data[i + 2] == startColor[2] &&
+            (startColor[3] === undefined || image.data[i + 3] == startColor[3]);
   },
 
   drawTransaction: function(transaction){
@@ -170,11 +182,13 @@ var PictionaryCanvasView = Marionette.View.extend({
 
   drawTick: function([x, y, toolOptions, previousTick]){
     $(this.ui.canvas).drawLine(_.assign({
-      strokeStyle: toolOptions.type == "eraser" ? "#ffffff" : toolOptions.options.color,
+      strokeStyle: toolOptions.options.color,
       strokeWidth: toolOptions.options.size,
       rounded: true,
+      compositing: toolOptions.type == "eraser" ? "destination-out" : "source-over",
       x2: x, y2: y
     }, previousTick || this.model.getPreviousTick() || { x1: x, y1: y }));
+
   },
 
   getToolPreview: function(options){

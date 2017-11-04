@@ -1,34 +1,20 @@
 var GameClient = require("./gameClient");
 var _ = require("lodash");
 var validTools = ["brush", "fill", "eraser"];
-var toolDefaults = {
-  "brush": {
-    type: "brush",
-    options: {
-      color: "#000000",
-      size: 4
-    }
-  },
-  "fill": {
-    type: "fill",
-    options: {
-      color: "#000000",
-    }
-  },
-  "eraser": {
-    type: "eraser",
-    options: {
-      size: 4
-    }
-  }
-};
+
 //Tools that draw by dragging
 var dragTools = ["brush", "eraser"];
 
 var PictionaryClient = GameClient.extend({
   isDrawing: false,
 
-  selectedTool: toolDefaults.brush,
+  selectedTool: {
+    type: "brush",
+    options: {
+      color: "#000000",
+      size: 4
+    }
+  },
 
   savedTools: {},
 
@@ -37,12 +23,7 @@ var PictionaryClient = GameClient.extend({
 
   changeTool: function(tool){
     if (validTools.indexOf(tool) > -1){
-      this.savedTools[this.selectedTool.type] = this.selectedTool;
-      if (this.savedTools[tool]){
-        this.selectedTool = this.savedTools[tool];
-      } else {
-        this.selectedTool = toolDefaults[tool];
-      }
+      this.selectedTool.type = tool;
       this.trigger("change:selectedTool");
     }
   },
