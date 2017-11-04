@@ -76,10 +76,10 @@ var PictionaryClient = GameClient.extend({
   canvasClick: function([x, y]){
     if (this.selectedTool.type == "fill"){
       this.transactions.push({
-        tool: "fill",
+        tool: _.cloneDeep(this.selectedTool),
         position: [x, y]
       });
-      this.trigger("canvas:fill", [x, y]);
+      this.trigger("canvas:fill", this.lastTransaction());
     }
   },
 
@@ -91,11 +91,13 @@ var PictionaryClient = GameClient.extend({
   },
 
   clearCanvas: function(){
-    if (!this.transactions.length || this.lastTransaction().tool == "clear"){
+    if (!this.transactions.length || this.lastTransaction().tool.type == "clear"){
       return;
     }
     this.transactions.push({
-      tool: "clear"
+      tool: {
+        type: "clear"
+      }
     });
     this.trigger("canvas:clear");
   },
@@ -108,7 +110,7 @@ var PictionaryClient = GameClient.extend({
     // We only need to redraw from the last "clear"
     var lastClear = 0;
     this.transactions.forEach(function(transaction, i){
-      if (transaction.tool == "clear"){
+      if (transaction.tool.type == "clear"){
         lastClear = i;
       }
     });

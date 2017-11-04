@@ -1,5 +1,6 @@
 .pictionaryRoom{
   width: 100%;
+  min-width: 1050px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -19,10 +20,11 @@
     }
 
     .drawboard{
-      width: 800px;
-      min-width: 800px;
-      height: 600px;
+      width: 806px;
+      min-width: 806px;
+      height: 606px;
       position: relative;
+      border: 3px solid $primary-color;
 
       canvas{
         position: absolute;
@@ -33,8 +35,6 @@
 
       #pictionaryCanvas{
         background-color: white;
-        border: 3px solid $primary-color;
-        border-radius: 10px;
         opacity: 0.9;
       }
     }

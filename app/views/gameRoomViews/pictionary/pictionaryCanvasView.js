@@ -72,8 +72,81 @@ var PictionaryCanvasView = Marionette.View.extend({
     });
   },
 
-  fill: function([x, y]){
-    console.log("IMPLEMENT ME - fill " + x + ", " + y);
+  fill: function(transaction){
+    var [x, y] = transaction.position;
+    var canvas = $(this.ui.canvas)[0];
+    var ctx = canvas.getContext("2d");
+    var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var searchColor = this.getCtxPixelAt(image, x, y);
+    var newColor = this.getRgbaFromHex(transaction.tool.options.color);
+    if (this.sameColor(searchColor, newColor, true)){
+      return;
+    }
+    var pxlStack = [[x, y]];
+    var currX, currY;
+    var recordedLeft, recordedRight;
+    while (pxlStack.length){
+      recordedLeft = false;
+      recordedRight = false;
+      [currX, currY] = pxlStack.pop();
+      while (currY > 0 && this.sameColor(searchColor, this.getCtxPixelAt(image, currX, currY - 1), true)){
+        //Move cursor to top
+        currY--;
+      }
+      while (currY++ < canvas.height - 1 && this.sameColor(searchColor, this.getCtxPixelAt(image, currX, currY), true)){
+        this.setCtxPixelAt(image, currX, currY, newColor);
+
+        if (currX > 0){
+          if (this.sameColor(searchColor, this.getCtxPixelAt(image, currX - 1, currY), true)){
+            if (!recordedLeft){
+              pxlStack.push([currX - 1, currY]);
+              recordedLeft = true;
+            }
+          } else if (recordedLeft){
+            recordedLeft = false;
+          }
+        }
+
+        if (currX < canvas.width){
+          if (this.sameColor(searchColor, this.getCtxPixelAt(image, currX + 1, currY), true)){
+            if (!recordedRight){
+              pxlStack.push([currX + 1, currY]);
+              recordedRight = true;
+            }
+          } else if (recordedRight){
+            recordedRight = false;
+          }
+        }
+      }
+    }
+    ctx.putImageData(image, 0, 0);
+  },
+
+  getRgbaFromHex: function(hex){
+    hex = hex.replace("#", "");
+    return [hex.substr(0, 2), hex.substr(2, 2), hex.substr(4, 2), hex.substr(6, 2) || "FF"].map(function(val){
+      return parseInt(val, 16);
+    });
+  },
+
+  getCtxPixelAt: function(image, x, y){
+    if (x > image.width || y > image.height || x < 0 || y < 0){
+      return null;
+    }
+    var i = 4 * (y * image.width + x);
+    return image.data.slice(i, i + 4);
+  },
+
+  setCtxPixelAt: function(image, x, y, newColor){
+    var i = 4 * (y * image.width + x);
+    image.data[i] = newColor[0];
+    image.data[i + 1] = newColor[1];
+    image.data[i + 2] = newColor[2];
+    image.data[i + 3] = 255; //Alpha
+  },
+
+  sameColor: function(col1, col2, matchAlpha = false){
+    return col1 && col2 && col1[0] == col2[0] && col1[1] == col2[1] && col1[2] == col2[2] && (col1[3] == col2[3] || !matchAlpha);
   },
 
   drawTransaction: function(transaction){
@@ -91,7 +164,7 @@ var PictionaryCanvasView = Marionette.View.extend({
         this.drawTick([currentPosition[0], currentPosition[1], transaction.tool, prevPosition])
       }
     } else if (transaction.tool.type == "fill"){
-      this.fill(transaction.position);
+      this.fill(transaction);
     }
   },
 
