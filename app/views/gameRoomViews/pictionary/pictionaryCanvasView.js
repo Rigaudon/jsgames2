@@ -188,7 +188,6 @@ var PictionaryCanvasView = Marionette.View.extend({
       compositing: toolOptions.type == "eraser" ? "destination-out" : "source-over",
       x2: x, y2: y
     }, previousTick || this.model.getPreviousTick() || { x1: x, y1: y }));
-
   },
 
   getToolPreview: function(options){

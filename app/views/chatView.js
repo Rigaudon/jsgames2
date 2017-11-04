@@ -1,6 +1,7 @@
 var _ = require("lodash");
 var Marionette = require("backbone.marionette");
 var fs = require("fs");
+var common = require("../common");
 
 var ChatItemView = Marionette.View.extend({
   tagName: "li",
@@ -105,6 +106,7 @@ var ChatView = Marionette.View.extend({
     var self = this;
     this.showChildView("messageList", new ChatCollectionView({ collection: self.model.messageCollection }));
     this.scrollToBottom();
+    this.setClasses();
   },
 
   onChatInput: function(e){
@@ -134,14 +136,31 @@ var ChatView = Marionette.View.extend({
     scrollDiv.scrollTop(scrollDiv[0].scrollHeight);
   },
 
+  setClasses: function(){
+    var collapse = common.getChatCollapse();
+    this.$(this.regions.main).addClass(collapse);
+    var glyph = this.$(this.ui.collapse).find(".glyphicon");
+    if (collapse == "open"){
+      glyph.addClass("glyphicon-chevron-right");
+    } else {
+      glyph.addClass("glyphicon-comment");
+    }
+  },
+
   collapseChat: function(){
     this.$(this.regions.main)
       .toggleClass("open")
       .toggleClass("closed");
 
-    this.$(this.ui.collapse).find("span")
-      .toggleClass("glyphicon-comment")
-      .toggleClass("glyphicon-chevron-right");
+    var glyph = this.$(this.ui.collapse).find(".glyphicon");
+
+    if (this.$(this.regions.main).hasClass("open")){
+      glyph.removeClass("glyphicon-comment").addClass("glyphicon-chevron-right");
+      common.setChatCollapse("open");
+    } else {
+      glyph.addClass("glyphicon-comment").removeClass("glyphicon-chevron-right");
+      common.setChatCollapse("closed");
+    }
   }
 
 });

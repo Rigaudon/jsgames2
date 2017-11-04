@@ -113,6 +113,19 @@ function setVolume(val){
   }
 }
 
+function setChatCollapse(collapse){
+  Cookie.set("chatCollapse", collapse);
+  return collapse;
+}
+
+function getChatCollapse(){
+  var saved = Cookie.get("chatCollapse");
+  if (saved){
+    return saved;
+  }
+  return setChatCollapse("open");
+}
+
 module.exports = {
   finishTransition: finishTransition,
   fadeOutThenIn: fadeOutThenIn,
@@ -123,5 +136,7 @@ module.exports = {
   cycleTheme: cycleTheme,
   initialize: initialize,
   toggleSound: toggleSound,
-  setVolume: setVolume
+  setVolume: setVolume,
+  setChatCollapse: setChatCollapse,
+  getChatCollapse: getChatCollapse
 };
