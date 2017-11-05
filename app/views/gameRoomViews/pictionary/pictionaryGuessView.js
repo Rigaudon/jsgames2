@@ -31,6 +31,7 @@ var PictionaryGuessView = Marionette.View.extend({
   },
 
   onPlayerTurn: function(){
+    $(this.regions.guessList).empty();
     if (this.model.isMyTurn()){
       $(this.ui.guess).attr("disabled", "disabled");
     } else {
@@ -48,12 +49,16 @@ var PictionaryGuessView = Marionette.View.extend({
   },
 
   onMadeGuess: function(message){
+    var guess;
     if (message.correct){
-
+      if (this.model.isMe(message.player)){
+        $(this.ui.guess).attr("disabled", "disabled");
+      }
+      guess = $("<div>").text("correct");
     } else {
-      var guess = $("<div>").text(message.guess);
-      $(this.regions.guessList).append(guess);
+      guess = $("<div>").text(message.guess);
     }
+    $(this.regions.guessList).append(guess);
   },
 
   sendGuess: function(val){

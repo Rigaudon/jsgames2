@@ -15,10 +15,21 @@ var PictionaryClient = GameClient.extend({
       this.trigger("player:turn", message);
     },
     madeGuess: function(message){
-      if (this.isMe(message.player) && message.correct){
-        this.successfulGuess = true;
+      if (message.correct){
+        if (this.isMe(message.player)){
+          this.successfulGuess = true;
+        }
+        this.get("gameState").points[message.player] += message.points;
+        this.get("gameState").points[this.get("gameState").turnPlayer] += message.drawerPoints;
       }
       this.trigger("made:guess", message);
+    },
+    endTurn: function(message){
+      this.trigger("end:turn", message);
+    },
+    endGame: function(message){
+      this.get("gameState").turnPlayer = undefined;
+      this.trigger("end:game", message);
     }
   },
 
@@ -155,6 +166,10 @@ var PictionaryClient = GameClient.extend({
     };
   },
 
+  currentPlayer: function(){
+    return this.get("gameState") ? this.get("gameState").turnPlayer : null;
+  },
+
   getPlayerInfo: function(){
     var playerInfo = [];
     if (!this.get("players")){
@@ -170,7 +185,10 @@ var PictionaryClient = GameClient.extend({
       };
       playerInfo.push(info);
     });
-    return playerInfo;
+
+    return playerInfo.sort(function(a, b){
+      return b.score - a.score;
+    });
   },
 
   processRoomInfo: function(roomInfo){

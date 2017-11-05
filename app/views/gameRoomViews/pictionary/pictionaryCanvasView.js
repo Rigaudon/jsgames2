@@ -32,7 +32,8 @@ var PictionaryCanvasView = Marionette.View.extend({
     "canvas:clear": "clearCanvas",
     "canvas:redraw": "redrawCanvas",
     "canvas:fill": "fill",
-    "player:turn": "onPlayerTurn"
+    "player:turn": "onPlayerTurn",
+    "end:turn": "onEndTurn"
   },
 
   onRender: function(){
@@ -66,13 +67,20 @@ var PictionaryCanvasView = Marionette.View.extend({
     });
   },
 
+  onEndTurn: function(){
+    this.enabled = false;
+    $(this.ui.overlay).css("cursor", "auto");
+  },
+
   onPlayerTurn: function(){
     this.clearCanvas();
     this.clearOverlay();
     if (this.model.isMyTurn()){
       this.enabled = true;
+      $(this.ui.overlay).css("cursor", "none");
     } else {
       this.enabled = false;
+      $(this.ui.overlay).css("cursor", "auto");
     }
   },
 

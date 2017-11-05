@@ -2,6 +2,7 @@
   width: 100%;
   min-width: 1050px;
   height: 100%;
+  min-height: 950px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -223,13 +224,22 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
+      position: relative;
 
       .word{
-
+        font-size: 60px;
+        color: $primary-color;
+        text-shadow: 0 0 10px $bg-color;
       }
 
       .timer{
-
+        width: 400px;
+        .progressbar-text{
+          color: $primary-color !important;
+          text-shadow: 0 0 10px $bg-color;
+          font-size: 40px;
+        }
       }
     }
   }

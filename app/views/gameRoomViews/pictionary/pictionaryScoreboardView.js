@@ -16,18 +16,27 @@ var PictionaryScoreboardView = Marionette.View.extend({
 
   modelEvents: {
     "change:players": "render",
-    "player:turn": "setActive"
+    "player:turn": "setActive",
+    "made:guess": "onMadeGuess",
+    "end:game": "setActive"
   },
 
-  setActive: function(message){
+  setActive: function(){
+    var self = this;
     this.$(".player").each(function(i, el){
       var $el = $(el);
-      if ($el.attr("data-id") == message.player){
+      if ($el.attr("data-id") == self.model.currentPlayer()){
         $el.addClass("active");
       } else {
         $el.removeClass("active");
       }
     });
+  },
+
+  onMadeGuess: function(message){
+    if (message.points){
+      this.render();
+    }
   }
 
 });

@@ -6,6 +6,7 @@ var PictionaryCanvasView = require("./pictionaryCanvasView");
 var PictionaryToolsView = require("./pictionaryToolsView");
 var PictionaryScoreboardView = require("./pictionaryScoreboardView");
 var PictionaryGuessView = require("./pictionaryGuessView");
+var PictionaryGameInfoView = require("./pictionaryGameInfoView");
 
 var PictionaryRoomView = Marionette.View.extend({
   initialize: function(options){
@@ -33,7 +34,12 @@ var PictionaryRoomView = Marionette.View.extend({
       el: ".guess",
       replaceElement: true
     },
-    "controls": ".controls"
+    "gameInfo": {
+      el: ".gameInfo",
+      replaceElement: true
+    },
+    "controls": ".controls",
+    "status": ".status",
   },
 
   ui: {
@@ -47,7 +53,12 @@ var PictionaryRoomView = Marionette.View.extend({
   },
 
   modelEvents: {
-    "update:room": "updateOptions"
+    "update:room": "onUpdateRoom",
+    "update:status": "updateStatus",
+    "player:turn": "onPlayerTurn",
+    "change:status": "onUpdateStatus",
+    "end:turn": "onEndTurn",
+    "end:game": "onEndGame"
   },
 
   getTemplate: function(){
@@ -58,6 +69,10 @@ var PictionaryRoomView = Marionette.View.extend({
     return {
       controls: this.getOptions(),
     };
+  },
+
+  updateStatus: function(status){
+    $(this.regions.status).text(status);
   },
 
   onRender: function(){
@@ -73,6 +88,53 @@ var PictionaryRoomView = Marionette.View.extend({
     this.showChildView("guess", new PictionaryGuessView({
       model: this.model
     }));
+    this.showChildView("gameInfo", new PictionaryGameInfoView({
+      model: this.model
+    }));
+  },
+
+  onUpdateRoom: function(){
+    this.updateOptions();
+  },
+
+  onEndTurn: function(message){
+    var nextPlayer = this.model.getPlayerById(message.nextPlayer);
+    if (nextPlayer){
+      this.updateStatus(nextPlayer.name + " is drawing next.");
+    }
+  },
+
+  onEndGame: function(message){
+    var self = this;
+    this.updateStatus(this.toEnglishList(message.winners.map(function(winner){
+      return self.model.getPlayerById(winner).name;
+    }), "and") + " won!");
+    window.showConfetti();
+    window.playSound("victory");
+    this.updateOptions();
+  },
+
+  toEnglishList(list, lastSeparator){
+    if (list.length > 1){
+      list[list.length - 1] = lastSeparator + " " + list[list.length - 1];
+    }
+    if (list.length > 2){
+      return list.join(", ");
+    }
+    return list.join(" ");
+  },
+
+  onUpdateStatus: function(){
+    if (this.model.get("status") == 0){
+      this.updateStatus("Waiting for players.");
+    } else if (this.model.get("status") == 1){
+      this.updateStatus("Waiting for host to start.");
+    }
+  },
+
+  onPlayerTurn: function(message){
+    var player = this.model.getPlayerById(message.player);
+    this.updateStatus(player.name + " is drawing.");
   },
 
   updateOptions: function(){

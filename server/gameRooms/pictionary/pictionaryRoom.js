@@ -3,7 +3,8 @@ var Room = require("../room");
 var hostCommands = ["startGame"];
 var commands = ["makeGuess"];
 var NUM_ROUNDS = 3;
-var TURN_TIME = 10000;
+var TURN_TIME = 60000;
+var DELAY_BETWEEEN_TURNS = 5000;
 
 var PictionaryRoom = Room.extend({
   initialize: function(options){
@@ -42,6 +43,11 @@ var PictionaryRoom = Room.extend({
       turnTimer: undefined,
       word: "test"
     });
+    if (this.get("players").length == this.get("maxPlayers")){
+      this.set("status", 1);
+    } else {
+      this.set("status", 0);
+    }
   },
 
   startGame: function(){
@@ -98,26 +104,72 @@ var PictionaryRoom = Room.extend({
     gameState.word = newWord;
     var self = this;
     clearTimeout(gameState.turnTimeout);
-    gameState.turnTimeout = setTimeout(self.progressTurn.bind(self), TURN_TIME);
-    gameState.roundStarted = new Date();
+    gameState.turnTimeout = setTimeout(self.endTurn.bind(self), TURN_TIME);
+    gameState.turnStarted = Date.now();
     gameState.correctGuess = [];
 
     var pid = gameState.turnPlayer.get("id");
     this.emitGameMessageToAllExcept([pid], {
       message: "playerTurn",
       player: pid,
-      word: newWord.replace(/[a-zA-Z]/g, " _ ")
+      word: this.obscureWord(newWord),
+      turnEnds: gameState.turnStarted + TURN_TIME
     });
 
     this.getSocketFromPID(pid).emit("gameMessage", {
       message: "playerTurn",
       player: pid,
-      word: newWord
+      word: newWord,
+      turnEnds: gameState.turnStarted + TURN_TIME
     });
   },
 
-  endGame: function(){
+  obscureWord: function(word){
+    return word.split(" ").map(function(single){
+      return single.replace(/[a-zA-Z]/g, " _ ");
+    }).join("&nbsp;&nbsp;&nbsp;");
+  },
 
+  endTurn: function(){
+    var gameState = this.get("gameState");
+    var nextPlayer = gameState.turns.length ? gameState.turns[gameState.turns.length - 1] : null;
+    while (!nextPlayer && gameState.turns.length){
+      nextPlayer = gameState.turns.pop();
+      if (this.get("players").get(nextPlayer)){
+        break;
+      } else {
+        nextPlayer = null;
+        continue;
+      }
+    }
+
+    this.emitGameMessage({
+      message: "endTurn",
+      nextPlayer: nextPlayer,
+      word: gameState.word
+    });
+    var self = this;
+    setTimeout(self.progressTurn.bind(self), DELAY_BETWEEEN_TURNS);
+  },
+
+  endGame: function(){
+    var winningPoints = 0;
+    var winners = [];
+    var gameState = this.get("gameState");
+    this.get("players").forEach(function(player){
+      var playerPoints = gameState.points[player.get("id")];
+      if (playerPoints > winningPoints){
+        winningPoints = playerPoints;
+        winners = [player.get("id")];
+      } else if (playerPoints == winningPoints){
+        winners.push(player.get("id"));
+      }
+    });
+    this.resetDefaultGamestate();
+    this.emitGameMessage({
+      message: "endGame",
+      winners: winners
+    });
   },
 
   makeGuess: function(options){
@@ -138,12 +190,15 @@ var PictionaryRoom = Room.extend({
       });
     } else {
       var points = this.getPointsForGuess();
+      var drawerPoints = 5;
       this.emitGameMessage({
         message: "madeGuess",
         player: options.source,
         correct: true,
-        points: points
+        points: points,
+        drawerPoints: drawerPoints
       });
+      gameState.points[gameState.turnPlayer.get("id")] += drawerPoints;
       gameState.points[options.source] += points;
       gameState.correctGuess.push(options.source);
     }
@@ -153,7 +208,7 @@ var PictionaryRoom = Room.extend({
     var gameState = this.get("gameState");
     var basePoints = 5;
     var firstBonus = gameState.correctGuess.length ? 0 : 5;
-    var timeBonus = Math.round((((new Date()) - gameState.roundStarted) / TURN_TIME) * 10);
+    var timeBonus = Math.round((1 - (((new Date()) - gameState.turnStarted) / TURN_TIME)) * 10);
     return basePoints + firstBonus + timeBonus;
   },
 
@@ -166,7 +221,7 @@ var PictionaryRoom = Room.extend({
     if (gameState){
       json.points = gameState.points;
       json.turnPlayer = gameState.turnPlayer ? gameState.turnPlayer.get("id") : null;
-      json.word = socketId == json.turnPlayer ? gameState.word : gameState.word.replace(/[a-zA-Z]/g, " _ ");
+      json.word = socketId == json.turnPlayer ? gameState.word : this.obscureWord(gameState.word);
     }
     return json;
   },

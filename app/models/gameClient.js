@@ -28,8 +28,10 @@ var GameClient = Backbone.Model.extend({
     switch (roomInfo.event){
     case "playerJoin":
       window.playSound("playerJoin");
+      this.trigger("player:join");
       break;
     case "playerLeave":
+      this.trigger("player:leave");
       window.playSound("playerLeave");
       break;
     }
