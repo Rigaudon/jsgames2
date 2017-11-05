@@ -40,7 +40,8 @@ var PictionaryToolsView = Marionette.View.extend({
 
   modelEvents: {
     "change:selectedTool": "render",
-    "player:turn": "onPlayerTurn"
+    "player:turn": "onPlayerTurn",
+    "end:game": "onEndGame"
   },
 
   onRender: function(){
@@ -64,6 +65,10 @@ var PictionaryToolsView = Marionette.View.extend({
     } else {
       this.$el.addClass("hide");
     }
+  },
+
+  onEndGame: function(){
+    this.$el.removeClass("hide");
   },
 
   toolHasOption(tool, option){

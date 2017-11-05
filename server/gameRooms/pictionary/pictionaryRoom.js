@@ -5,11 +5,13 @@ var commands = ["makeGuess"];
 var NUM_ROUNDS = 3;
 var TURN_TIME = 60000;
 var DELAY_BETWEEEN_TURNS = 5000;
+var words = require("./words.json");
 
 var PictionaryRoom = Room.extend({
   initialize: function(options){
     Room.prototype.initialize.call(this, options);
     this.resetDefaultGamestate();
+    this.wordList = words.easy.concat(words.medium).concat(words.hard);
   },
 
   executeCommand: function(options, playerId){
@@ -58,6 +60,7 @@ var PictionaryRoom = Room.extend({
       self.initializePoints();
       self.initializeTurnOrder();
       self.emitToAllExcept();
+      self.get("gameState").usedWords = [];
       self.progressTurn();
     }
   },
@@ -142,6 +145,7 @@ var PictionaryRoom = Room.extend({
         continue;
       }
     }
+    clearTimeout(gameState.turnTimeout);
 
     this.emitGameMessage({
       message: "endTurn",
@@ -166,6 +170,7 @@ var PictionaryRoom = Room.extend({
       }
     });
     this.resetDefaultGamestate();
+    this.emitToAllExcept();
     this.emitGameMessage({
       message: "endGame",
       winners: winners
@@ -179,6 +184,10 @@ var PictionaryRoom = Room.extend({
 
     var gameState = this.get("gameState");
     if (gameState.turnPlayer.get("id") == options.source || gameState.correctGuess.indexOf(options.source) > -1){
+      return;
+    }
+    if ((new Date()) - gameState.turnStarted > TURN_TIME){
+      //cannot guess after turn has ended
       return;
     }
     if (options.guess.trim().toLowerCase() !== gameState.word.toLowerCase()){
@@ -202,6 +211,9 @@ var PictionaryRoom = Room.extend({
       gameState.points[options.source] += points;
       gameState.correctGuess.push(options.source);
     }
+    if (gameState.correctGuess.length == this.get("players").length - 1){
+      this.endTurn();
+    }
   },
 
   getPointsForGuess: function(){
@@ -213,7 +225,12 @@ var PictionaryRoom = Room.extend({
   },
 
   getRandomWord: function(){
-    return "Test Word";
+    var randomWord = this.wordList[this.randomIndex(this.wordList.length)];
+    while (this.get("gameState").usedWords.indexOf(randomWord) > -1){
+      randomWord = this.wordList[this.randomIndex(this.wordList.length)];
+    }
+    this.get("gameState").usedWords.push(randomWord);
+    return randomWord;
   },
 
   gameStateJson: function(gameState, socketId){

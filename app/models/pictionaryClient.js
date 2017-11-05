@@ -198,7 +198,6 @@ var PictionaryClient = GameClient.extend({
 
   sendGuess: function(guess){
     if (this.canSendGuess()){
-      console.log("sending guess");
       this.socket.emit("gameMessage", {
         "command": "makeGuess",
         "guess": guess,

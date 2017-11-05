@@ -26,6 +26,10 @@ var PictionaryGameInfoView = Marionette.View.extend({
 
   onEndTurn: function(message){
     this.setWord(message.word);
+    if (this.timer && this.timer.destroy){
+      this.timer.destroy();
+      this.timer = undefined;
+    }
   },
 
   setWord: function(word){

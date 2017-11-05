@@ -8,7 +8,7 @@ var PictionaryCanvasView = Marionette.View.extend({
   height: 600,
   previousToolPreview: undefined,
   toolSize: 25,
-  enabled: true,
+  enabled: false,
 
   getTemplate: function(){
     return _.template(fs.readFileSync("./app/templates/partials/gameRooms/pictionary/canvas.html", "utf8"), this.templateContext());

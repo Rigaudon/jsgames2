@@ -10,7 +10,8 @@ var PictionaryGuessView = Marionette.View.extend({
   },
 
   regions: {
-    "guessList": ".guessList"
+    "guessList": ".guessList",
+    "guessListContainer": ".guessListContainer"
   },
 
   events: {
@@ -19,7 +20,8 @@ var PictionaryGuessView = Marionette.View.extend({
 
   modelEvents: {
     "player:turn": "onPlayerTurn",
-    "made:guess": "onMadeGuess"
+    "made:guess": "onMadeGuess",
+    "end:turn": "onEndTurn"
   },
 
   getTemplate: function(){
@@ -28,6 +30,10 @@ var PictionaryGuessView = Marionette.View.extend({
 
   templateContext: function(){
     return {};
+  },
+
+  onRender: function(){
+    $(this.ui.guess).attr("disabled", "disabled");
   },
 
   onPlayerTurn: function(){
@@ -48,17 +54,26 @@ var PictionaryGuessView = Marionette.View.extend({
     }
   },
 
+  onEndTurn: function(){
+    $(this.ui.guess).attr("disabled", "disabled");
+  },
+
   onMadeGuess: function(message){
-    var guess;
+    $(this.regions.guessList).css("max-height", (250 + this.model.get("players").length * 42) + "px");
+    var guess = $("<div>");
+    var player = this.model.getPlayerById(message.player);
     if (message.correct){
       if (this.model.isMe(message.player)){
         $(this.ui.guess).attr("disabled", "disabled");
       }
-      guess = $("<div>").text("correct");
+      guess.addClass("correct");
+      guess.text(player.name + " guessed the word!");
     } else {
-      guess = $("<div>").text(message.guess);
+      guess.append($("<span class='playerName'>").css("color", player.color).text(player.name));
+      guess.append($("<span class='guessItem'>").text(message.guess));
     }
     $(this.regions.guessList).append(guess);
+    $(this.regions.guessListContainer).scrollTop($(this.regions.guessListContainer)[0].scrollHeight);
   },
 
   sendGuess: function(val){
