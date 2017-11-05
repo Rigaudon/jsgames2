@@ -7,6 +7,14 @@
   justify-content: space-around;
   align-items: center;
 
+  label{
+    margin-top: 15px;
+    margin-bottom: 0;
+    text-decoration: underline;
+    width: 100%;
+    text-shadow: 0 0 6px $bg-color;
+  }
+
   .gameUItop{
     display: flex;
     flex-direction: row;
@@ -14,9 +22,123 @@
     align-items: center;
     width: 100%;
 
-    .scoreboard{
+    .players{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      height: 600px;
+      margin-right: 20px;
       width: 200px;
       min-width: 200px;
+
+      .scoreboard{
+        display: flex;
+        flex-direction: column;
+        opacity: 0.9;
+        width: 100%;
+
+        .playerList{
+          border: 2px solid $primary-color;
+          border-radius: 10px;
+
+          .player{
+            height: 42px;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            background-color: $bg-color;
+            position: relative;
+
+            .playerName{
+              flex-grow: 1;
+              max-width: 145px;
+              word-wrap: break-word;
+            }
+
+            .playerScore{
+              width: 50px;
+              height: 100%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: $secondary-color;
+              border-left: 1px solid $primary-color;
+              font-size: 25px;
+            }
+          }
+
+          .player:first-child{
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            .playerScore{
+              border-top-right-radius: 10px;
+            }
+          }
+
+          .player:last-child{
+            border-bottom-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            .playerScore{
+              border-bottom-right-radius: 10px;
+            }
+          }
+
+          .player:not(:last-child){
+            border-bottom: 1px solid $primary-color;
+          }
+
+          .player.active::before{
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: -45px;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            border-left: 35px solid $tertiary-color;
+            z-index: 2;
+            content: " ";
+            -webkit-filter: drop-shadow(0 0 5px $tertiary-color);
+            -moz-filter: drop-shadow(0 0 5px $tertiary-color);
+            -ms-filter: drop-shadow(0 0 5px $tertiary-color);
+            -o-filter: drop-shadow(0 0 5px $tertiary-color);
+            filter: drop-shadow(0 0 5px $tertiary-color);
+          }
+        }
+      }
+
+      .guess{
+        flex-grow: 1;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        .guessContainer{
+          flex-grow: 1;
+          background-color: $passive-color;
+          min-height: 200px;
+          display: flex;
+          flex-direction: column;
+          border: 2px solid $primary-color;
+          border-radius: 10px 10px 5px 5px;
+
+          .guessList{
+            flex-grow: 1;
+            overflow-y: auto;
+          }
+
+          .guessInput{
+            font-size: 18px;
+            margin: 3px;
+            padding-left: 3px;
+            height: 35px;
+            padding-top: 4px;
+            color: black;
+          }
+        }
+
+      }
     }
 
     .drawboard{
@@ -67,13 +189,6 @@
         }
       }
 
-      label{
-        margin-top: 15px;
-        margin-bottom: 0;
-        text-decoration: underline;
-        width: 100%;
-      }
-
       input[type=color]{
         width: 40px;
         height: 40px;
@@ -116,6 +231,12 @@
       .timer{
 
       }
+    }
+  }
+
+  .controls{
+    button{
+      margin: 10px;
     }
   }
 }

@@ -6,13 +6,37 @@ var validTools = ["brush", "fill", "eraser"];
 var dragTools = ["brush", "eraser"];
 
 var PictionaryClient = GameClient.extend({
+  actions: {
+    playerTurn: function(message){
+      this.transactions = [];
+      this.currentTransaction = undefined;
+      this.successfulGuess = false;
+      this.get("gameState").turnPlayer = message.player;
+      this.trigger("player:turn", message);
+    },
+    madeGuess: function(message){
+      if (this.isMe(message.player) && message.correct){
+        this.successfulGuess = true;
+      }
+      this.trigger("made:guess", message);
+    }
+  },
+
+  isMyTurn: function(){
+    return this.get("gameState") && this.isMe(this.get("gameState").turnPlayer);
+  },
+
+  canSendGuess: function(){
+    return !this.isMyTurn() && !this.successfulGuess && this.inProgress();
+  },
+
   isDrawing: false,
 
   selectedTool: {
     type: "brush",
     options: {
       color: "#000000",
-      size: 4
+      size: 10
     }
   },
 
@@ -130,6 +154,40 @@ var PictionaryClient = GameClient.extend({
       y1: previousPosition[1],
     };
   },
+
+  getPlayerInfo: function(){
+    var playerInfo = [];
+    if (!this.get("players")){
+      return playerInfo;
+    }
+    var self = this;
+    this.get("players").forEach(function(player){
+      var info = {
+        id: player.id,
+        name: player.name,
+        color: player.color,
+        score: self.get("gameState") ? (self.get("gameState").points ? self.get("gameState").points[player.id] || 0 : 0) : 0
+      };
+      playerInfo.push(info);
+    });
+    return playerInfo;
+  },
+
+  processRoomInfo: function(roomInfo){
+    GameClient.prototype.processRoomInfo.call(this, roomInfo);
+    this.trigger("update:room");
+  },
+
+  sendGuess: function(guess){
+    if (this.canSendGuess()){
+      console.log("sending guess");
+      this.socket.emit("gameMessage", {
+        "command": "makeGuess",
+        "guess": guess,
+        "roomId": this.get("id"),
+      });
+    }
+  }
 
 });
 

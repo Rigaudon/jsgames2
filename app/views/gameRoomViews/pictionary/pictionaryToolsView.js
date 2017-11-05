@@ -39,7 +39,8 @@ var PictionaryToolsView = Marionette.View.extend({
   },
 
   modelEvents: {
-    "change:selectedTool": "render"
+    "change:selectedTool": "render",
+    "player:turn": "onPlayerTurn"
   },
 
   onRender: function(){
@@ -54,6 +55,14 @@ var PictionaryToolsView = Marionette.View.extend({
       $(this.ui.size.val(tool.options.size));
     } else {
       $(this.regions.sizeContainer).css("display", "none");
+    }
+  },
+
+  onPlayerTurn: function(){
+    if (this.model.isMyTurn()){
+      this.$el.removeClass("hide");
+    } else {
+      this.$el.addClass("hide");
     }
   },
 

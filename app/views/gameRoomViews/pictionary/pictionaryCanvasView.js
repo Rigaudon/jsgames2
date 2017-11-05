@@ -8,6 +8,7 @@ var PictionaryCanvasView = Marionette.View.extend({
   height: 600,
   previousToolPreview: undefined,
   toolSize: 25,
+  enabled: true,
 
   getTemplate: function(){
     return _.template(fs.readFileSync("./app/templates/partials/gameRooms/pictionary/canvas.html", "utf8"), this.templateContext());
@@ -30,7 +31,8 @@ var PictionaryCanvasView = Marionette.View.extend({
     "draw:tick": "drawTick",
     "canvas:clear": "clearCanvas",
     "canvas:redraw": "redrawCanvas",
-    "canvas:fill": "fill"
+    "canvas:fill": "fill",
+    "player:turn": "onPlayerTurn"
   },
 
   onRender: function(){
@@ -43,17 +45,35 @@ var PictionaryCanvasView = Marionette.View.extend({
     this.clearOverlay();
     var overlay = $(this.ui.overlay);
     overlay.on("mousemove", function(e){
-      self.model.canvasHover([e.offsetX, e.offsetY]);
+      if (self.enabled){
+        self.model.canvasHover([e.offsetX, e.offsetY]);
+      }
     });
     overlay.on("mousedown", function(){
-      self.model.startDrawing();
+      if (self.enabled){
+        self.model.startDrawing();
+      }
     });
     overlay.on("mouseout mouseup", function(){
-      self.model.stopDrawing();
+      if (self.enabled){
+        self.model.stopDrawing();
+      }
     });
     overlay.on("click", function(e){
-      self.model.canvasClick([e.offsetX, e.offsetY]);
+      if (self.enabled){
+        self.model.canvasClick([e.offsetX, e.offsetY]);
+      }
     });
+  },
+
+  onPlayerTurn: function(){
+    this.clearCanvas();
+    this.clearOverlay();
+    if (this.model.isMyTurn()){
+      this.enabled = true;
+    } else {
+      this.enabled = false;
+    }
   },
 
   clearCanvas: function(){
@@ -195,15 +215,15 @@ var PictionaryCanvasView = Marionette.View.extend({
     switch (tool.type){
     case "eraser":
       return {
-        type: "glyph",
+        type: "arc",
         options: {
-          text: String.fromCharCode("0xe551"),
           x: options.x,
           y: options.y,
-          fontSize: this.toolSize,
           fromCenter: true,
-          fontFamily: "Glyphicons Regular",
-          fillStyle: "#000"
+          radius: Math.ceil(tool.options.size / 2),
+          strokeStyle: "#000000",
+          strokeWidth: 1,
+          fillStyle: "#FFFFFF"
         }
       };
     case "fill":
@@ -211,8 +231,8 @@ var PictionaryCanvasView = Marionette.View.extend({
         type: "glyph",
         options: {
           text: String.fromCharCode("0xe481"),
-          x: options.x,
-          y: options.y,
+          x: options.x - Math.floor(this.toolSize / 2),
+          y: options.y - 4,
           fontSize: this.toolSize,
           fromCenter: true,
           fontFamily: "Glyphicons Regular",
@@ -234,6 +254,9 @@ var PictionaryCanvasView = Marionette.View.extend({
   },
 
   drawToolPreview: function(options){
+    if (!this.enabled){
+      return;
+    }
     var overlay = $(this.ui.overlay);
     this.clearToolPreview();
     var preview = this.getToolPreview(options);
@@ -250,8 +273,8 @@ var PictionaryCanvasView = Marionette.View.extend({
       this.clearOverlay({
         x: this.previousToolPreview.x,
         y: this.previousToolPreview.y,
-        width: this.previousToolPreview.width || this.previousToolPreview.radius * 2 || this.previousToolPreview.fontSize + 4,
-        height: this.previousToolPreview.height || this.previousToolPreview.radius * 2 || this.previousToolPreview.fontSize + 4,
+        width: this.previousToolPreview.width || this.previousToolPreview.radius * 2 + 2 || this.previousToolPreview.fontSize + 4,
+        height: this.previousToolPreview.height || this.previousToolPreview.radius * 2 + 2 || this.previousToolPreview.fontSize * 2,
         fromCenter: this.previousToolPreview.fromCenter
       });
     } else {

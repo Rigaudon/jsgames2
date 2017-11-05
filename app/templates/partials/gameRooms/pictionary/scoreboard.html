@@ -1,0 +1,9 @@
+<label>Players</label>
+<div class="playerList">
+<% _.forEach(players, function(player) { %>
+<div class="player" data-id="<%- player.id %>">
+  <span class="playerName" style="color: <%- player.color %>"><%- player.name %></span>
+  <span class="playerScore"><%- player.score %></span>
+</div>
+<% }); %>
+</div>

@@ -3,7 +3,9 @@ var PictionaryClient = require("../../../models/pictionaryClient");
 var _ = require("lodash");
 var fs = require("fs");
 var PictionaryCanvasView = require("./pictionaryCanvasView");
-var PictionaryToolsView = require("./PictionaryToolsView");
+var PictionaryToolsView = require("./pictionaryToolsView");
+var PictionaryScoreboardView = require("./pictionaryScoreboardView");
+var PictionaryGuessView = require("./pictionaryGuessView");
 
 var PictionaryRoomView = Marionette.View.extend({
   initialize: function(options){
@@ -15,7 +17,10 @@ var PictionaryRoomView = Marionette.View.extend({
   className: "pictionaryRoom",
 
   regions: {
-    "scoreboard": ".scoreboard",
+    "scoreboard": {
+      el: ".scoreboard",
+      replaceElement: true
+    },
     "canvas": {
       el: ".drawboard",
       replaceElement: true
@@ -23,7 +28,12 @@ var PictionaryRoomView = Marionette.View.extend({
     "tools": {
       el: ".tools",
       replaceElement: true
-    }
+    },
+    "guess": {
+      el: ".guess",
+      replaceElement: true
+    },
+    "controls": ".controls"
   },
 
   ui: {
@@ -34,6 +44,10 @@ var PictionaryRoomView = Marionette.View.extend({
   events: {
     "click @ui.leaveBtn": "leaveRoom",
     "click @ui.startBtn": "startRoom",
+  },
+
+  modelEvents: {
+    "update:room": "updateOptions"
   },
 
   getTemplate: function(){
@@ -53,6 +67,16 @@ var PictionaryRoomView = Marionette.View.extend({
     this.showChildView("tools", new PictionaryToolsView({
       model: this.model
     }));
+    this.showChildView("scoreboard", new PictionaryScoreboardView({
+      model: this.model
+    }));
+    this.showChildView("guess", new PictionaryGuessView({
+      model: this.model
+    }));
+  },
+
+  updateOptions: function(){
+    $(this.regions.controls).html(this.getOptions());
   },
 
   getOptions: function() {
