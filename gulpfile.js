@@ -31,6 +31,7 @@ function bundle() {
     }))
     .on("error", function(err){
       gutil.log(gutil.colors.red("[Error]"), err.toString());
+      process.exit(0);
     })
     .pipe(gulp.dest("./dist"))
     .once("end", function(){
