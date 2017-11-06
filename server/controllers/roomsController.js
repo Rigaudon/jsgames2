@@ -118,6 +118,10 @@ var RoomsController = Backbone.Collection.extend({
     });
     this.add(newRoom);
     this.emitActiveRooms(this.io);
+    var self = this;
+    newRoom.on("change:status", function(){
+      self.emitActiveRooms(self.io);
+    });
     return {
       id: nextGameRoomId,
       password: options.roomPassword

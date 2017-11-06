@@ -88,10 +88,12 @@ var PictionaryToolsView = Marionette.View.extend({
   },
 
   clear: function(){
+    this.model.emitClear();
     this.model.clearCanvas();
   },
 
   undo: function(){
+    this.model.emitUndo();
     this.model.undo();
   }
 

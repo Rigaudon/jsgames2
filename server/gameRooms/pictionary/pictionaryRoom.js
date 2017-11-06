@@ -1,7 +1,7 @@
 var Room = require("../room");
 
 var hostCommands = ["startGame"];
-var commands = ["makeGuess"];
+var commands = ["makeGuess", "setTool", "partialTransaction", "endTransaction", "fill", "undo", "clear"];
 var NUM_ROUNDS = 3;
 var TURN_TIME = 60000;
 var DELAY_BETWEEEN_TURNS = 5000;
@@ -22,6 +22,24 @@ var PictionaryRoom = Room.extend({
       switch (command){
       case "makeGuess":
         self.makeGuess(options);
+        break;
+      case "setTool":
+        self.setTool(options);
+        break;
+      case "partialTransaction":
+        self.partialTransaction(options);
+        break;
+      case "endTransaction":
+        self.endTransaction(options);
+        break;
+      case "fill":
+        self.fill(options);
+        break;
+      case "undo":
+        self.undo(options);
+        break;
+      case "clear":
+        self.clear(options);
         break;
       default:
         console.error("Cannot find command " + command);
@@ -133,7 +151,10 @@ var PictionaryRoom = Room.extend({
     }).join("&nbsp;&nbsp;&nbsp;");
   },
 
-  endTurn: function(){
+  endTurn: function(playerLeaving = false){
+    if (!this.inProgress()){
+      return;
+    }
     var gameState = this.get("gameState");
     var nextPlayer = gameState.turns.length ? gameState.turns[gameState.turns.length - 1] : null;
     while (!nextPlayer && gameState.turns.length){
@@ -152,11 +173,18 @@ var PictionaryRoom = Room.extend({
       nextPlayer: nextPlayer,
       word: gameState.word
     });
-    var self = this;
-    setTimeout(self.progressTurn.bind(self), DELAY_BETWEEEN_TURNS);
+    if (this.get("players").length < 3 || (playerLeaving && this.get("players").length < 4)){
+      this.endGame();
+    } else {
+      var self = this;
+      setTimeout(self.progressTurn.bind(self), DELAY_BETWEEEN_TURNS);
+    }
   },
 
   endGame: function(){
+    if (!this.inProgress()){
+      return;
+    }
     var winningPoints = 0;
     var winners = [];
     var gameState = this.get("gameState");
@@ -231,6 +259,75 @@ var PictionaryRoom = Room.extend({
     }
     this.get("gameState").usedWords.push(randomWord);
     return randomWord;
+  },
+
+  setTool: function(options){
+    if (!this.inProgress() || options.source != this.get("gameState").turnPlayer.get("id")){
+      return;
+    }
+    this.emitGameMessageToAllExcept([options.source], {
+      message: "setTool",
+      tool: options.tool
+    });
+  },
+
+  partialTransaction: function(options){
+    if (!this.inProgress() || options.source != this.get("gameState").turnPlayer.get("id")){
+      return;
+    }
+    this.emitGameMessageToAllExcept([options.source], {
+      message: "partialTransaction",
+      buffer: options.buffer
+    });
+  },
+
+  endTransaction: function(options){
+    if (!this.inProgress() || options.source != this.get("gameState").turnPlayer.get("id")){
+      return;
+    }
+    this.emitGameMessageToAllExcept([options.source], {
+      message: "endTransaction"
+    });
+  },
+
+  fill: function(options){
+    if (!this.inProgress() || options.source != this.get("gameState").turnPlayer.get("id")){
+      return;
+    }
+    this.emitGameMessageToAllExcept([options.source], {
+      message: "fill",
+      position: options.position,
+      tool: options.tool
+    });
+  },
+
+  undo: function(options){
+    if (!this.inProgress() || options.source != this.get("gameState").turnPlayer.get("id")){
+      return;
+    }
+    this.emitGameMessageToAllExcept([options.source], {
+      message: "undo"
+    });
+  },
+
+  clear: function(options){
+    if (!this.inProgress() || options.source != this.get("gameState").turnPlayer.get("id")){
+      return;
+    }
+    this.emitGameMessageToAllExcept([options.source], {
+      message: "clear"
+    });
+  },
+
+  playerLeave: function(socket){
+    var gameState = this.get("gameState");
+    if (gameState.turnPlayer && gameState.turnPlayer.get("id") == socket.id){
+      this.endTurn(true);
+    }
+    if (this.get("players").length < 4){
+      this.endTurn(true);
+    }
+    Room.prototype.playerLeave.call(this, socket);
   },
 
   gameStateJson: function(gameState, socketId){

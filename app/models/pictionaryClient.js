@@ -5,6 +5,8 @@ var validTools = ["brush", "fill", "eraser"];
 //Tools that draw by dragging
 var dragTools = ["brush", "eraser"];
 
+var MAX_BUFFER_SIZE = 2;
+
 var PictionaryClient = GameClient.extend({
   actions: {
     playerTurn: function(message){
@@ -30,6 +32,42 @@ var PictionaryClient = GameClient.extend({
     endGame: function(message){
       this.get("gameState").turnPlayer = undefined;
       this.trigger("end:game", message);
+    },
+    setTool: function(message){
+      //Only occurs when not player's turn
+      this.selectedTool = message.tool;
+      this.currentTransaction = {
+        tool: _.cloneDeep(this.selectedTool),
+        positions: []
+      };
+    },
+    partialTransaction: function(message){
+      //Only occurs when not player's turn
+      for (var i = 0; i < message.buffer.length; i++){
+        var x = message.buffer[i][0];
+        var y = message.buffer[i][1];
+        this.trigger("draw:tick", [x, y, this.selectedTool]);
+        this.currentTransaction.positions.push([x, y]);
+      }
+    },
+    endTransaction: function(){
+      if (this.currentTransaction && this.currentTransaction.positions.length){
+        this.transactions.push(this.currentTransaction);
+      }
+      this.currentTransaction = undefined;
+    },
+    fill: function(message){
+      this.transactions.push({
+        tool: message.tool,
+        position: message.position,
+      });
+      this.trigger("canvas:fill", this.lastTransaction());
+    },
+    undo: function(){
+      this.undo();
+    },
+    clear: function(){
+      this.clearCanvas();
     }
   },
 
@@ -55,6 +93,7 @@ var PictionaryClient = GameClient.extend({
 
   transactions: [],
   currentTransaction: undefined,
+  currentTransactionBuffer: [],
 
   changeTool: function(tool){
     if (validTools.indexOf(tool) > -1){
@@ -86,17 +125,39 @@ var PictionaryClient = GameClient.extend({
     if (this.isDrawing && (this.selectedTool.type == "brush" || this.selectedTool.type == "eraser")){
       this.trigger("draw:tick", [x, y, this.selectedTool]);
       this.currentTransaction.positions.push([x, y]);
+      this.addPositionToBuffer([x, y]);
     }
   },
 
   canvasClick: function([x, y]){
     if (this.selectedTool.type == "fill"){
+      var tool = _.cloneDeep(this.selectedTool)
       this.transactions.push({
-        tool: _.cloneDeep(this.selectedTool),
+        tool: tool,
         position: [x, y]
       });
       this.trigger("canvas:fill", this.lastTransaction());
+      this.socket.emit("gameMessage", {
+        "command": "fill",
+        "position": [x, y],
+        "tool": tool,
+        "roomId": this.get("id")
+      });
     }
+  },
+
+  emitUndo: function(){
+    this.socket.emit("gameMessage", {
+      "command": "undo",
+      "roomId": this.get("id")
+    });
+  },
+
+  emitClear: function(){
+    this.socket.emit("gameMessage", {
+      "command": "clear",
+      "roomId": this.get("id")
+    });
   },
 
   lastTransaction: function(){
@@ -133,6 +194,18 @@ var PictionaryClient = GameClient.extend({
     this.trigger("canvas:redraw", this.transactions.slice(lastClear));
   },
 
+  addPositionToBuffer: function(position){
+    this.currentTransactionBuffer.push(position);
+    if (this.currentTransactionBuffer.length > MAX_BUFFER_SIZE){
+      this.socket.emit("gameMessage", {
+        "command": "partialTransaction",
+        "buffer": this.currentTransactionBuffer,
+        "roomId": this.get("id")
+      });
+      this.currentTransactionBuffer = [];
+    }
+  },
+
   startDrawing: function(){
     if (dragTools.indexOf(this.selectedTool.type) == -1){
       return;
@@ -142,6 +215,12 @@ var PictionaryClient = GameClient.extend({
       tool: _.cloneDeep(this.selectedTool),
       positions: []
     };
+
+    this.socket.emit("gameMessage", {
+      "command": "setTool",
+      "tool": this.currentTransaction.tool,
+      "roomId": this.get("id")
+    });
   },
 
   stopDrawing: function(){
@@ -153,6 +232,16 @@ var PictionaryClient = GameClient.extend({
       this.transactions.push(this.currentTransaction);
     }
     this.currentTransaction = undefined;
+    this.socket.emit("gameMessage", {
+      "command": "partialTransaction",
+      "buffer": this.currentTransactionBuffer,
+      "roomId": this.get("id")
+    });
+    this.currentTransactionBuffer = [];
+    this.socket.emit("gameMessage", {
+      "command": "endTransaction",
+      "roomId": this.get("id")
+    });
   },
 
   getPreviousTick: function(){
