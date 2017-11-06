@@ -8,14 +8,13 @@ Currently, Connect Four, Uno, and Exploding Kittens are implemented.
 <img src="./static/images/connect-four.png" width="150" /><img src="./static/images/uno.png" width="150" /><img src="./static/images/kittens.jpg" width="150" />
 
 # Local Setup
-Developed in node `6.10.0`, npm `4.3.0`.
+Developed in node `8.9.0`, npm `5.5.1`.
 Run `npm install`, then `npm start`.
 For development, run `gulp`.
 
 # To do
 - Implement games
   - Dominion
-  - Pictionary ?
   - Othello ?
   - Cards against humanity ?
 - Add Spectate mode
