@@ -6,14 +6,23 @@ var validTools = ["brush", "fill", "eraser"];
 var dragTools = ["brush", "eraser"];
 
 var MAX_BUFFER_SIZE = 2;
+var defaultTool = {
+  type: "brush",
+  options: {
+    color: "#000000",
+    size: 10
+  }
+};
 
 var PictionaryClient = GameClient.extend({
   actions: {
     playerTurn: function(message){
       this.transactions = [];
       this.currentTransaction = undefined;
+      this.currentTransactionBuffer = [];
       this.successfulGuess = false;
       this.get("gameState").turnPlayer = message.player;
+      this.selectedTool = _.cloneDeep(defaultTool);
       this.trigger("player:turn", message);
     },
     madeGuess: function(message){
@@ -81,13 +90,7 @@ var PictionaryClient = GameClient.extend({
 
   isDrawing: false,
 
-  selectedTool: {
-    type: "brush",
-    options: {
-      color: "#000000",
-      size: 10
-    }
-  },
+  selectedTool: _.cloneDeep(defaultTool),
 
   savedTools: {},
 
