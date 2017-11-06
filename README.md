@@ -17,6 +17,7 @@ For development, run `gulp`.
   - Dominion
   - Othello ?
   - Cards against humanity ?
+  - Blockus
 - Add Spectate mode
 - Add who's online list to chat
 - Add twitch emotes to chat

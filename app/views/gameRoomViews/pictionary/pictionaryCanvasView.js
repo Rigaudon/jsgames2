@@ -86,6 +86,7 @@ var PictionaryCanvasView = Marionette.View.extend({
 
   clearCanvas: function(){
     $(this.ui.canvas).clearCanvas();
+    $(this.ui.overlay).clearCanvas();
   },
 
   clearOverlay: function(options = {}){

@@ -42,6 +42,7 @@ var PictionaryGuessView = Marionette.View.extend({
       $(this.ui.guess).attr("disabled", "disabled");
     } else {
       $(this.ui.guess).attr("disabled", false);
+      $(this.ui.guess).val("");
       $(this.ui.guess).focus();
     }
   },
