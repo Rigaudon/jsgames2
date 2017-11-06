@@ -1,11 +1,13 @@
 <p align="center">
   <img alt="JSGames" src="/static/images/themes/light/logo.png" />
 </p>
-# JSGames v2
-A stateless Nodejs game server using Socket.io and Backbone/Marionette.
-Currently, Connect Four, Uno, and Exploding Kittens are implemented.
 
-<img src="./static/images/connect-four.png" width="150" /><img src="./static/images/uno.png" width="150" /><img src="./static/images/kittens.jpg" width="150" />
+# JSGames v2
+
+A stateless Nodejs game server using Socket.io and Backbone/Marionette.
+Currently, Connect Four, Uno, Pictionary, and Exploding Kittens are implemented.
+
+<img src="./static/images/connect-four.png" width="150" /><img src="./static/images/uno.png" width="150" /><img src="./static/images/pictionary.png" width="150" /><img src="./static/images/kittens.jpg" width="150" />
 
 # Local Setup
 Developed in node `8.9.0`, npm `5.5.1`.
