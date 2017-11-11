@@ -2,6 +2,7 @@ var Backbone = require("backbone");
 var _ = require("lodash");
 var games = require("../../games.json");
 var gamesCollection = new Backbone.Collection(games);
+var moment = require("moment-timezone");
 
 var ConnectFourRoom = require("../gameRooms/connectFour/connectFourRoom");
 var UnoRoom = require("../gameRooms/uno/unoRoom");
@@ -116,6 +117,7 @@ var RoomsController = Backbone.Collection.extend({
       maxPlayers: game.get("maxPlayers"),
       io: this.io
     });
+
     this.add(newRoom);
     this.emitActiveRooms(this.io);
     var self = this;
@@ -136,6 +138,7 @@ var RoomsController = Backbone.Collection.extend({
     if (this.validateJoinRoom(socket.id, options, room)){
       var roomName = this.get(options.roomId).get("options").roomName;
       this.playerJoin(socket.id, options.roomId, playerModel);
+      console.log(`${moment(new Date()).format("[[]MM-DD-YY|h:mm:ss A[]]")} ${socket.id} joined room ${options.roomId}`);
       socket.emit("joinRoomResponse", {
         success: true,
         roomId: options.roomId,
@@ -171,6 +174,7 @@ var RoomsController = Backbone.Collection.extend({
     var playerId = socket.id;
     var inRoom = this.playerMap[playerId];
     if (inRoom){
+      console.log(`${moment(new Date()).format("[[]MM-DD-YY|h:mm:ss A[]]")} ${socket.id} left room ${inRoom.get("id")}`);
       inRoom.playerLeave(socket);
       delete this.playerMap[playerId];
       this.emitActiveRooms(this.io);

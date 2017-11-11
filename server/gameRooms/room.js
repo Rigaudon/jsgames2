@@ -1,5 +1,6 @@
 var Backbone = require("backbone");
 var _ = require("lodash");
+var moment = require("moment-timezone");
 
 var Room = Backbone.Model.extend({
 
@@ -12,6 +13,7 @@ var Room = Backbone.Model.extend({
     this.set("maxPlayers", options.maxPlayers);
     this.set("channel", "game" + this.get("id"));
     this.set("gameState", {});
+    console.log(`${moment(new Date()).format("[[]MM-DD-YY|h:mm:ss A[]]")} Room ${this.get("options").roomName}, playing ${this.get("options").gameId}, created with id: ${this.get("id")}`);
   },
 
   switchChannel(socket, name, from, to){
@@ -64,7 +66,7 @@ var Room = Backbone.Model.extend({
 
     this.get("players").remove(playerId);
     if (this.get("players").length == 0){
-      this.collection.remove(self);
+      this.deleteSelf();
     } else {
       if (this.get("players").length == 1){
         this.set("status", 0);
@@ -75,6 +77,11 @@ var Room = Backbone.Model.extend({
       }
     }
     this.emitToAllExcept(null, "playerLeave");
+  },
+
+  deleteSelf: function(){
+    console.log(`${moment(new Date()).format("[[]MM-DD-YY|h:mm:ss A[]]")} Room id ${this.get("id")} deleted.`);
+    this.collection.remove(this);
   },
 
   sendRoomInfo: function(socket, event){

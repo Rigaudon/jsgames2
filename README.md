@@ -20,6 +20,7 @@ For development, run `gulp`.
   - Othello ?
   - Cards against humanity ?
   - Blockus
+  - Sorry
 - Add Spectate mode
 - Add who's online list to chat
 - Add twitch emotes to chat

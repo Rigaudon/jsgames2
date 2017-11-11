@@ -1,6 +1,7 @@
 var Backbone = require("backbone");
 var User = require("../user");
 var util = require("../socketUtil");
+var moment = require("moment-timezone");
 
 var UsersController = Backbone.Collection.extend({
   addPlayer: function(options){
@@ -11,12 +12,15 @@ var UsersController = Backbone.Collection.extend({
         options.color = util.randomColor();
       }
       this.add(new User(options));
+      var ip = options.socket.request.connection.remoteAddress;
+      console.log(`${moment(new Date()).format("[[]MM-DD-YY|h:mm:ss A[]]")} ${options.name} (${options.socket.id}) joined with IP ${ip}.`);
       response.color = options.color;
     }
     return response;
   },
 
   removePlayer: function(id){
+    console.log(`${moment(new Date()).format("[[]MM-DD-YY|h:mm:ss A[]]")} ${id} disconnected.`);
     this.remove(id);
   },
 
