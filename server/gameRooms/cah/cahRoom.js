@@ -265,6 +265,12 @@ var CardsAgainstHumanityRoom = Room.extend({
     if (gameState.turnPlayer && gameState.turnPlayer.get("id") == socket.id){
       this.progressTurn();
     }
+    if (gameState.waitingFor && gameState.waitingFor.length){
+      gameState.waitingFor = gameState.waitingFor.filter(function(player){
+        return player.get("id") != socket.id;
+      });
+      this.setStatus(`Waiting for: ${this.waitingForNames()}`);
+    }
     Room.prototype.playerLeave.call(this, socket);
   },
 
