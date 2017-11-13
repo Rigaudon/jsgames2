@@ -10,12 +10,14 @@ var ConnectFourRoomView = require("./gameRoomViews/connectFour/connectFourRoomVi
 var UnoRoomView = require("./gameRoomViews/uno/unoRoomView");
 var PictionaryRoomView = require("./gameRoomViews/pictionary/pictionaryRoomView");
 var ExplodingKittensRoomView = require("./gameRoomViews/explodingKittens/explodingKittensRoomView");
+var CardsAgainstHumanityRoomView = require("./gameRoomViews/cah/cahRoomView");
 
 var GameRoomViewsMap = {
   "1": ConnectFourRoomView,
   "2": UnoRoomView,
   "3": PictionaryRoomView,
   "4": ExplodingKittensRoomView,
+  "5": CardsAgainstHumanityRoomView
 };
 
 var LobbyView = Marionette.View.extend({

@@ -8,6 +8,7 @@ var ConnectFourRoom = require("../gameRooms/connectFour/connectFourRoom");
 var UnoRoom = require("../gameRooms/uno/unoRoom");
 var PictionaryRoom = require("../gameRooms/pictionary/pictionaryRoom");
 var ExplodingKittensRoom = require("../gameRooms/explodingKittens/explodingKittensRoom");
+var CardsAgainstHumanityRoom = require("../gameRooms/cah/cahRoom");
 
 var nextGameRoomId = 0;
 var RoomsController = Backbone.Collection.extend({
@@ -16,6 +17,7 @@ var RoomsController = Backbone.Collection.extend({
     "2": UnoRoom,
     "3": PictionaryRoom,
     "4": ExplodingKittensRoom,
+    "5": CardsAgainstHumanityRoom
   },
 
   emitActiveRooms: function(socket){

@@ -33,11 +33,10 @@ var NamePickerView = Marionette.View.extend({
     var keycode = (e.keyCode ? e.keyCode : e.which);
     if (keycode == "13"){
       //Enter
-      this.$(e.target).prop("disabled", true);
       this.requestName($(e.target).val().trim());
     } else {
       //Only allow alphanumic and spaces
-      return /[a-zA-Z0-9-_ ]/.test(String.fromCharCode(keycode));
+      return keycode == "8" || /[a-zA-Z0-9-_ ]/.test(String.fromCharCode(keycode));
     }
   },
 
@@ -65,7 +64,6 @@ var NamePickerView = Marionette.View.extend({
       .css("display", "block")
       .text(this.model.get("error"))
       .css("opacity", 1);
-    this.$(this.ui.nameInput).prop("disabled", false);
   }
 });
 

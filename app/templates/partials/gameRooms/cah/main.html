@@ -1,0 +1,16 @@
+<% if(submissions.length){ %>
+  <% _.forEach(submissions, function(submission){ %>
+    <div class="activeCardSmall" data-id="<%= submission.player %>">
+      <%= submission.fullText %>
+    </div>
+  <% }); %>
+<% } else if(card){ %>
+  <div class="activeCardLarge">
+    <%= card.text %>
+    <button class="acceptInput">Accept</button>
+  </div>
+<% } else { %>
+  <div class="activeCardLarge">
+    Cards <br>Against <br>Humanity
+  </div>
+<% } %>

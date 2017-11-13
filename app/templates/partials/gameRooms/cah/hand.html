@@ -1,0 +1,9 @@
+<% if(isCzar) { %>
+<div class="overlay"> You are the Card Czar </div>
+<% } else { %>
+  <% cards.forEach(function(card, i){ %>
+    <div class="card" data-position="<%- i %>">
+      <%= card %>
+    </div>
+  <% }); %>
+<% } %>

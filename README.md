@@ -5,9 +5,9 @@
 # JSGames v2
 
 A stateless Nodejs game server using Socket.io and Backbone/Marionette.
-Currently, Connect Four, Uno, Pictionary, and Exploding Kittens are implemented.
+Currently, Connect Four, Uno, Pictionary, Exploding Kittens, and Cards Against Humanity are implemented.
 
-<img src="./static/images/connect-four.png" width="150" /><img src="./static/images/uno.png" width="150" /><img src="./static/images/pictionary.png" width="150" /><img src="./static/images/kittens.jpg" width="150" />
+<img src="./static/images/connect-four.png" width="150" /><img src="./static/images/uno.png" width="150" /><img src="./static/images/pictionary.png" width="150" /><img src="./static/images/kittens.jpg" width="150" /><img src="./static/images/cah.png" width="150" />
 
 # Local Setup
 Developed in node `8.9.0`, npm `5.5.1`.
@@ -18,7 +18,6 @@ For development, run `gulp`.
 - Implement games
   - Dominion
   - Othello ?
-  - Cards against humanity ?
   - Blockus
   - Sorry
 - Add Spectate mode

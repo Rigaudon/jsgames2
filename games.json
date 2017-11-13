@@ -54,5 +54,19 @@
 			"expansionImploding",
 			"start"
 		]
+	},
+
+	{
+		"id": 5,
+		"name": "Cards Against Humanity",
+		"minPlayers": 3,
+		"maxPlayers": 12,
+		"description": "Cards Against Humanity is a party game for horrible people. Unlike most of the party games you've played before, Cards Against Humanity is as despicable and awkward as you and your friends. The game is simple. Each round, one player asks a question from a black card, and everyone else answers with their funniest white card.",
+		"image": "cah.png",
+		"options": [
+			"roomName",
+			"roomPassword",
+			"start"
+		]
 	}
 ]
