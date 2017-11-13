@@ -3,7 +3,7 @@ var _ = require("lodash");
 var hostCommands = ["startGame"];
 var commands = ["submitCards", "pickSubmission"];
 var Cards = require("./cards.json");
-var CARDS_IN_HAND = 5;
+var CARDS_IN_HAND = 10;
 var VICTORY_POINTS = 5;
 var DELAY_AFTER_PICK = 5000;
 
