@@ -8,7 +8,10 @@
   margin: auto;
   min-width: 900px;
   min-height: 900px;
-  max-width: 1400px;
+
+  label{
+    text-shadow: 0 0 5px $bg-color;
+  }
 
   .cahTop{
     display: flex;
@@ -22,7 +25,9 @@
       flex-direction: column;
       opacity: 0.9;
       width: 200px;
-      margin-left: 50px;
+      min-width: 200px;
+      margin: 50px;
+      align-self: flex-start;
 
       .playerList{
         border: 2px solid $primary-color;
@@ -113,10 +118,14 @@
         font-weight: bold;
         font-size: 24px;
         padding-bottom: 20%;
+        background-image: url("/static/images/assets/cah/cahwhite.png");
+        background-position: bottom left;
+        background-repeat: no-repeat;
+        background-size: 80%;
       }
 
       .activeCardLarge{
-        width: 325px;
+        width: 500px;
         height: 70%;
         max-height: 600px;
         background-color: black;
