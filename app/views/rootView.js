@@ -67,6 +67,11 @@ var RootView = Marionette.View.extend({
 
     //Fade out the loading message
     cSelector.css("opacity", 0);
+    setTimeout(function(){
+      if (cSelector.css("opacity") == 0){
+        cSelector.trigger(common.finishTransition);
+      }
+    }, 0);
   },
 
   loadLobby: function(){

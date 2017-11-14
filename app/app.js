@@ -15,8 +15,10 @@ var App = Marionette.Application.extend({
 
 var myApp = new App();
 
-common.initialize().then(function(){
-  myApp.start();
+$(document).ready(function(){
+  common.initialize().then(function(){
+    myApp.start();
+  });
 });
 $(document).on("keypress", function(e){
   if (e.which == 96){ //~
