@@ -88,8 +88,8 @@ function setSoundSetting(){
     if (setting !== undefined && !isNaN(setting) && setting >= 0 && setting <= 1){
       window.soundsVolume = setting;
     } else {
-      Cookie.set("sound", "1");
-      window.soundsVolume = 1;
+      Cookie.set("sound", "0.7");
+      window.soundsVolume = 0.7;
     }
     resolve();
   });

@@ -121,6 +121,15 @@ var PictionaryRoom = Room.extend({
     }
 
     gameState.turnPlayer = this.get("players").get(gameState.turns.pop());
+    while (!gameState.turnPlayer && gameState.turns.length) {
+      gameState.turnPlayer = this.get("players").get(gameState.turns.pop());
+    }
+
+    if (!gameState.turnPlayer){
+      this.endGame();
+      return;
+    }
+
     var newWord = this.getRandomWord();
     gameState.word = newWord;
     var self = this;
