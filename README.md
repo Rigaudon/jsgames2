@@ -22,7 +22,6 @@ For development, run `gulp`.
   - Sorry
 - Add Spectate mode
 - Add who's online list to chat
-- Add twitch emotes to chat
 - Add user avatar (ability to choose animal)
 - Add scoreboard for games
 

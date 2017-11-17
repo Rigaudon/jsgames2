@@ -1,15 +1,31 @@
 var Backbone = require("backbone");
 var emoji = require("node-emoji");
 var moment = require("moment-timezone");
+var emotes = require("./emotes.json");
+var he = require("he");
 
 var ChatMessage = Backbone.Model.extend({
   initialize: function(data){
-    this.set("message", decodeURIComponent(data.message));
+    this.set("message", this.applyEmotes(decodeURIComponent(data.message)));
     this.set("name", data.name);
     this.set("time", moment(data.time).format("h:mm"));
     this.set("color", data.color);
     this.set("type", "player");
   },
+
+  applyEmotes: function(message) {
+    message = message.split(" ");
+    var emote;
+    for (var i = 0; i < message.length; i++){
+      message[i] = he.encode(message[i]);
+      emote = emotes[message[i]];
+      if (emote){
+        message[i] = "<img class='emote' src='https://static-cdn.jtvnw.net/emoticons/v1/" + emote.id + "/1.0' />";
+      }
+    }
+
+    return message.join(" ");
+  }
 });
 
 var ServerMessage = Backbone.Model.extend({
