@@ -106,7 +106,13 @@ var CardsAgainstHumanityRoomView = Marionette.View.extend({
   },
 
   leaveRoom: function(){
-    this.player.leaveRoom();
+    if (this.model.inProgress()) {
+      if (confirm("A game is currently in progress. Are you sure you want to leave?")) {
+        this.player.leaveRoom();
+      }
+    } else {
+      this.player.leaveRoom();
+    }
   },
 
   startRoom: function(){
